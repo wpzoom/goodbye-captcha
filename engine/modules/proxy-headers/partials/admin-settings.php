@@ -228,7 +228,7 @@ foreach($detectedIpProxyHeaders as $index => $header)
 		<td colspan="2"></td>
 	</tr>
 	<tr>
-		<td colspan="2">Wrong IP Address detected? Please feel free to <a href="http://www.wpbruiser.com/contact/">contact us</a> ! </td>
+		<td colspan="2">Wrong IP Address detected? Please feel free to <a href="<?php echo esc_url(GoodByeCaptcha::PLUGIN_SUPPORT_URL); ?>" target="_blank" rel="noopener noreferrer">ask on the support forum</a>!</td>
 	</tr>
 
 

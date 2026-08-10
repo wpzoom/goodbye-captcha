@@ -8,11 +8,11 @@
  *
  * @wordpress-plugin
  * Plugin Name: WPBruiser
- * Plugin URI: http://www.wpbruiser.com
+ * Plugin URI: https://wordpress.org/plugins/goodbye-captcha/
  * Description: An extremely powerful anti-spam plugin that blocks spambots without annoying captcha images.
- * Version: 3.1.44
+ * Version: 3.2.0
  * Requires at least: 4.0
- * Requires PHP: 5.6
+ * Requires PHP: 7.0
  * Author: Mihai Chelaru
  * Author URI: http://www.wpbruiser.com
  * License: GPLv2 or later
@@ -29,10 +29,11 @@ if(!class_exists('GoodByeCaptcha', false))
 	class GoodByeCaptcha
 	{
 		
-		CONST PLUGIN_VERSION    = '3.1.44';
+		CONST PLUGIN_VERSION    = '3.2.0';
 		CONST PLUGIN_SLUG       = 'wp-bruiser';
 		CONST PLUGIN_NAME       = 'WPBruiser';
-		CONST PLUGIN_SITE_URL   = 'https://www.wpbruiser.com';
+		CONST PLUGIN_SITE_URL   = 'https://wordpress.org/plugins/goodbye-captcha/';
+		CONST PLUGIN_SUPPORT_URL = 'https://wordpress.org/support/plugin/goodbye-captcha/';
 		CONST PLUGIN_SHORT_CODE = 'wpbr';
 
 		private static $arrClassMap = array(
@@ -51,13 +52,11 @@ if(!class_exists('GoodByeCaptcha', false))
 			'GdbcContactFormsAdminPage'   => '/engine/admin/pages/GdbcContactFormsAdminPage.php',
 			'GdbcSettingsAdminPage'       => '/engine/admin/pages/GdbcSettingsAdminPage.php',
 			'GdbcWordpressAdminPage'      => '/engine/admin/pages/GdbcWordpressAdminPage.php',
-			'GdbcExtensionsAdminPage'     => '/engine/admin/pages/GdbcExtensionsAdminPage.php',
 			'GdbcECommerceAdminPage'      => '/engine/admin/pages/GdbcECommerceAdminPage.php',
 			'GdbcNotificationsAdminPage'  => '/engine/admin/pages/GdbcNotificationsAdminPage.php',
 			'GdbcMembershipAdminPage'     => '/engine/admin/pages/GdbcMembershipAdminPage.php',
 			'GdbcSecurityAdminPage'       => '/engine/admin/pages/GdbcSecurityAdminPage.php',
 			'GdbcOthersAdminPage'         => '/engine/admin/pages/GdbcOthersAdminPage.php',
-			'GdbcLicensesAdminPage'       => '/engine/admin/pages/GdbcLicensesAdminPage.php',
 			'GdbcReportsAdminPage'        => '/engine/admin/pages/GdbcReportsAdminPage.php',
 			'GdbcWelcomeAdminPage'        => '/engine/admin/pages/GdbcWelcomeAdminPage.php',
 			'GdbcAdminNotice'             => '/engine/admin/GdbcAdminNotice.php',

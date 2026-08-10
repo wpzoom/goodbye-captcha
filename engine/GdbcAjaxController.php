@@ -113,12 +113,6 @@ final class GdbcAjaxController
 
 		}
 
-
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_LICENSES) && isset($_REQUEST['action']) && $_REQUEST['action'] === 'update-plugin')
-		{
-			GdbcLicensesAdminModule::getInstance()->registerAttachedHooks();
-		}
-
 	}
 
 	public static function userSubscribedToNewsLetter()

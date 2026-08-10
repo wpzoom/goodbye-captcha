@@ -40,8 +40,6 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 				new GdbcECommerceAdminPage(__('eCommerce', self::$PLUGIN_SLUG), __('eCommerce Page Settings', self::$PLUGIN_SLUG), self::$PLUGIN_SLUG),
 				new GdbcOthersAdminPage(__('Others', self::$PLUGIN_SLUG), __('All other popular plugins settings', self::$PLUGIN_SLUG), self::$PLUGIN_SLUG),
 				new GdbcNotificationsAdminPage(__('Notifications', self::$PLUGIN_SLUG), __('Notifications Settings', self::$PLUGIN_SLUG), self::$PLUGIN_SLUG),
-				new GdbcExtensionsAdminPage(__('Extensions', self::$PLUGIN_SLUG), __('WPBruiser Extensions', self::$PLUGIN_SLUG), self::$PLUGIN_SLUG),
-				new GdbcLicensesAdminPage(__('Licenses', self::$PLUGIN_SLUG), __('Licenses Settings', self::$PLUGIN_SLUG), self::$PLUGIN_SLUG),
 				new GdbcReportsAdminPage(__('Reports', self::$PLUGIN_SLUG), __('WPBruiser - Blocked Attempts', self::$PLUGIN_SLUG), self::$PLUGIN_SLUG),
 
 		);
@@ -226,9 +224,6 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 			}
 
 			$pageMenuTitle = $this->adminPagesList[$i]->getPageMenuTitle();
-			if(strpos($pageMenuTitle, 'Extensions') !== false) {
-				$pageMenuTitle = '<span style="color:#f16600">' . $pageMenuTitle . '</span>';
-			}
 
 			$pageAdminScreenId = add_submenu_page(
 					$adminFirstPage->getPageMenuSlug(),

@@ -3,9 +3,9 @@ Contributors: mihche
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XVC3TSGEJQP2U
 Tags: captcha, antispam, anti-spam, spam, brute force
 Requires at least: 4.0
-Requires PHP: 5.6
+Requires PHP: 7.0
 Tested up to: 7.0
-Stable tag: 3.1.44
+Stable tag: 3.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,62 +52,6 @@ WPBruiser fights Brute Force attacks and eliminates spam-bots on comments, signu
 * Ability to Disable XML-RPC Pingbacks
 * Email notifications when a Brute Force Attack is detected
 
-<blockquote>
-<h4>WPBruiser Available Extensions</h4>
-<p>WPBruiser is integrated with the most popular plugins</p>
-
-<dl>
-	<dt>Contact Forms Extensions</dt>
-	<dd>
-		<ul>
-			<li><a href="http://www.wpbruiser.com/downloads/contact-form-7/"><strong>WPBruiser - Contact Form 7</strong></a></li>
-			<li><a href="http://www.wpbruiser.com/downloads/gravity-forms/"><strong>WPBruiser - Gravity Forms</strong></a></li>
-			<li><a href="http://www.wpbruiser.com/downloads/ninja-forms/"><strong>WPBruiser - Ninja Forms</strong></a></li>
-			<li><a href="http://www.wpbruiser.com/downloads/formidable-forms/"><strong>WPBruiser - Formidable Forms</strong></a></li>
-			<li><a href="http://www.wpbruiser.com/downloads/fast-secure-contact-form/"><strong>WPBruiser - Fast Secure Contact Form</strong></a></li>
-			<li><a href=""><strong>WPBruiser - Jetpack Contact Form (FREE - merged into the core)</strong></a></li>
-		</ul>
-	</dd>
-</dl>
-
-<dl>
-	<dt>Membership Extensions</dt>
-	<dd>
-		<ul>
-			<li><a href="http://www.wpbruiser.com/downloads/buddypress/"><strong>WPBruiser - BuddyPress</strong></a></li>
-			<li><a href="http://www.wpbruiser.com/downloads/memberpress/"><strong>WPBruiser - MemberPress</strong></a></li>
-			<li><a href="http://www.wpbruiser.com/downloads/userpro/"><strong>WPBruiser - UserPro</strong></a></li>
-			<li><a href="http://www.wpbruiser.com/downloads/upme/"><strong>WPBruiser - User Profiles Made Easy</strong></a></li>
-			<li><a href=""><strong>WPBruiser - Ultimate Member (FREE - merged into the core)</strong></a></li>
-		</ul>
-	</dd>
-</dl>
-
-<dl>
-	<dt>eCommerce Extensions</dt>
-	<dd>
-		<ul>
-			<li><a href="http://www.wpbruiser.com/downloads/woocommerce/"><strong>WPBruiser - WooCommerce</strong></a></li>
-			<li><a href="http://www.wpbruiser.com/downloads/easy-digital-downloads/"><strong>WPBruiser - Easy Digital Downloads</strong></a></li>
-			<li><a href="http://www.wpbruiser.com/downloads/affiliatewp/"><strong>WPBruiser - AffiliateWP</strong></a></li>
-
-		</ul>
-	</dd>
-</dl>
-
-<dl>
-	<dt>Email Subscriptions Extensions</dt>
-	<dd>
-		<ul>
-			<li><a href="http://www.wpbruiser.com/downloads/mailpoet/"><strong>WPBruiser - MailPoet</strong></a></li>
-			<li><a href="http://www.wpbruiser.com/downloads/easy-forms-for-mailchimp/"><strong>WPBruiser - Easy Forms for MailChimp</strong></a></li>
-		</ul>
-	</dd>
-</dl>
-
-
-<p><a href="http://www.wpbruiser.com/extensions/" title = "WPBruiser Extensions">View all WPBruiser Extensions</a></p>
-</blockquote>
 
 
 **WPBruiser is also integrated with the following plugins:**
@@ -148,6 +92,9 @@ WPBruiser fights Brute Force attacks and eliminates spam-bots on comments, signu
 * **Seamless Donations** (https://wordpress.org/plugins/seamless-donations)
 	WPBruiser offers protection for the donation form
 
+
+= External services =
+This plugin does not connect to any external service. It sends no data off your server: no requests to remote APIs, no telemetry, no update or licensing calls, and no third-party fonts or scripts. All spam detection runs locally, and the IP reputation lists it uses ship inside the plugin.
 
 = Technical support =
 If you notice any problems by using this plugin, please notify us and we will investigate and fix the issues. Ideally your request should contain: URL of the website (if your site is public), Php version, WordPress version and all the steps in order to replicate the issue (if you are able to reproduce it somehow)
@@ -220,21 +167,28 @@ Studies shown that visual CAPTCHAs take around 5-10 seconds to complete and audi
 
 == Upgrade Notice ==
 
-= 3.1.44 =
-Security release. Fixes an unauthenticated PHP Object Injection vulnerability (CVE-2026-65556). All users should update immediately.
+= 3.2.0 =
+Security release. Fixes an unauthenticated PHP Object Injection vulnerability (CVE-2026-65556) and removes all remaining calls to the discontinued wpbruiser.com service. All users should update immediately.
 
 == Changelog ==
 
-= 3.1.44 =
+= 3.2.0 =
 **Security**
 - Fixed an unauthenticated PHP Object Injection vulnerability (CVE-2026-65556). The Ultimate Member integration deserialized attacker-controlled POST data (`custom_fields`) without restricting object instantiation, which could be chained with a POP gadget in WordPress, this plugin or another installed component to perform destructive actions or execute code. Reported via Patchstack.
-- Hardened every remaining deserialization call in the plugin (16 sites in total, including logged attempt data and plugin-update API responses) so that PHP objects can never be instantiated from stored, submitted or remotely fetched data.
+- Hardened every remaining deserialization call in the plugin so that PHP objects can never be instantiated from stored, submitted or remotely fetched data.
+- Removed all outbound requests to the discontinued wpbruiser.com service, including a license-activation request that was sent with TLS certificate verification disabled. The plugin no longer contacts any external server.
+- Removed the external module-loading code path, which searched other installed plugins' directories and executed PHP files found there. The plugin now only loads code that ships inside its own directory.
 - Added direct-access (`ABSPATH`) protection to all plugin PHP files.
 
+**Removed**
+- The Extensions and Licenses admin pages, the licensing modules and the self-hosted plugin updater. These supported paid add-ons that are no longer distributed, and every endpoint they used is gone.
+- Promotional links to the discontinued wpbruiser.com website throughout the admin interface and the readme.
+
 **Maintenance**
-- Declared `Requires at least` and `Requires PHP` in the plugin header.
-- Declared the plugin license in the plugin header.
+- Declared `Requires at least`, `Requires PHP` and the plugin license in the plugin header.
+- Raised the minimum supported PHP version to 7.0.
 - Updated `Tested up to` for current WordPress.
+- Support links now point to the WordPress.org support forum.
 
 = 3.1.43 =
 - Fixed PHP 7.4 warnings
@@ -316,7 +270,7 @@ Refreshed Incapsula, Amazon and Cloudflare trusted IPs ranges
 - Fixed ajax compatibility with [Ultra Community - User Profiles & Membership Plugin](https://wordpress.org/plugins/ultra-community/)
 
 **Improvements**
-- Introducing new Extension - [WPBruiser WPForms Protection](https://www.wpbruiser.com/downloads/wpforms/)
+- Introducing new Extension - WPBruiser WPForms Protection
 
 
 
@@ -352,7 +306,7 @@ Refreshed Incapsula, Amazon and Cloudflare trusted IPs ranges
 
 = 3.1.15 =
 **Fixes**
-- Fixed the incompatibility with [Gravity Forms Extension](http://www.wpbruiser.com/downloads/gravity-forms/)
+- Fixed the incompatibility with Gravity Forms Extension
 
 = 3.1.14 =
 **Improvements**
@@ -453,10 +407,10 @@ Refreshed Incapsula, Amazon and Cloudflare trusted IPs ranges
 
 **New Premium Extensions**
 
-- [Country Blocking Extension](http://www.wpbruiser.com/downloads/country-blocking/)
-- [Easy Forms for MailChimp Extension](http://www.wpbruiser.com/downloads/easy-forms-for-mailchimp/)
-- [Easy Digital Downloads Extension](http://www.wpbruiser.com/downloads/easy-digital-downloads/)
-- [AffiliateWP](http://www.wpbruiser.com/downloads/affiliatewp/)
+- Country Blocking Extension
+- Easy Forms for MailChimp Extension
+- Easy Digital Downloads Extension
+- AffiliateWP
 
 = 3.0.9 =
 Fixing repository issues
@@ -481,7 +435,7 @@ Fixed corrupted files from WordPress Repository
 
 **Additions**
 - Integration with [wpDiscuz](https://wordpress.org/plugins/wpdiscuz)
-- [WooCommerce Extension](http://www.wpbruiser.com/downloads/woocommerce/)
+- WooCommerce Extension
 
 
 = 3.0.3 =
@@ -515,13 +469,13 @@ Fixed corrupted files from WordPress Repository
 
 **Introducing premium extensions**
 
-- [Contact Form 7](http://www.wpbruiser.com/downloads/contact-form-7/)
-- [Gravity Forms](http://www.wpbruiser.com/downloads/gravity-forms/)
-- [Ninja Forms](http://www.wpbruiser.com/downloads/ninja-forms/)
-- [Formidable Forms](http://www.wpbruiser.com/downloads/formidable-forms/)
-- [Fast Secure Contact Form](http://www.wpbruiser.com/downloads/fast-secure-contact-form/)
-- [BuddyPress](http://www.wpbruiser.com/downloads/buddypress/)
-- [MemberPress](http://www.wpbruiser.com/downloads/memberpress/)
+- Contact Form 7
+- Gravity Forms
+- Ninja Forms
+- Formidable Forms
+- Fast Secure Contact Form
+- BuddyPress
+- MemberPress
 
 
 = 2.2.2 =

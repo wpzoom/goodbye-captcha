@@ -52,7 +52,6 @@ final class MchGdbcLibAutoloader
 				'MchGdbcBaseAdminPlugin'  => '/plugin/MchGdbcBaseAdminPlugin.php',
 				'MchGdbcBasePublicPlugin' => '/plugin/MchGdbcBasePublicPlugin.php',
 				'MchGdbcBaseAdminPage'    => '/plugin/MchGdbcBaseAdminPage.php',
-				'MchGdbcPluginUpdater'    => '/plugin/MchGdbcPluginUpdater.php',
 
 				'MchGdbcUtils'       => '/utils/MchGdbcUtils.php',
 				'MchGdbcWpUtils'       => '/utils/MchGdbcWpUtils.php',

@@ -68,7 +68,6 @@ final class GdbcModulesController
 
 	CONST MODULE_PLANSO_FORMS         = 'PlanSoForms';
 	CONST MODULE_EMAIL_NOTIFICATIONS  = 'EmailNotifications';
-	CONST MODULE_LICENSES             = 'Licenses';
 	CONST MODULE_MEMBER_PRESS         = 'MemberPress';
 
 	CONST MODULE_PROXY_HEADERS          = 'ProxyHeaders';
@@ -357,17 +356,6 @@ final class GdbcModulesController
 					)
 			),
 
-			self::MODULE_LICENSES => array(
-					'info'    => array(
-							'ModuleId' => 26,
-							'IsLicensed' => false,
-					),
-					'classes' => array(
-							'GdbcLicensesAdminModule'  => '/modules/licenses/GdbcLicensesAdminModule.php',
-							'GdbcLicensesPublicModule' => '/modules/licenses/GdbcLicensesPublicModule.php',
-					)
-			),
-
 			self::MODULE_MEMBER_PRESS => array(
 					'info'    => array(
 							'ModuleId' => 27,
@@ -537,12 +525,6 @@ final class GdbcModulesController
 
 		self::$arrRegisteredModules = array();
 
-		$activatedPlugins = defined('WP_PLUGIN_DIR') ? array_merge( array_flip((array) get_option( 'active_plugins', array())), (array) get_site_option( 'active_sitewide_plugins', array() ) ) : array(); // wp_get_mu_plugins()
-
-		if(defined('ABSPATH')){
-			unset($activatedPlugins[plugin_basename(GoodByeCaptcha::getMainFilePath())]); // un-setting the plugin itself
-		}
-
 		$engineDirPath = dirname(__FILE__) . DIRECTORY_SEPARATOR;
 
 		foreach(self::$arrAllModules as $moduleName => $arrModule)
@@ -551,45 +533,16 @@ final class GdbcModulesController
 
 			foreach ($arrModule['classes'] as $className => $filePath)
 			{
-				$filePath = $engineDirPath . ( $dirPath = trim( dirname($filePath) , '/\\' ) . DIRECTORY_SEPARATOR . basename($filePath) );
+				$filePath = $engineDirPath . trim( dirname($filePath) , '/\\' ) . DIRECTORY_SEPARATOR . basename($filePath);
 
+				// Only ever load module classes that ship inside this plugin. Earlier
+				// releases also scanned other activated plugins' directories and
+				// included PHP files found there (the paid "extension" plugins). That
+				// external module-loading path has been removed: a plugin must not
+				// execute code sourced from outside its own directory.
 				if(@file_exists($filePath)){
 					self::$arrRegisteredModules[$moduleName][$className] = $filePath;
-					continue;
 				}
-
-				foreach($activatedPlugins as $activePlugin => $value)
-				{
-					if( (false === strpos($activePlugin, GoodByeCaptcha::PLUGIN_SLUG)) && (false === strpos($activePlugin, "GoodByeCaptcha")) ){
-						unset($activatedPlugins[$activePlugin]);continue;
-					}
-
-					if(false === strpos($activePlugin, self::getModuleStandAloneDirectoryName($moduleName)))
-						continue;
-
-					$filePath = dirname(WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . MchGdbcUtils::stripLeftAndRightSlashes($activePlugin) ) . "/engine/$dirPath" ;
-
-					break;
-				}
-
-				if(@file_exists($filePath))
-				{
-					self::$arrRegisteredModules[$moduleName][$className] = $filePath;
-					continue;
-				}
-
-				# WPBruiser old extensions
-				foreach($activatedPlugins as $activePlugin => $value)
-				{
-					if(false === strpos($activePlugin, "GoodByeCaptcha$moduleName"))
-						continue;
-
-					$filePath = @dirname(WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $activePlugin ) . "/engine/$dirPath" ;
-
-					break;
-				}
-
-				@file_exists($filePath) ? self::$arrRegisteredModules[$moduleName][$className] = $filePath : null;
 			}
 
 			if(empty(self::$arrRegisteredModules[$moduleName]))
@@ -599,87 +552,14 @@ final class GdbcModulesController
 
 	}
 
-	public static function getModuleStandAloneDirectoryName($moduleName)
-	{
-		return strtolower(GoodByeCaptcha::PLUGIN_SLUG . '-' . MchGdbcUtils::stripNonAlphaNumericCharacters($moduleName));
-	}
-
-	public static function getModuleStandAloneDirectoryPath($moduleName)
-	{
-		if(!self::isModuleRegistered($moduleName))
-			return null;
-
-		$moduleClassName = self::getModuleStandAloneClassName($moduleName);
-		if(!class_exists($moduleClassName))
-		{
-			if(!defined('WP_PLUGIN_DIR'))
-				return null;
-
-			return 	WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . self::getModuleStandAloneDirectoryName($moduleName);
-		}
-
-		$classReflector = new ReflectionClass($moduleClassName);
-
-		return dirname($classReflector->getFileName());
-
-	}
-
-	public static function getModuleStandAloneClassName($moduleName)
-	{
-		return MchGdbcUtils::stripNonAlphaNumericCharacters(GoodByeCaptcha::PLUGIN_NAME . $moduleName);
-	}
-
-
 	public static function getModuleIdByName($moduleName)
 	{
 		return isset(self::$arrAllModules[$moduleName]['info']['ModuleId']) ? self::$arrAllModules[$moduleName]['info']['ModuleId'] : null;
 	}
 
-	public static function isLicensedModule($moduleIdORmoduleName)
-	{
-		$moduleName = ((false === filter_var($moduleIdORmoduleName, FILTER_VALIDATE_INT)) ? $moduleIdORmoduleName : self::getModuleNameById($moduleIdORmoduleName));
-
-		return !empty(self::$arrAllModules[$moduleName]['info']['IsLicensed']);
-	}
-
 	public static function unRegisterModule($moduleName)
 	{
 		unset(self::$arrRegisteredModules[(string)$moduleName]);
-	}
-
-	public static function getNotLicensedModuleNames()
-	{
-		$arrFreeModules = array();
-		foreach(self::$arrAllModules as $moduleName => $arrAllModuleSettings){
-			empty(self::$arrAllModules[$moduleName]['info']['IsLicensed']) ?  $arrFreeModules[] = $moduleName : null;
-		}
-
-		return $arrFreeModules;
-	}
-
-	public static function getLicensedModuleNames()
-	{
-		$arrModules = array();
-		foreach(self::$arrAllModules as $moduleName => $arrAllModuleSettings){
-			!empty(self::$arrAllModules[$moduleName]['info']['IsLicensed']) ?  $arrModules[] = $moduleName : null;
-		}
-
-		return $arrModules;
-	}
-
-	public static function isModuleIncludedInProBundle($moduleName)
-	{
-		if(!self::isModuleRegistered($moduleName))
-			return false;
-
-		if(!self::isLicensedModule($moduleName))
-			return true;
-
-		if( GoodByeCaptcha::isProVersion() ) {
-			return 0 === strpos(self::getModuleDirectoryPath($moduleName), dirname(__FILE__));
-		}
-
-		return false;
 	}
 
 	public static function getModuleNameById($moduleId)
