@@ -1,9 +1,9 @@
 === WPBruiser ===
-Contributors: mihche
+Contributors: wpzoom
 Tags: captcha, antispam, anti-spam, spam, brute force
 Requires at least: 6.5
 Requires PHP: 7.4
-Tested up to: 7.1
+Tested up to: 7.0
 Stable tag: 3.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -20,6 +20,9 @@ Unlike other anti-spam plugins, which detect spam comments and signups after the
 In addition, WPBruiser is completely self-contained and does not need to connect to any outside service.  Your logins remain yours, 100%.
 
 WPBruiser fights Brute Force attacks and eliminates spam-bots on comments, signup pages as well as login and password reset pages. At the click of a button, you can decide which forms to protect.
+
+= Maintainer =
+WPBruiser was originally created by Mihai Chelaru. It is now maintained by [WPZOOM](https://wpzoom.com/).
 
 = Summary of WPBruiser features =
 * Standard WordPress Login form integration
@@ -96,10 +99,7 @@ WPBruiser fights Brute Force attacks and eliminates spam-bots on comments, signu
 This plugin does not connect to any external service. It sends no data off your server: no requests to remote APIs, no telemetry, no update or licensing calls, and no third-party fonts or scripts. All spam detection runs locally, and the IP reputation lists it uses ship inside the plugin.
 
 = Technical support =
-If you notice any problems by using this plugin, please notify us and we will investigate and fix the issues. Ideally your request should contain: URL of the website (if your site is public), Php version, WordPress version and all the steps in order to replicate the issue (if you are able to reproduce it somehow)
-
-= Donate =
-If you find this plugin useful, please consider making a small [donation](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XVC3TSGEJQP2U). Thank you
+If you notice any problems while using this plugin, please open a thread on the [support forum](https://wordpress.org/support/plugin/goodbye-captcha/) and we will investigate and fix the issue. Ideally your request should contain: URL of the website (if your site is public), Php version, WordPress version and all the steps in order to replicate the issue (if you are able to reproduce it somehow)
 
 == Installation ==
 = Option 1 =

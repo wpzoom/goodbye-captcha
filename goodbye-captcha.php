@@ -2,9 +2,9 @@
 /**
  *
  * @package   WPBruiser
- * @author    Mihai Chelaru
+ * @author    WPZOOM
  * @link      https://wordpress.org/plugins/goodbye-captcha/
- * @copyright 2018 WPBruiser
+ * @copyright 2014-2018 Mihai Chelaru, 2026 WPZOOM
  *
  * @wordpress-plugin
  * Plugin Name: WPBruiser
@@ -13,8 +13,8 @@
  * Version: 3.2.0
  * Requires at least: 6.5
  * Requires PHP: 7.4
- * Author: Mihai Chelaru
- * Author URI: https://wordpress.org/plugins/goodbye-captcha/
+ * Author: WPZOOM
+ * Author URI: https://wpzoom.com/
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: goodbye-captcha
