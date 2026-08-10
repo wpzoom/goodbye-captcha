@@ -38,12 +38,12 @@ class MchGdbcWpTaskScheduler
 
 		$this->arrDefaultRecurrences['weekly'] = array(
 			'interval' => self::SECONDS_IN_WEEK,
-			'display' => __('Once Weekly')
+			'display' => __('Once Weekly', 'goodbye-captcha')
 		);
 
 		$this->arrDefaultRecurrences['monthly'] = array(
 			'interval' => self::SECONDS_IN_MONTH,
-			'display' => __('Once a month')
+			'display' => __('Once a month', 'goodbye-captcha')
 		);
 
 

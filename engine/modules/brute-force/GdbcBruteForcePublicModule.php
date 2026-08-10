@@ -64,13 +64,13 @@ class GdbcBruteForcePublicModule extends GdbcBasePublicModule
 
 		$error = null;
 		if (preg_match('~' . preg_quote($urlBase, '~') . '/*$~', $route)) {
-			$error = new WP_Error('rest_user_cannot_view', __('Sorry, you are not allowed to list users.'), array('status' => rest_authorization_required_code()));
+			$error = new WP_Error('rest_user_cannot_view', __('Sorry, you are not allowed to list users.', 'goodbye-captcha'), array('status' => rest_authorization_required_code()));
 			$response = rest_ensure_response($error);
 		}
 		else if (preg_match('~' . preg_quote($urlBase, '~') . '/+(\d+)/*$~', $route, $matches)) {
 			$id = (int) $matches[1];
 			if (get_current_user_id() !== $id) {
-				$error = new WP_Error('rest_user_invalid_id', __('Invalid user ID.'), array('status' => 404));
+				$error = new WP_Error('rest_user_invalid_id', __('Invalid user ID.', 'goodbye-captcha'), array('status' => 404));
 				$response = rest_ensure_response($error);
 			}
 		}

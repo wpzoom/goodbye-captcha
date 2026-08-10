@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
 // prepare() placeholders; every query with parameters is run through
 // $wpdb->prepare() before it reaches executePreparedQuery(). Results are not
 // cached because the reports must reflect live data.
-// phpcs:disable WordPress.DB
+// phpcs:disable WordPress.DB, PluginCheck.Security.DirectDB
 
 final class GdbcDbAccessController
 {

@@ -55,18 +55,13 @@ abstract class MchGdbcBasePlugin
 
 	public function initializePlugin()
 	{
-		// The text domain must be the plugin's WordPress.org slug, which is not the
-		// same as PLUGIN_SLUG (that one is also used for option keys and menu slugs
-		// and must keep its historical value so existing settings keep working).
+		// No load_plugin_textdomain() call on purpose. Since WordPress 4.6 translations
+		// for plugins hosted on WordPress.org are loaded automatically from the plugin
+		// slug, so calling it manually is redundant (and Plugin Check flags it).
 		//
-		// The previous implementation loaded the domain "wp-bruiser" from
-		// "wp-bruiser/languages/", a directory that never existed, so bundled
-		// translations were never actually loaded.
-		load_plugin_textdomain(
-			self::$PLUGIN_TEXT_DOMAIN,
-			false,
-			self::$PLUGIN_DIRECTORY_NAME . '/languages'
-		);
+		// For the record, the call this replaced asked for the domain "wp-bruiser" in
+		// "wp-bruiser/languages/" - a domain and a directory that never existed - so
+		// translations were never actually loaded by it either.
 	}
 
 }

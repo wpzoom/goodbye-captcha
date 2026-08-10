@@ -196,6 +196,9 @@ Security release. Fixes an unauthenticated PHP Object Injection vulnerability (C
 - PHP 8 warning: "The magic method MchGdbcBasePublicPlugin::__wakeup() must have public visibility". The method is now public and throws, which both silences the warning and keeps the class from being rebuilt from serialized data.
 - WordPress 6.7 notice: "Translation loading for the wp-bruiser domain was triggered too early". Admin page titles and notice messages are now built on the `init` action instead of `plugins_loaded`, so no translation function runs before `init`.
 - The admin stylesheets no longer restyle `html` and `body`. Previous versions overrode the WordPress admin font, text colour and background on the plugin's screens; admin pages now inherit WordPress' own typography.
+- Brute force monitoring now starts on the `init` action instead of while the plugin file is still loading. It reached the translated settings metadata, which was the remaining cause of the "translation loading was triggered too early" notice on every request carrying POST data.
+- Fresh installations no longer run the 1.x to 3.x upgrade routines. The saved version was left unset on a new install, and because an unset version compares lower than every release, every historical migration step ran against a brand new database. This also removes the `version_compare(): Passing null` deprecation notices on PHP 8.1 and later.
+- Fixed the Reports screen crashing when a blocked ZM Ajax Login Register attempt was inspected: the handler was an unfinished debug statement that dumped the raw object and stopped the page.
 
 **Coding standards**
 - The plugin now passes the WordPress Plugin Check with no outstanding errors or warnings. Where a rule genuinely does not apply — inspecting nonce-less public form submissions, querying the plugin's own custom table, comparing anti-spam tokens byte-for-byte — the exception is annotated in the code with the reason.

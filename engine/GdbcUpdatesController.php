@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
 // One-off schema migrations against the plugin's own table. Table names derive
 // from $wpdb->base_prefix, not user input, and identifiers cannot be bound as
 // prepare() placeholders. These run once per upgrade, so caching does not apply.
-// phpcs:disable WordPress.DB
+// phpcs:disable WordPress.DB, PluginCheck.Security.DirectDB
 
 final class GdbcUpdatesController
 {
@@ -48,6 +48,24 @@ final class GdbcUpdatesController
 
 					$adminModuleInstance->saveOption($optionName, $optionValue);
 				}
+			}
+
+			// Leaving $savedPluginVersion as null had two consequences: PHP 8.1+ emits a
+			// deprecation for every version_compare() call below, and null compares lower
+			// than every version string, so a brand-new install ran the whole chain of
+			// 1.x -> 3.x migration steps.
+			//
+			// A version 1.x install predates this option, so it also has no saved version.
+			// isUpdateFromV1() tells the two cases apart: genuine upgrades keep running the
+			// migrations, new installs record the current version and skip them.
+			if( self::isUpdateFromV1() )
+			{
+				$savedPluginVersion = '1.0';
+			}
+			else
+			{
+				$savedPluginVersion = GoodByeCaptcha::PLUGIN_VERSION;
+				$settingsModuleInstance->saveOption(GdbcSettingsAdminModule::OPTION_PLUGIN_VERSION, GoodByeCaptcha::PLUGIN_VERSION);
 			}
 		}
 

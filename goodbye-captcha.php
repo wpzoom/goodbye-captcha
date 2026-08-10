@@ -161,7 +161,12 @@ if(!class_exists('GoodByeCaptcha', false))
 			GdbcAjaxController::processRequest();
 		}
 
-		GdbcBruteGuardian::startGuarding();
+		// Hooked to `init` rather than called here: startGuarding() reaches the admin
+		// modules' option metadata, which is translated, and calling __() before `init`
+		// makes WordPress load the text domain too early (notice added in WP 6.7).
+		// It only acts on non-empty POST requests, and WordPress processes logins,
+		// comments and admin-ajax after `init`, so the timing is unchanged in practice.
+		add_action('init', array('GdbcBruteGuardian', 'startGuarding'), 0);
 
 		register_activation_hook(__FILE__, array('GoodByeCaptcha', 'activate'));
 

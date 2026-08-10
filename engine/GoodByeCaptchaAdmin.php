@@ -270,7 +270,7 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 	public function enqueueAdminScriptsAndStyles()
 	{
 
-		wp_enqueue_script(self::$PLUGIN_SLUG . '-admin-script', plugins_url('/assets/admin/scripts/gdbc-admin.js', self::$PLUGIN_MAIN_FILE), array('jquery'), self::$PLUGIN_VERSION);
+		wp_enqueue_script(self::$PLUGIN_SLUG . '-admin-script', plugins_url('/assets/admin/scripts/gdbc-admin.js', self::$PLUGIN_MAIN_FILE), array('jquery'), self::$PLUGIN_VERSION, false);
 
 		wp_localize_script(self::$PLUGIN_SLUG . '-admin-script', 'GdbcAdmin', array(
 				'ajaxUrl' => admin_url('admin-ajax.php'),
@@ -286,20 +286,20 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 			remove_action( 'admin_print_styles', 'print_emoji_styles' );
 			remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
 
-			wp_enqueue_script(self::$PLUGIN_SLUG . '-jquery-flot', plugins_url('/assets/admin/scripts/jquery-flot.js', self::$PLUGIN_MAIN_FILE), array('jquery'), self::$PLUGIN_VERSION);
+			wp_enqueue_script(self::$PLUGIN_SLUG . '-jquery-flot', plugins_url('/assets/admin/scripts/jquery-flot.js', self::$PLUGIN_MAIN_FILE), array('jquery'), self::$PLUGIN_VERSION, false);
 
-			wp_enqueue_script(self::$PLUGIN_SLUG . '-jquery-flot-tooltip', plugins_url('/assets/admin/scripts/jquery-flot-tooltip.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION);
+			wp_enqueue_script(self::$PLUGIN_SLUG . '-jquery-flot-tooltip', plugins_url('/assets/admin/scripts/jquery-flot-tooltip.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION, false);
 
-			wp_enqueue_script(self::$PLUGIN_SLUG . '-raphael', plugins_url('/assets/admin/scripts/raphael.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION);
+			wp_enqueue_script(self::$PLUGIN_SLUG . '-raphael', plugins_url('/assets/admin/scripts/raphael.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION, false);
 
-			wp_enqueue_script(self::$PLUGIN_SLUG . '-morris', plugins_url('/assets/admin/scripts/morris.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION);
+			wp_enqueue_script(self::$PLUGIN_SLUG . '-morris', plugins_url('/assets/admin/scripts/morris.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION, false);
 
-			wp_enqueue_script(self::$PLUGIN_SLUG . '-reports-script', plugins_url('/assets/admin/scripts/gdbc-reports.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION);
+			wp_enqueue_script(self::$PLUGIN_SLUG . '-reports-script', plugins_url('/assets/admin/scripts/gdbc-reports.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION, false);
 
-			wp_enqueue_script(self::$PLUGIN_SLUG . '-bootstrap', plugins_url('/assets/admin/scripts/bootstrap.min.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION);
+			wp_enqueue_script(self::$PLUGIN_SLUG . '-bootstrap', plugins_url('/assets/admin/scripts/bootstrap.min.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION, false);
 
-			wp_enqueue_script(self::$PLUGIN_SLUG . '-jquery-jvectormap', plugins_url('/assets/admin/scripts/jquery-jvectormap-1.2.2.min.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION);
-			wp_enqueue_script(self::$PLUGIN_SLUG . '-jquery-jvectormap-world', plugins_url('/assets/admin/scripts/jquery-jvectormap-world-mill-en.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION);
+			wp_enqueue_script(self::$PLUGIN_SLUG . '-jquery-jvectormap', plugins_url('/assets/admin/scripts/jquery-jvectormap-1.2.2.min.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION, false);
+			wp_enqueue_script(self::$PLUGIN_SLUG . '-jquery-jvectormap-world', plugins_url('/assets/admin/scripts/jquery-jvectormap-world-mill-en.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION, false);
 
 			wp_enqueue_style(self::$PLUGIN_SLUG . '-bootstrap', plugins_url('/assets/admin/styles/bootstrap.css', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION);
 			wp_enqueue_style(self::$PLUGIN_SLUG . '-morris', plugins_url('/assets/admin/styles/morris.css', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION);
@@ -307,7 +307,7 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 
 		if($this->getActivePage() instanceof GdbcSecurityAdminPage)
 		{
-			wp_enqueue_script(self::$PLUGIN_SLUG . '-multi-select', plugins_url('/assets/admin/scripts/multiselect.min.js', self::$PLUGIN_MAIN_FILE), array('jquery'), self::$PLUGIN_VERSION);
+			wp_enqueue_script(self::$PLUGIN_SLUG . '-multi-select', plugins_url('/assets/admin/scripts/multiselect.min.js', self::$PLUGIN_MAIN_FILE), array('jquery'), self::$PLUGIN_VERSION, false);
 		}
 
 		wp_enqueue_style('dashboard');

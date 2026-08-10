@@ -333,7 +333,7 @@ class GdbcWordPressPublicModule extends GdbcBasePublicModule
 		$arrWordPressCommentsType = array('pingback' => 1, 'trackback' => 1);
 
 		if( (!empty($arrComment['comment_type']) && isset($arrWordPressCommentsType[strtolower($arrComment['comment_type'])]) ) ) {
-			wp_die( '<p>' . esc_html__( 'Link Notifications are disabled!', 'goodbye-captcha') . '</p>', esc_html__( 'Comment Submission Failure' ), array( 'response' => 200 ) );
+			wp_die( '<p>' . esc_html__( 'Link Notifications are disabled!', 'goodbye-captcha') . '</p>', esc_html__( 'Comment Submission Failure', 'goodbye-captcha' ), array( 'response' => 200 ) );
 		}
 
 		$arrComment['comment_post_ID'] = (!empty($arrComment['comment_post_ID']) && is_numeric($arrComment['comment_post_ID'])) ? (int)$arrComment['comment_post_ID'] : 0;
@@ -365,7 +365,7 @@ class GdbcWordPressPublicModule extends GdbcBasePublicModule
 				$errorCode    = 403;
 			}
 
-			wp_die( esc_html( $errorMessage ), esc_html__( 'Comment Submission Failure' ), array( 'response' => (int) $errorCode, 'back_link' => true ) );
+			wp_die( esc_html( $errorMessage ), esc_html__( 'Comment Submission Failure', 'goodbye-captcha' ), array( 'response' => (int) $errorCode, 'back_link' => true ) );
 
 		}
 
@@ -404,27 +404,27 @@ class GdbcWordPressPublicModule extends GdbcBasePublicModule
 
 		if ( isset( $comment_author ) && $authorFieldLength < mb_strlen( $comment_author, '8bit' ) )
 		{
-			return new WP_Error( 'comment_author_column_length', __( '<strong>ERROR</strong>: your name is too long.' ), 200 );
+			return new WP_Error( 'comment_author_column_length', __( '<strong>ERROR</strong>: your name is too long.', 'goodbye-captcha' ), 200 );
 		}
 
 		if ( isset( $comment_author_email ) && $emailFieldLength < strlen( $comment_author_email ) )
 		{
-			return new WP_Error( 'comment_author_email_column_length', __( '<strong>ERROR</strong>: your email address is too long.' ), 200 );
+			return new WP_Error( 'comment_author_email_column_length', __( '<strong>ERROR</strong>: your email address is too long.', 'goodbye-captcha' ), 200 );
 		}
 
 		if ( isset( $comment_author_url ) && $webSiteFieldLength < strlen( $comment_author_url ) )
 		{
-			return new WP_Error( 'comment_author_url_column_length', __( '<strong>ERROR</strong>: your url is too long.' ), 200 );
+			return new WP_Error( 'comment_author_url_column_length', __( '<strong>ERROR</strong>: your url is too long.', 'goodbye-captcha' ), 200 );
 		}
 
 		if ( empty($comment_content) )
 		{
-			return new WP_Error( 'require_valid_comment', __( '<strong>ERROR</strong>: please type a comment.' ), 200 );
+			return new WP_Error( 'require_valid_comment', __( '<strong>ERROR</strong>: please type a comment.', 'goodbye-captcha' ), 200 );
 		}
 
 		if ( $contentFieldLength < mb_strlen( $comment_content, '8bit' ) )
 		{
-			return new WP_Error( 'comment_content_column_length', __( '<strong>ERROR</strong>: your comment is too long.' ), 200 );
+			return new WP_Error( 'comment_content_column_length', __( '<strong>ERROR</strong>: your comment is too long.', 'goodbye-captcha' ), 200 );
 		}
 
 

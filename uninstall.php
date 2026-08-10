@@ -46,7 +46,7 @@ class GoodByeCaptchaUninstaller
 		// Dropping the plugin's own table on uninstall. The table name comes from
 		// $wpdb->base_prefix, never from user input, and identifiers cannot be bound
 		// as prepare() placeholders. There is nothing to cache during uninstall.
-		// phpcs:ignore WordPress.DB
+		// phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB
 		$wpdb->query("DROP TABLE IF EXISTS " . GdbcDbAccessController::getAttemptsTableName());
 
 	}
