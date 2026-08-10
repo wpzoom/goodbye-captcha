@@ -186,6 +186,7 @@ Security release. Fixes an unauthenticated PHP Object Injection vulnerability (C
 
 **Fixed**
 - PHP 8 notice: "spl_autoload_register(): Argument #2 ($do_throw) has been ignored". The deprecated argument is no longer passed.
+- PHP 8 warning: "The magic method MchGdbcBasePublicPlugin::__wakeup() must have public visibility". The method is now public and throws, which both silences the warning and keeps the class from being rebuilt from serialized data.
 - WordPress 6.7 notice: "Translation loading for the wp-bruiser domain was triggered too early". Admin page titles and notice messages are now built on the `init` action instead of `plugins_loaded`, so no translation function runs before `init`.
 - The admin stylesheets no longer restyle `html` and `body`. Previous versions overrode the WordPress admin font, text colour and background on the plugin's screens; admin pages now inherit WordPress' own typography.
 

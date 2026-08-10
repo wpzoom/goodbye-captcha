@@ -43,7 +43,18 @@ abstract class MchGdbcBasePublicPlugin extends MchGdbcBasePlugin
 	private function __clone()
 	{}
 
-	private function __wakeup()
-	{}
+	/**
+	 * This class is a singleton and must never be rebuilt from serialized data.
+	 *
+	 * PHP 8 requires __wakeup() to be public, so the old `private function
+	 * __wakeup(){}` now raises "The magic method ... must have public visibility".
+	 * Throwing here keeps the original intent and is stricter than the no-op it
+	 * replaces: it also makes this class useless as a gadget in a PHP object
+	 * injection chain.
+	 */
+	public function __wakeup()
+	{
+		throw new LogicException(__CLASS__ . ' is a singleton and cannot be unserialized.');
+	}
 
 }
