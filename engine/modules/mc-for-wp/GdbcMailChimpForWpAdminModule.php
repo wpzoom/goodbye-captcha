@@ -105,7 +105,7 @@ class GdbcMailChimpForWpAdminModule extends GdbcBaseAdminModule
 
 			$tableBodyRows .='<tr>';
 				$tableBodyRows .= '<td>' . self::getBlockedContentDisplayableKey($key) . '</td>';
-				$tableBodyRows .= '<td>' . esc_html(self::getBlockedContentDisplayableValue($value))  . '</td>';
+				$tableBodyRows .= '<td>' . self::getEscapedBlockedContentValue($key, $value)  . '</td>';
 			$tableBodyRows .='</tr>';
 		}
 

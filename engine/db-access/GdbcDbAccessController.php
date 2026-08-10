@@ -61,7 +61,22 @@ final class GdbcDbAccessController
 			$tokenFieldName   = GdbcSettingsPublicModule::getInstance()->getOption(GdbcSettingsAdminModule::OPTION_HIDDEN_INPUT_NAME);
 			$browserInputName = GdbcRequestController::getPostedBrowserInfoInputName();
 
-			$arrKeysToUnset = array($tokenFieldName, $browserInputName, strtolower($tokenFieldName), strtolower($browserInputName), strtoupper($tokenFieldName), strtoupper($browserInputName), '_wpnonce');
+			// Either name can be null - $browserInputName in particular is null whenever
+			// the request carried no token at all, which is the common case for a blocked
+			// bot - and passing null to strtolower()/strtoupper() is deprecated on PHP 8.1+.
+			$arrFieldNames = array();
+			foreach (array($tokenFieldName, $browserInputName) as $fieldName)
+			{
+				if (is_string($fieldName) && '' !== $fieldName)
+					$arrFieldNames[] = $fieldName;
+			}
+
+			$arrKeysToUnset = array_merge(
+				$arrFieldNames,
+				array_map('strtolower', $arrFieldNames),
+				array_map('strtoupper', $arrFieldNames),
+				array('_wpnonce')
+			);
 			foreach($arrKeysToUnset as $keyName)
 			{
 				unset($attemptEntity->Notes[$keyName]);

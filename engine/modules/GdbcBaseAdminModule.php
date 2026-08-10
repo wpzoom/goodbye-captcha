@@ -147,6 +147,28 @@ abstract class GdbcBaseAdminModule extends MchGdbcBaseAdminModule
 	 * @param mixed $value Value stored in the attempt notes.
 	 * @return string Safe, human readable representation.
 	 */
+	/**
+	 * Render one logged value, escaped for display in the blocked-content table.
+	 *
+	 * Values in the notes are whatever the blocked request submitted, so they are
+	 * escaped. The one exception is the "post" entry, which the plugin itself builds
+	 * as a link to the commented post (already escaped at that point); escaping it
+	 * again would show the site owner raw markup instead of a usable link.
+	 *
+	 * @param string $key   Notes key.
+	 * @param mixed  $value Stored value.
+	 * @return string Markup ready to be echoed.
+	 */
+	protected static function getEscapedBlockedContentValue($key, $value)
+	{
+		$displayValue = self::getBlockedContentDisplayableValue($value);
+
+		if ('post' === $key || 'page' === $key)
+			return wp_kses($displayValue, array('a' => array('href' => array(), 'target' => array(), 'rel' => array())));
+
+		return esc_html($displayValue);
+	}
+
 	protected static function getBlockedContentDisplayableValue($value)
 	{
 		if (is_bool($value))
