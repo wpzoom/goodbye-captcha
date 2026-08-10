@@ -30,6 +30,29 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 
 		parent::__construct($arrPluginInfo);
 
+		// The page titles below are translated, so the list must not be built before
+		// the `init` action: calling __() earlier makes WordPress load the text domain
+		// too early and emit a _load_textdomain_just_in_time notice (WP 6.7+).
+		// Everything that consumes the list (admin_menu, admin_init,
+		// admin_enqueue_scripts) runs after init, so this is safe.
+		add_action( 'init', array( $this, 'buildAdminPagesList' ), 20 );
+
+		if(GoodByeCaptcha::isNetworkActivated())
+		{
+			add_action( 'network_admin_menu', array( $this, 'buildPluginMenu' ), 10 );
+		}
+		else
+		{
+			add_action( 'admin_menu', array( $this, 'buildPluginMenu' ), 10 );
+		}
+
+	}
+
+	public function buildAdminPagesList()
+	{
+		if(!empty($this->adminPagesList))
+			return;
+
 		$this->adminPagesList = array(
 
 				new GdbcSettingsAdminPage(__('Settings', self::$PLUGIN_SLUG), __('General Settings', self::$PLUGIN_SLUG), self::$PLUGIN_SLUG),
@@ -43,16 +66,6 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 				new GdbcReportsAdminPage(__('Reports', self::$PLUGIN_SLUG), __('WPBruiser - Blocked Attempts', self::$PLUGIN_SLUG), self::$PLUGIN_SLUG),
 
 		);
-
-		if(GoodByeCaptcha::isNetworkActivated())
-		{
-			add_action( 'network_admin_menu', array( $this, 'buildPluginMenu' ), 10 );
-		}
-		else
-		{
-			add_action( 'admin_menu', array( $this, 'buildPluginMenu' ), 10 );
-		}
-
 	}
 
 	public static function getAdminRegisteredNotices()
@@ -185,6 +198,10 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 
 	public function buildPluginMenu()
 	{
+		// Normally already built by the `init` hook; this makes the menu independent
+		// of hook ordering should the plugin ever be instantiated after init.
+		$this->buildAdminPagesList();
+
 		$arrRegisteredPages = $this->getRegisteredAdminPages();
 		$adminFirstPage = reset($arrRegisteredPages);
 		if(false === $adminFirstPage)

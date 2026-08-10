@@ -5,7 +5,7 @@
  * @package   WPBruiser
  * @author    Mihai Chelaru
  * @license   GPL-2.0+
- * @link      http://www.wpbruiser.com
+ * @link      https://wordpress.org/plugins/goodbye-captcha/
  * @copyright 2014 WPBruiser
  *
  */

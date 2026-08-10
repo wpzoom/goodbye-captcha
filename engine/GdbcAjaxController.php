@@ -102,17 +102,25 @@ final class GdbcAjaxController
 				add_action('wp_ajax_' . $adminAjaxActionRequest, array(GdbcReportsAdminModule::getInstance(), $adminAjaxActionRequest));
 			}
 
-			foreach(GoodByeCaptchaAdmin::getAdminRegisteredNotices() as $adminNotice){
-				if( !($adminNotice instanceof GdbcAdminNotice) || !$adminNotice->isDismissible())
-					continue;
-
-				add_action('wp_ajax_gdbc-dismiss-' . $adminNotice->getFormattedNoticeKey(), array($adminNotice, 'dismiss'));
-			}
+			// Building the notices translates their messages, so it must not happen
+			// before `init` (WP 6.7 warns about loading a text domain too early).
+			// admin-ajax dispatches wp_ajax_* after init, so registering there is fine.
+			add_action('init', array(__CLASS__, 'registerNoticeDismissHandlers'), 20);
 
 			add_action('wp_ajax_gdbc-user-subscribed-newsletter', array(__CLASS__, 'userSubscribedToNewsLetter'));
 
 		}
 
+	}
+
+	public static function registerNoticeDismissHandlers()
+	{
+		foreach(GoodByeCaptchaAdmin::getAdminRegisteredNotices() as $adminNotice){
+			if( !($adminNotice instanceof GdbcAdminNotice) || !$adminNotice->isDismissible())
+				continue;
+
+			add_action('wp_ajax_gdbc-dismiss-' . $adminNotice->getFormattedNoticeKey(), array($adminNotice, 'dismiss'));
+		}
 	}
 
 	public static function userSubscribedToNewsLetter()

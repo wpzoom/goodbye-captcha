@@ -21,18 +21,10 @@
 defined( 'ABSPATH' ) || exit;
 
 
-if (!defined('PHP_VERSION_ID'))
-{
-	$version = explode('.', PHP_VERSION);
-
-	define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
-
-	unset($version);
-}
-
-(PHP_VERSION_ID < 50300)
-	? spl_autoload_register( array( 'MchGdbcLibAutoloader', 'autoLoadLibraryClasses' ), false)
-	: spl_autoload_register( array( 'MchGdbcLibAutoloader', 'autoLoadLibraryClasses' ), false, true );
+// Prepend this autoloader so library classes resolve before other autoloaders.
+// The $throw argument is intentionally omitted: it was deprecated in PHP 8.0 and
+// passing false emits "Argument #2 ($do_throw) has been ignored".
+spl_autoload_register( array( 'MchGdbcLibAutoloader', 'autoLoadLibraryClasses' ), true, true );
 
 final class MchGdbcLibAutoloader
 {

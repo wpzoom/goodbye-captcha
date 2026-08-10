@@ -168,7 +168,7 @@ Studies shown that visual CAPTCHAs take around 5-10 seconds to complete and audi
 == Upgrade Notice ==
 
 = 3.2.0 =
-Security release. Fixes an unauthenticated PHP Object Injection vulnerability (CVE-2026-65556) and removes all remaining calls to the discontinued wpbruiser.com service. All users should update immediately.
+Security release. Fixes an unauthenticated PHP Object Injection vulnerability (CVE-2026-65556) and removes all remaining calls to the discontinued vendor service. All users should update immediately.
 
 == Changelog ==
 
@@ -176,13 +176,18 @@ Security release. Fixes an unauthenticated PHP Object Injection vulnerability (C
 **Security**
 - Fixed an unauthenticated PHP Object Injection vulnerability (CVE-2026-65556). The Ultimate Member integration deserialized attacker-controlled POST data (`custom_fields`) without restricting object instantiation, which could be chained with a POP gadget in WordPress, this plugin or another installed component to perform destructive actions or execute code. Reported via Patchstack.
 - Hardened every remaining deserialization call in the plugin so that PHP objects can never be instantiated from stored, submitted or remotely fetched data.
-- Removed all outbound requests to the discontinued wpbruiser.com service, including a license-activation request that was sent with TLS certificate verification disabled. The plugin no longer contacts any external server.
+- Removed all outbound requests to the discontinued vendor service, including a license-activation request that was sent with TLS certificate verification disabled. The plugin no longer contacts any external server.
 - Removed the external module-loading code path, which searched other installed plugins' directories and executed PHP files found there. The plugin now only loads code that ships inside its own directory.
 - Added direct-access (`ABSPATH`) protection to all plugin PHP files.
 
 **Removed**
 - The Extensions and Licenses admin pages, the licensing modules and the self-hosted plugin updater. These supported paid add-ons that are no longer distributed, and every endpoint they used is gone.
-- Promotional links to the discontinued wpbruiser.com website throughout the admin interface and the readme.
+- Promotional links to the discontinued vendor website throughout the admin interface, the notification emails and the readme. That domain no longer belongs to the project.
+
+**Fixed**
+- PHP 8 notice: "spl_autoload_register(): Argument #2 ($do_throw) has been ignored". The deprecated argument is no longer passed.
+- WordPress 6.7 notice: "Translation loading for the wp-bruiser domain was triggered too early". Admin page titles and notice messages are now built on the `init` action instead of `plugins_loaded`, so no translation function runs before `init`.
+- The admin stylesheets no longer restyle `html` and `body`. Previous versions overrode the WordPress admin font, text colour and background on the plugin's screens; admin pages now inherit WordPress' own typography.
 
 **Maintenance**
 - Declared `Requires at least`, `Requires PHP` and the plugin license in the plugin header.

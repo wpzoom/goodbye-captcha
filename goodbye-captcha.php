@@ -3,7 +3,7 @@
  *
  * @package   WPBruiser
  * @author    Mihai Chelaru
- * @link      http://www.wpbruiser.com
+ * @link      https://wordpress.org/plugins/goodbye-captcha/
  * @copyright 2018 WPBruiser
  *
  * @wordpress-plugin
@@ -14,7 +14,7 @@
  * Requires at least: 4.0
  * Requires PHP: 7.0
  * Author: Mihai Chelaru
- * Author URI: http://www.wpbruiser.com
+ * Author URI: https://wordpress.org/plugins/goodbye-captcha/
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: wp-bruiser
@@ -136,7 +136,7 @@ if(!class_exists('GoodByeCaptcha', false))
 
 	require_once dirname(__FILE__) . '/includes/MchGdbcLibAutoloader.php';
 
-	spl_autoload_register(array('GoodByeCaptcha', 'classAutoLoad'), false);
+	spl_autoload_register(array('GoodByeCaptcha', 'classAutoLoad'));
 
 
 	if (defined('ABSPATH'))

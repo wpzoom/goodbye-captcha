@@ -1,12 +1,9 @@
-body
-{
-    color: #444;
-    font-family: "Open Sans",sans-serif;
-    font-size: 13px;
-    line-height: 1.4em;
-    color:#444;
-    background-color: #F1F1F1;
-}
+/*
+ * No global `body` rule here on purpose. This stylesheet is loaded inside
+ * wp-admin, so restyling `body` overrode the admin font, text colour and
+ * background on every WPBruiser screen. Admin screens must inherit WordPress'
+ * own typography — scope any new rules to the plugin's own containers instead.
+ */
 
 div.wrap.container-fluid
 {
