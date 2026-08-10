@@ -17,8 +17,47 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 final class MchGdbcUtils
 {
+	/**
+	 * Safely unserialize data without ever instantiating PHP objects.
+	 *
+	 * WordPress' maybe_unserialize()/unserialize() will happily rebuild objects
+	 * from a serialized string, which allows PHP Object Injection whenever the
+	 * input is not fully trusted (see CVE-2026-65556). This is a drop-in
+	 * replacement for maybe_unserialize() that forbids object instantiation, so a
+	 * crafted payload can never reach __wakeup()/__destruct() gadget chains.
+	 *
+	 * @param mixed $data Value that may be a serialized string.
+	 * @return mixed Unserialized value with objects neutralized, or the original
+	 *               value when it is not a serialized string, or false on failure.
+	 */
+	public static function safeMaybeUnserialize($data)
+	{
+		if (!is_string($data))
+			return $data;
+
+		$data = trim($data);
+
+		if (!is_serialized($data))
+			return $data;
+
+		// PHP 7+ : forbid object instantiation entirely. Any serialized object
+		// becomes a harmless __PHP_Incomplete_Class instance instead of the real
+		// class, so no magic methods of application classes are ever invoked.
+		if (version_compare(PHP_VERSION, '7.0.0', '>='))
+			return @unserialize($data, array('allowed_classes' => false));
+
+		// PHP < 7 has no allowed_classes option: fail closed if the payload
+		// contains any serialized object/Serializable markers (O:/C:).
+		if (preg_match('/(?:^|;|{)[OC]:\d+:"/', $data))
+			return false;
+
+		return @unserialize($data);
+	}
+
 	public static function stripNonAlphaCharacters($strText)
 	{
 		return preg_replace("/[^a-z]/i", '', $strText );

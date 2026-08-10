@@ -1,3 +1,4 @@
+<?php defined( 'ABSPATH' ) || exit; ?>
 <article class="col-sm-6">
 	<div id="wid-id-3" class="gdbcwidget clearfix">
 		<header>

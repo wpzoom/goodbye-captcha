@@ -17,6 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 abstract class GdbcBasePublicModule extends MchGdbcBasePublicModule
 {
 	CONST REFRESH_TOKENS_SCRIPT_HANDLE = 'wp-bruiser-refresh-tokens';

@@ -4,6 +4,8 @@
  * Copyright (C) 2016 Mihai Chelaru
  */
 
+defined( 'ABSPATH' ) || exit;
+
 final class GdbcProxyHeadersPublicModule extends GdbcBasePublicModule
 {
 

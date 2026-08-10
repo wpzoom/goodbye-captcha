@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
 foreach(array_keys(GdbcModulesController::getRegisteredModules()) as $moduleName){
 	$moduleId = GdbcModulesController::getModuleIdByName($moduleName);
 

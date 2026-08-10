@@ -1,10 +1,11 @@
 === WPBruiser {no- Captcha anti-Spam} ===
 Contributors: mihche
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XVC3TSGEJQP2U
-Tags: captcha, antispam, anti-spam, spam, mailpoet, antispambot, brute force, comment spam, jetpack contact form, contact form 7, ninja forms, formidable forms, wp bruiser
+Tags: captcha, antispam, anti-spam, spam, brute force
 Requires at least: 4.0
-Tested up to: 5.5.1
-Stable tag: 3.1.43
+Requires PHP: 5.6
+Tested up to: 7.0
+Stable tag: 3.1.44
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -218,9 +219,22 @@ Studies shown that visual CAPTCHAs take around 5-10 seconds to complete and audi
 
 
 == Upgrade Notice ==
-* Refreshed Incapsula, Amazon and Cloudflare trusted IPs ranges
+
+= 3.1.44 =
+Security release. Fixes an unauthenticated PHP Object Injection vulnerability (CVE-2026-65556). All users should update immediately.
 
 == Changelog ==
+
+= 3.1.44 =
+**Security**
+- Fixed an unauthenticated PHP Object Injection vulnerability (CVE-2026-65556). The Ultimate Member integration deserialized attacker-controlled POST data (`custom_fields`) without restricting object instantiation, which could be chained with a POP gadget in WordPress, this plugin or another installed component to perform destructive actions or execute code. Reported via Patchstack.
+- Hardened every remaining deserialization call in the plugin (16 sites in total, including logged attempt data and plugin-update API responses) so that PHP objects can never be instantiated from stored, submitted or remotely fetched data.
+- Added direct-access (`ABSPATH`) protection to all plugin PHP files.
+
+**Maintenance**
+- Declared `Requires at least` and `Requires PHP` in the plugin header.
+- Declared the plugin license in the plugin header.
+- Updated `Tested up to` for current WordPress.
 
 = 3.1.43 =
 - Fixed PHP 7.4 warnings

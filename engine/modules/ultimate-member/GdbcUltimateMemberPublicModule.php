@@ -18,6 +18,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 final class GdbcUltimateMemberPublicModule extends GdbcBasePublicModule
 {
 
@@ -101,7 +103,9 @@ final class GdbcUltimateMemberPublicModule extends GdbcBasePublicModule
 		$arrSubmittedData = array();
 		if(!empty($arrRequestInfo['custom_fields']) && is_serialized($arrRequestInfo['custom_fields']))
 		{
-			$arrFields = (array)maybe_unserialize($arrRequestInfo['custom_fields']);
+			// SECURITY: custom_fields is unauthenticated, attacker-controlled POST data.
+			// Never rebuild PHP objects from it (CVE-2026-65556 PHP Object Injection).
+			$arrFields = (array)GoodByeCaptchaUtils::safeMaybeUnserialize($arrRequestInfo['custom_fields']);
 			unset($arrRequestInfo['custom_fields']);
 
 			foreach((array)$arrRequestInfo as $formFieldName => $value)

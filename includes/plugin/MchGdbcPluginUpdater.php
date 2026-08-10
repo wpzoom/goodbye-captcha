@@ -6,6 +6,8 @@
  * @version 1.6.6
  */
 
+defined( 'ABSPATH' ) || exit;
+
 
 class MchGdbcPluginUpdater
 {
@@ -424,17 +426,17 @@ class MchGdbcPluginUpdater
 		}
 		
 		if ( $request && isset( $request->sections ) ) {
-			$request->sections = maybe_unserialize( $request->sections );
+			$request->sections = MchGdbcUtils::safeMaybeUnserialize( $request->sections );
 		} else {
 			$request = false;
 		}
 		
 		if ( $request && isset( $request->banners ) ) {
-			$request->banners = maybe_unserialize( $request->banners );
+			$request->banners = MchGdbcUtils::safeMaybeUnserialize( $request->banners );
 		}
 		
 		if ( $request && isset( $request->icons ) ) {
-			$request->icons = maybe_unserialize( $request->icons );
+			$request->icons = MchGdbcUtils::safeMaybeUnserialize( $request->icons );
 		}
 		
 		if( ! empty( $request->sections ) ) {
@@ -495,7 +497,7 @@ class MchGdbcPluginUpdater
 			
 			
 			if ( ! empty( $version_info ) && isset( $version_info->sections ) ) {
-				$version_info->sections = maybe_unserialize( $version_info->sections );
+				$version_info->sections = MchGdbcUtils::safeMaybeUnserialize( $version_info->sections );
 			} else {
 				$version_info = false;
 			}

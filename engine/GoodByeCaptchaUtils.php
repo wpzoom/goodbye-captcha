@@ -17,6 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 final class GoodByeCaptchaUtils
 {
 	public static function isAffiliateWPActivated()
@@ -687,6 +689,24 @@ final class GoodByeCaptchaUtils
 		}
 
 		return $cacheStorage = null;
+	}
+
+	/**
+	 * Safely unserialize data without ever instantiating PHP objects.
+	 *
+	 * WordPress' maybe_unserialize()/unserialize() will happily rebuild objects
+	 * from a serialized string, which allows PHP Object Injection when the input
+	 * is attacker-controlled (see CVE-2026-65556). This helper is a drop-in
+	 * replacement for maybe_unserialize() that forbids object instantiation, so a
+	 * crafted payload can never reach __wakeup()/__destruct() gadget chains.
+	 *
+	 * @param mixed $data Value that may be a serialized string.
+	 * @return mixed Unserialized value with objects neutralized, or the original
+	 *               value when it is not a serialized string, or false on failure.
+	 */
+	public static function safeMaybeUnserialize($data)
+	{
+		return MchGdbcUtils::safeMaybeUnserialize($data);
 	}
 
 

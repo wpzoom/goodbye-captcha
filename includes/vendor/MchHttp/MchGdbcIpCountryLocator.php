@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
 class MchGdbcIpCountryLocator
 {
 	public static function getCountryIdByIpAddress($ipAddress, $ipVersion = null)

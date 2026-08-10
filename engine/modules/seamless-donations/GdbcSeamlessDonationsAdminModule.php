@@ -18,6 +18,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 final class GdbcSeamlessDonationsAdminModule extends GdbcBaseAdminModule
 {
 
@@ -63,7 +65,7 @@ final class GdbcSeamlessDonationsAdminModule extends GdbcBaseAdminModule
 
 	public function getFormattedBlockedContent(GdbcAttemptEntity $attemptEntity)
 	{
-		$attemptEntity->Notes = (array)maybe_unserialize($attemptEntity->Notes);
+		$attemptEntity->Notes = (array)GoodByeCaptchaUtils::safeMaybeUnserialize($attemptEntity->Notes);
 		$arrContent           = array('table-head-rows' => '', 'table-body-rows' => '');
 
 		$tableHeadRows = '';

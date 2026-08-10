@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
 final class GdbcUltraCommunityPublicModule extends GdbcBasePublicModule
 {
 	

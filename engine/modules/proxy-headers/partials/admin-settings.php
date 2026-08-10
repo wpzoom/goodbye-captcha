@@ -3,6 +3,8 @@
  * Copyright (C) 2016 Mihai Chelaru
  *
  */
+
+defined( 'ABSPATH' ) || exit;
 ?>
 <style type="text/css">
 

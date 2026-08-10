@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
 final class GdbcHtmlFormsAdminModule extends GdbcBaseAdminModule
 {
 	CONST OPTION_IS_HTML_FORMS_ACTIVATED = 'IsHTMLFormsActivated';

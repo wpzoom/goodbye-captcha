@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
 final class GdbcHtmlFormsPublicModule extends GdbcBasePublicModule
 {
 	protected function __construct()

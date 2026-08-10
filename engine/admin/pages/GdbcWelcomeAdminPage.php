@@ -17,6 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 class GdbcWelcomeAdminPage extends GdbcBaseAdminPage
 {
 	CONST GDBC_WELCOME_PAGE_CACHE_KEY   = __CLASS__;

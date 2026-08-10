@@ -5,6 +5,8 @@
  *
  */
 
+defined( 'ABSPATH' ) || exit;
+
 final class GdbcProxyHeadersAdminModule extends GdbcBaseAdminModule
 {
 

@@ -18,6 +18,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 if (!defined('PHP_VERSION_ID')) 
 {
     $version = explode('.', PHP_VERSION);

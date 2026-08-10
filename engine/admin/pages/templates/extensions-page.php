@@ -1,3 +1,4 @@
+<?php defined( 'ABSPATH' ) || exit; ?>
 <div class="wp-filter">
     <ul class="filter-links">
         <li><a href="<?php echo $premiumExtensionsAdminUrl ?>" class="current"><?php echo $premiumExtensionsText ?></a></li>

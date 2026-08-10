@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
 class GdbcCheckAttemptsTask extends MchGdbcWpTask
 {
 	public function __construct($runningInterval, $isRecurring)

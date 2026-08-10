@@ -18,6 +18,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 final class GdbcReportsAdminModule extends GdbcBaseAdminModule
 {
 
@@ -568,7 +570,7 @@ final class GdbcReportsAdminModule extends GdbcBaseAdminModule
 		if(null === $moduleInstance || empty($attemptEntity->Notes))
 			return array();
 
-		$attemptEntity->Notes = maybe_unserialize($attemptEntity->Notes);
+		$attemptEntity->Notes = GoodByeCaptchaUtils::safeMaybeUnserialize($attemptEntity->Notes);
 		return $moduleInstance->getFormattedBlockedContent($attemptEntity);
 	}
 

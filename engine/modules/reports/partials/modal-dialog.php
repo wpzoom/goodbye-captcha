@@ -1,3 +1,4 @@
+<?php defined( 'ABSPATH' ) || exit; ?>
 
 <div class="modal fade" id="gdbc-modal-holder" tabindex="-1" role="dialog" aria-labelledby="gdbc-modal-title">
 	<div class="modal-dialog" role="document">

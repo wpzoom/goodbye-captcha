@@ -18,6 +18,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 final class GdbcUltimateMemberAdminModule extends GdbcBaseAdminModule
 {
 
@@ -82,7 +84,7 @@ final class GdbcUltimateMemberAdminModule extends GdbcBaseAdminModule
 	{
 		$optionName = $this->getOptionDisplayTextByOptionId($attemptEntity->SectionId);
 
-		$attemptEntity->Notes = (array)maybe_unserialize($attemptEntity->Notes);
+		$attemptEntity->Notes = (array)GoodByeCaptchaUtils::safeMaybeUnserialize($attemptEntity->Notes);
 
 		$arrContent = array('table-head-rows' => '', 'table-body-rows' => '');
 

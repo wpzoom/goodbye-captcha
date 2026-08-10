@@ -1,3 +1,4 @@
+<?php defined( 'ABSPATH' ) || exit; ?>
 <p>Hi {admin-full-name},</p>
 <p>On {detection-date-time}, WPBruiser has detected a Brute Force Attack on your {current-site-link} website.</p>
 

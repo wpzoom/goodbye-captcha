@@ -1,3 +1,4 @@
+<?php defined( 'ABSPATH' ) || exit; ?>
 <p>Hi {admin-full-name},</p>
 <p>On {date-time}, a user with Administrator Capabilities signed in on your {current-site-link} website.</p>
 

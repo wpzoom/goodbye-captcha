@@ -17,6 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 class GdbcBruteForceAdminModule extends GdbcBaseAdminModule
 {
 	CONST OPTION_AUTO_BLOCK_IP             = 'AutoBlockIp';
@@ -102,7 +104,7 @@ class GdbcBruteForceAdminModule extends GdbcBaseAdminModule
 
 	public function getFormattedBlockedContent(GdbcAttemptEntity $attemptEntity)
 	{
-		$attemptEntity->Notes = (array)maybe_unserialize($attemptEntity->Notes);
+		$attemptEntity->Notes = (array)GoodByeCaptchaUtils::safeMaybeUnserialize($attemptEntity->Notes);
 		$arrContent           = array('table-head-rows' => '', 'table-body-rows' => '');
 
 		$section = null;

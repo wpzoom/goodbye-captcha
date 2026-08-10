@@ -1,4 +1,6 @@
 <?php
+
+defined( 'ABSPATH' ) || exit;
 class MchGdbcUnTrustedIPRanges
 {
 	public static function isAttachingHostIP($ipAddress, $ipVersion = -1)

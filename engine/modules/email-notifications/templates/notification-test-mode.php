@@ -1,3 +1,4 @@
+<?php defined( 'ABSPATH' ) || exit; ?>
 <p>Hi <?php echo $adminFullName; ?>,</p>
 <p>WPBruiser was switched to <b>Test Mode</b> on <?php echo $currentSiteLink; ?> and received the following request information:</p>
 

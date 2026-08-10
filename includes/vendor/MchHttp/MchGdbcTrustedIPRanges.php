@@ -2,6 +2,8 @@
 /*
  * Copyright (C) 2015 Mihai Chelaru
  */
+
+defined( 'ABSPATH' ) || exit;
 final class MchGdbcTrustedIPRanges
 {
 	public static function isIPInCloudFlareRanges($ipAddress, $ipVersion)

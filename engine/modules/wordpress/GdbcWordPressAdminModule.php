@@ -17,6 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 class GdbcWordPressAdminModule extends GdbcBaseAdminModule
 {
 	CONST WORDPRESS_LOGIN_FORM            = 'LoginActivated';
@@ -220,7 +222,7 @@ class GdbcWordPressAdminModule extends GdbcBaseAdminModule
 	{
 		$optionName = $this->getOptionNameByOptionId($attemptEntity->SectionId);
 
-		$attemptEntity->Notes = (array)maybe_unserialize($attemptEntity->Notes);
+		$attemptEntity->Notes = (array)GoodByeCaptchaUtils::safeMaybeUnserialize($attemptEntity->Notes);
 
 		$arrContent = array('table-head-rows' => '', 'table-body-rows' => '');
 

@@ -18,6 +18,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 final class GdbcAdminNotice extends MchGdbcAdminNotice
 {
 	CONST USER_IP_WEB_ATTACKER_NOTICE_KEY = 'UserIpWebAttacker';
