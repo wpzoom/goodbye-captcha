@@ -36,13 +36,13 @@ final class GdbcZmAlrPublicModule extends GdbcBasePublicModule
 		$this->arrCapturedData = array();
 
 		$this->arrStatusLoginError = array('gdbc-login-error' => array(
-			'description' => __('Invalid username or password!', GoodByeCaptcha::PLUGIN_SLUG),
+			'description' => __('Invalid username or password!', 'goodbye-captcha'),
 			'cssClass'    => 'error-container',
 			'code'        => 'show_notice'
 		));
 
 		$this->arrStatusRegisterError = array('gdbc-register-error' => array(
-			'description' => __('An error occurred while registering your account!', GoodByeCaptcha::PLUGIN_SLUG),
+			'description' => __('An error occurred while registering your account!', 'goodbye-captcha'),
 			'cssClass'    => 'error-container',
 			'code'        => 'show_notice'
 		));

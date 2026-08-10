@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) || exit; ?>
 <script>
-	var attemptsCountryArray = <?php echo $countryAttemptsJs ?>;
+	var attemptsCountryArray = <?php echo wp_json_encode( $arrCountryAttempts ); ?>;
 </script>
 
 	<article class="col-sm-6">

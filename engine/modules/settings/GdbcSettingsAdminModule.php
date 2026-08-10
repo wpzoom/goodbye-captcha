@@ -55,36 +55,36 @@ class GdbcSettingsAdminModule extends GdbcBaseAdminModule
 
 			self::OPTION_MIN_SUBMISSION_TIME  => array(
 				'Value'       => 3,
-				'LabelText'   => __('Minimum Form Submission Time', GoodByeCaptcha::PLUGIN_SLUG),
-				'Description' => __('Number of seconds before the submission is considered valid', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'   => __('Minimum Form Submission Time', 'goodbye-captcha'),
+				'Description' => __('Number of seconds before the submission is considered valid', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_TEXT
 			),
 
 			self::OPTION_BLOCKED_CONTENT_LOG_DAYS  => array(
 				'Value'       => 10,
-				'LabelText'   => __('Keep Blocked Submitted Content For', GoodByeCaptcha::PLUGIN_SLUG),
-				'Description' => __('The blocked submitted data will be saved for the selected number of days', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'   => __('Keep Blocked Submitted Content For', 'goodbye-captcha'),
+				'Description' => __('The blocked submitted data will be saved for the selected number of days', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_SELECT
 			),
 
 			self::OPTION_MAX_LOGS_DAYS  => array(
 				'Value'       => 30,
-				'LabelText'   => __('Automatically Purge Logs Older Than', GoodByeCaptcha::PLUGIN_SLUG),
-				'Description' => __('Logs older than selected number of days will be automatically purged', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'   => __('Automatically Purge Logs Older Than', 'goodbye-captcha'),
+				'Description' => __('Logs older than selected number of days will be automatically purged', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_SELECT
 			),
 
 			self::OPTION_DISABLE_IF_USER_LOGGED_IN  => array(
 				'Value'       => NULL,
-				'LabelText'   => __('Disable Protection For Logged In Users', GoodByeCaptcha::PLUGIN_SLUG),
-				'Description' => __('If this option is enabled, the protection will be disabled if the user is logged in', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'   => __('Disable Protection For Logged In Users', 'goodbye-captcha'),
+				'Description' => __('If this option is enabled, the protection will be disabled if the user is logged in', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
 			),
 
 			self::OPTION_TEST_MODE_ACTIVATED => array(
 				'Value'       => NULL,
-				'LabelText'   => __('Switch WPBruiser to Test Mode', GoodByeCaptcha::PLUGIN_SLUG),
-				'Description' => __('While in Test Mode you will receive email notifications at {notification-email}', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'   => __('Switch WPBruiser to Test Mode', 'goodbye-captcha'),
+				'Description' => __('While in Test Mode you will receive email notifications at {notification-email}', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
 			),
 
@@ -97,7 +97,7 @@ class GdbcSettingsAdminModule extends GdbcBaseAdminModule
 
 //	public  function renderModuleSettingsSectionHeader(array $arrSectionInfo)
 //	{
-//		echo '<h3>' . __('WPBruiser General Settings', GoodByeCaptcha::PLUGIN_SLUG) . '</h3><hr />';
+//		echo '<h3>' . esc_html__('WPBruiser General Settings', 'goodbye-captcha') . '</h3><hr />';
 //	}
 
 	public  function renderModuleSettingsField(array $arrSettingsField)
@@ -149,13 +149,13 @@ class GdbcSettingsAdminModule extends GdbcBaseAdminModule
 		{
 			case MchGdbcHtmlUtils::FORM_ELEMENT_SELECT :
 
-				echo MchGdbcHtmlUtils::createSelectElement($arrFieldAttributes);
+				echo wp_kses(MchGdbcHtmlUtils::createSelectElement($arrFieldAttributes), MchGdbcHtmlUtils::getAllowedFormHtml());
 
 				break;
 
 			default :
 
-				echo MchGdbcHtmlUtils::createInputElement($arrFieldAttributes);
+				echo wp_kses(MchGdbcHtmlUtils::createInputElement($arrFieldAttributes), MchGdbcHtmlUtils::getAllowedFormHtml());
 		}
 
 		if($optionName === self::OPTION_TEST_MODE_ACTIVATED && !empty($arrSettingsField['Description']))
@@ -165,11 +165,11 @@ class GdbcSettingsAdminModule extends GdbcBaseAdminModule
 
 		if(!empty($arrSettingsField['Description']))
 		{
-			echo '<p class = "description">' . $arrSettingsField['Description'] . '</p>';
+			echo '<p class = "description">' . wp_kses_post($arrSettingsField['Description']) . '</p>';
 
 			if($optionName === self::OPTION_MAX_LOGS_DAYS)
 			{
-				echo '<p class = "description hidden" style = "color:#d54e21">' .  __('By selecting ZERO you TURN OFF logging and you wont be protected against Brute Force attacks !', GoodByeCaptcha::PLUGIN_SLUG)  . '</p>';
+				echo '<p class = "description hidden" style = "color:#d54e21">' .  esc_html__('By selecting ZERO you TURN OFF logging and you wont be protected against Brute Force attacks !', 'goodbye-captcha')  . '</p>';
 			}
 		}
 
@@ -185,7 +185,7 @@ class GdbcSettingsAdminModule extends GdbcBaseAdminModule
 		    || false === ($arrSettingOptions[self::OPTION_MIN_SUBMISSION_TIME] = filter_var($arrSettingOptions[self::OPTION_MIN_SUBMISSION_TIME], FILTER_VALIDATE_INT))
 		    || $arrSettingOptions[self::OPTION_MIN_SUBMISSION_TIME] < 1
 		){
-			$this->registerErrorMessage(__('Minimum Submission Time should be a numeric value greater than 0 !', GoodByeCaptcha::PLUGIN_SLUG));
+			$this->registerErrorMessage(__('Minimum Submission Time should be a numeric value greater than 0 !', 'goodbye-captcha'));
 			unset($arrSettingOptions[self::OPTION_MIN_SUBMISSION_TIME]);
 		}
 
@@ -205,7 +205,7 @@ class GdbcSettingsAdminModule extends GdbcBaseAdminModule
 
 		$arrSettingOptions[self::OPTION_PLUGIN_VERSION] = GoodByeCaptcha::PLUGIN_VERSION;
 
-		$this->registerSuccessMessage(__('Your changes were successfully saved!', GoodByeCaptcha::PLUGIN_SLUG));
+		$this->registerSuccessMessage(__('Your changes were successfully saved!', 'goodbye-captcha'));
 
 		return $arrSettingOptions;
 

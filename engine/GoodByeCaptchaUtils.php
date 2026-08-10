@@ -19,6 +19,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// This module inspects submissions to a third-party public form to decide whether
+// they came from a bot. Those forms carry no plugin nonce, so reading $_POST
+// without one is intentional; values are validated before use.
+// phpcs:disable WordPress.Security.NonceVerification
+
 final class GoodByeCaptchaUtils
 {
 	public static function isAffiliateWPActivated()
@@ -185,7 +190,7 @@ final class GoodByeCaptchaUtils
 			return $validReferer;
 
 		$referer    = wp_get_referer();
-		$actualHost = parse_url(home_url(), PHP_URL_HOST);
+		$actualHost = wp_parse_url(home_url(), PHP_URL_HOST);
 
 		return $validReferer = (!empty($referer) && !empty($actualHost) && false !== stripos($referer, $actualHost));
 	}
@@ -195,7 +200,7 @@ final class GoodByeCaptchaUtils
 		if(empty($_SERVER['SERVER_SOFTWARE']))
 			return false;
 
-		return (false !== stripos($_SERVER['SERVER_SOFTWARE'], 'nginx')) && (@php_sapi_name() === 'fpm-fcgi');
+		return (false !== stripos(sanitize_text_field(wp_unslash($_SERVER['SERVER_SOFTWARE'])), 'nginx')) && (@php_sapi_name() === 'fpm-fcgi');
 	}
 
 	public static function isJetPackPluginActivated()

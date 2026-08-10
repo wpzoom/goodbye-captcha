@@ -30,7 +30,7 @@ class GdbcSettingsAdminPage  extends GdbcBaseAdminPage
 		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_SETTINGS))
 		{
 			$this->registerGroupedModules(array(
-				new MchGdbcGroupedModules(__('WPBruiser General Settings', GoodByeCaptcha::PLUGIN_SLUG), array(
+				new MchGdbcGroupedModules(__('WPBruiser General Settings', 'goodbye-captcha'), array(
 					GdbcSettingsAdminModule::getInstance())
 				)
 			));
@@ -39,7 +39,7 @@ class GdbcSettingsAdminPage  extends GdbcBaseAdminPage
 		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_PROXY_HEADERS))
 		{
 			$this->proxyHeadersGroupIndex = $this->registerGroupedModules(array(
-					new MchGdbcGroupedModules(__('Trusted Proxy Headers', GoodByeCaptcha::PLUGIN_SLUG), array(
+					new MchGdbcGroupedModules(__('Trusted Proxy Headers', 'goodbye-captcha'), array(
 									GdbcProxyHeadersAdminModule::getInstance())
 					)
 			));

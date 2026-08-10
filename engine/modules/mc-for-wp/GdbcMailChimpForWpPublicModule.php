@@ -19,6 +19,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// This module inspects submissions to a third-party public form to decide whether
+// they came from a bot. Those forms carry no plugin nonce, so reading $_POST
+// without one is intentional; values are validated before use.
+// phpcs:disable WordPress.Security.NonceVerification
+
 class GdbcMailChimpForWpPublicModule extends GdbcBasePublicModule
 {
 	private $mailChimpFormLists = array();
@@ -61,7 +66,7 @@ class GdbcMailChimpForWpPublicModule extends GdbcBasePublicModule
 
 	public function validateMailChimpTopBarRequest($isValid)
 	{
-		$this->getAttemptEntity()->Notes = array('email' => (empty( $_POST['email'] ) || ! is_email( $_POST['email'] )) ? null : strtolower($_POST['email']));
+		$this->getAttemptEntity()->Notes = array('email' => (empty($_POST['email']) || ! is_email( sanitize_text_field(wp_unslash($_POST['email'])) )) ? null : strtolower(sanitize_text_field(wp_unslash($_POST['email']))));
 		
 		$isValid = GdbcRequestController::isValid($this->getAttemptEntity());
 		

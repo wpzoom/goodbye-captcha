@@ -19,6 +19,13 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// This class is the data layer for the plugin's own custom table. Table names are
+// built from $wpdb->base_prefix (never from user input) and cannot be passed as
+// prepare() placeholders; every query with parameters is run through
+// $wpdb->prepare() before it reaches executePreparedQuery(). Results are not
+// cached because the reports must reflect live data.
+// phpcs:disable WordPress.DB
+
 final class GdbcDbAccessController
 {
 	public static $LAST_INSERTED_ATTEMPT_ID = 0;

@@ -67,7 +67,7 @@ final class GdbcWPMembersPublicModule extends GdbcBasePublicModule
 
 		global $wpmem_themsg;
 
-		$wpmem_themsg = __('An error occurred while processing your request!', GoodByeCaptcha::PLUGIN_SLUG);
+		$wpmem_themsg = __('An error occurred while processing your request!', 'goodbye-captcha');
 
 	}
 

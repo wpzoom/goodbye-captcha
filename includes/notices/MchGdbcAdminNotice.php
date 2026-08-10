@@ -128,12 +128,13 @@ abstract class MchGdbcAdminNotice
 
 		$holderClass .= $this->isDismissible() ? ' is-dismissible' : '';
 
-		$htmlCode  = '<div id="' . $this->getFormattedNoticeKey() . '" class="' . $holderClass . '" ' . 'style="border-left-color:' . $this->getHolderBorderColor() . ';' . '" >';
+		$htmlCode  = '<div id="' . esc_attr($this->getFormattedNoticeKey()) . '" class="' . esc_attr($holderClass) . '" ' . 'style="border-left-color:' . esc_attr($this->getHolderBorderColor()) . ';' . '" >';
 		//$htmlCode .= '<p>';
-		$htmlCode .= $this->noticeMessage;
+		$htmlCode .= wp_kses_post($this->noticeMessage);
 		//$htmlCode .= '</p>';
 		$htmlCode .= '</div>';
 
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- attributes are esc_attr()'d and the message is wp_kses_post()'d where they are assembled above.
 		echo $htmlCode;
 
 	}

@@ -35,7 +35,7 @@ class GdbcECommerceAdminPage  extends GdbcBaseAdminPage
 			$modulesList[] = GdbcAffiliateWPAdminModule::getInstance();
 
 		$this->registerGroupedModules(array(
-				new MchGdbcGroupedModules(__('WPBruiser - eCommerce Plugins Settings', GoodByeCaptcha::PLUGIN_SLUG), $modulesList)
+				new MchGdbcGroupedModules(__('WPBruiser - eCommerce Plugins Settings', 'goodbye-captcha'), $modulesList)
 			)
 		);
 		

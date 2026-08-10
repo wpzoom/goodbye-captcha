@@ -27,9 +27,49 @@ defined( 'ABSPATH' ) || exit;
 final class MchGdbcHtmlUtils
 {
 	const FORM_ELEMENT_INPUT_HIDDEN   = 'hidden';
-	const FORM_ELEMENT_INPUT_TEXT     = 'text';	
+	const FORM_ELEMENT_INPUT_TEXT     = 'text';
 	const FORM_ELEMENT_INPUT_CHECKBOX = 'checkbox';
 	const FORM_ELEMENT_SELECT         = 'select';
+
+	/**
+	 * Allowed tags for output produced by the create*Element() helpers below.
+	 *
+	 * Those helpers already run every attribute through esc_attr() and every inner
+	 * text through esc_html(), but the markup still has to be filtered at the point
+	 * it is echoed. wp_kses_post() cannot be used because it strips form controls.
+	 *
+	 * @return array Tag/attribute map for wp_kses().
+	 */
+	public static function getAllowedFormHtml()
+	{
+		$arrGlobalAttributes = array(
+			'id'    => array(), 'name'  => array(), 'class' => array(),
+			'style' => array(), 'title' => array(), 'data-*' => array(),
+		);
+
+		return array(
+			'input'    => $arrGlobalAttributes + array(
+				'type' => array(), 'value' => array(), 'checked'  => array(),
+				'placeholder' => array(), 'required' => array(), 'disabled' => array(),
+				'readonly' => array(), 'min' => array(), 'max' => array(),
+				'step' => array(), 'autocomplete' => array(), 'autocorrect' => array(),
+			),
+			'select'   => $arrGlobalAttributes + array('multiple' => array(), 'size' => array()),
+			'option'   => array('value' => array(), 'selected' => array()),
+			'optgroup' => array('label' => array()),
+			'textarea' => $arrGlobalAttributes + array('rows' => array(), 'cols' => array()),
+			'label'    => $arrGlobalAttributes + array('for' => array()),
+			'a'        => $arrGlobalAttributes + array('href' => array(), 'target' => array(), 'rel' => array()),
+			'span'     => $arrGlobalAttributes,
+			'div'      => $arrGlobalAttributes,
+			'p'        => $arrGlobalAttributes,
+			'br'       => array(),
+			'b'        => array(),
+			'strong'   => array(),
+			'em'       => array(),
+			'i'        => array(),
+		);
+	}
 
 
 	public static function createSelectElement(array $arrAttributes)

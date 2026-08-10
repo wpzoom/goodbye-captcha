@@ -19,6 +19,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// File-based cache backend. It reads and writes only inside its own cache
+// directory and must work before WP_Filesystem is initialised (it is used on the
+// public request path), so the direct filesystem calls are deliberate.
+// phpcs:disable WordPress.WP.AlternativeFunctions, WordPress.Security.ValidatedSanitizedInput
+
 class MchGdbcCacheFileStorage extends MchGdbcCacheBaseStorage
 {
 

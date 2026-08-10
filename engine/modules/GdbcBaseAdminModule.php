@@ -46,7 +46,7 @@ abstract class GdbcBaseAdminModule extends MchGdbcBaseAdminModule
 
 	public  function renderModuleSettingsSectionHeader(array $arrSectionInfo)
 	{
-		//echo '<h3>' . __('WordPress General Settings', GoodByeCaptcha::PLUGIN_SLUG) . '</h3><hr />';
+		//echo '<h3>' . esc_html__('WordPress General Settings', 'goodbye-captcha') . '</h3><hr />';
 	}
 
 	public function renderModuleSettingsField(array $arrSettingsField)
@@ -83,18 +83,18 @@ abstract class GdbcBaseAdminModule extends MchGdbcBaseAdminModule
 		{
 			case MchGdbcHtmlUtils::FORM_ELEMENT_SELECT :
 
-				echo MchGdbcHtmlUtils::createSelectElement($arrFieldAttributes);
+				echo wp_kses(MchGdbcHtmlUtils::createSelectElement($arrFieldAttributes), MchGdbcHtmlUtils::getAllowedFormHtml());
 
 				break;
 
 			default :
 
-				echo MchGdbcHtmlUtils::createInputElement($arrFieldAttributes);
+				echo wp_kses(MchGdbcHtmlUtils::createInputElement($arrFieldAttributes), MchGdbcHtmlUtils::getAllowedFormHtml());
 		}
 
 		if(!empty($arrSettingsField['Description']))
 		{
-			echo '<p class = "description">' . $arrSettingsField['Description'] . '</p>';
+			echo '<p class = "description">' . wp_kses_post($arrSettingsField['Description']) . '</p>';
 		}
 
 	}
@@ -137,62 +137,97 @@ abstract class GdbcBaseAdminModule extends MchGdbcBaseAdminModule
 		return null;
 	}
 
+	/**
+	 * Render a single logged value for the "blocked content" table.
+	 *
+	 * Replaces the print_r() calls the modules used to rely on: print_r() is a
+	 * debugging helper, and its output for anything other than a scalar is not
+	 * something to show a site owner.
+	 *
+	 * @param mixed $value Value stored in the attempt notes.
+	 * @return string Safe, human readable representation.
+	 */
+	protected static function getBlockedContentDisplayableValue($value)
+	{
+		if (is_bool($value))
+			return $value ? 'true' : 'false';
+
+		if (is_null($value))
+			return '';
+
+		if (is_scalar($value))
+			return (string) $value;
+
+		if (is_array($value))
+		{
+			$arrParts = array();
+			foreach ($value as $subKey => $subValue)
+			{
+				$arrParts[] = (is_int($subKey) ? '' : $subKey . ': ') . self::getBlockedContentDisplayableValue($subValue);
+			}
+
+			return implode(', ', $arrParts);
+		}
+
+		return '';
+	}
+
 	protected static function getBlockedContentDisplayableKey($blockedContentKey)
 	{
 		$arrMappedKeys = array(
 
-			'username'             => __('Username', GoodByeCaptcha::PLUGIN_SLUG),
-			'password'             => __('Password', GoodByeCaptcha::PLUGIN_SLUG),
-			'email'                => __('Email', GoodByeCaptcha::PLUGIN_SLUG),
-			'post'                 => __('Post', GoodByeCaptcha::PLUGIN_SLUG),
-			'page'                 => __('Page', GoodByeCaptcha::PLUGIN_SLUG),
+			'username'             => __('Username', 'goodbye-captcha'),
+			'password'             => __('Password', 'goodbye-captcha'),
+			'email'                => __('Email', 'goodbye-captcha'),
+			'post'                 => __('Post', 'goodbye-captcha'),
+			'page'                 => __('Page', 'goodbye-captcha'),
 
-			'comment_post_ID'      => __('Post Id', GoodByeCaptcha::PLUGIN_SLUG),
-			'comment_author'       => __('Author', GoodByeCaptcha::PLUGIN_SLUG),
-			'comment_author_email' => __('Email', GoodByeCaptcha::PLUGIN_SLUG),
-			'comment_author_url'   => __('Website', GoodByeCaptcha::PLUGIN_SLUG),
-			'comment_content'      => __('Content', GoodByeCaptcha::PLUGIN_SLUG),
-			'comment_parent'       => __('As Reply to', GoodByeCaptcha::PLUGIN_SLUG),
-			'comment_agent'        => __('Browser', GoodByeCaptcha::PLUGIN_SLUG),
+			'comment_post_ID'      => __('Post Id', 'goodbye-captcha'),
+			'comment_author'       => __('Author', 'goodbye-captcha'),
+			'comment_author_email' => __('Email', 'goodbye-captcha'),
+			'comment_author_url'   => __('Website', 'goodbye-captcha'),
+			'comment_content'      => __('Content', 'goodbye-captcha'),
+			'comment_parent'       => __('As Reply to', 'goodbye-captcha'),
+			'comment_agent'        => __('Browser', 'goodbye-captcha'),
 
-			'your-name'    => __('Name', GoodByeCaptcha::PLUGIN_SLUG),
-			'your-email'   => __('Email', GoodByeCaptcha::PLUGIN_SLUG),
-			'your-subject' => __('Subject', GoodByeCaptcha::PLUGIN_SLUG),
-			'your-message' => __('Message', GoodByeCaptcha::PLUGIN_SLUG),
+			'your-name'    => __('Name', 'goodbye-captcha'),
+			'your-email'   => __('Email', 'goodbye-captcha'),
+			'your-subject' => __('Subject', 'goodbye-captcha'),
+			'your-message' => __('Message', 'goodbye-captcha'),
 
-//			'page-url' => __('Page URL', GoodByeCaptcha::PLUGIN_SLUG),
-//			'post-url' => __('Post URL', GoodByeCaptcha::PLUGIN_SLUG),
+//			'page-url' => __('Page URL', 'goodbye-captcha'),
+//			'post-url' => __('Post URL', 'goodbye-captcha'),
 
-			'page-url' => __('URL', GoodByeCaptcha::PLUGIN_SLUG),
-			'post-url' => __('URL', GoodByeCaptcha::PLUGIN_SLUG),
-
-
-			'ADDRESS'   => __('Address', GoodByeCaptcha::PLUGIN_SLUG),
-			'FNAME'     => __('First Name', GoodByeCaptcha::PLUGIN_SLUG),
-			'LNAME'     => __('Last Name', GoodByeCaptcha::PLUGIN_SLUG),
-			'NNAME'     => __('Nick Name', GoodByeCaptcha::PLUGIN_SLUG),
-			'GROUPINGS' => __('Group', GoodByeCaptcha::PLUGIN_SLUG),
-			'EMAIL'     => __('Email', GoodByeCaptcha::PLUGIN_SLUG),
+			'page-url' => __('URL', 'goodbye-captcha'),
+			'post-url' => __('URL', 'goodbye-captcha'),
 
 
-			'honoreestate' => __('State', GoodByeCaptcha::PLUGIN_SLUG),
-			'honoreeprovince' => __('Province', GoodByeCaptcha::PLUGIN_SLUG),
-			'honoreecountry' => __('Country', GoodByeCaptcha::PLUGIN_SLUG),
-
-			'firstname' => __('First Name', GoodByeCaptcha::PLUGIN_SLUG),
-			'lastname' => __('Last Name', GoodByeCaptcha::PLUGIN_SLUG),
-			'phone' => __('Phone', GoodByeCaptcha::PLUGIN_SLUG),
-
-
-			'country' => __('Country', GoodByeCaptcha::PLUGIN_SLUG),
-			'coupon' => __('Coupon', GoodByeCaptcha::PLUGIN_SLUG),
-			'item_name' => __('Item', GoodByeCaptcha::PLUGIN_SLUG),
-			'amount' => __('Amount', GoodByeCaptcha::PLUGIN_SLUG),
-			'paymentmethod' => __('Method', GoodByeCaptcha::PLUGIN_SLUG),
+			'ADDRESS'   => __('Address', 'goodbye-captcha'),
+			'FNAME'     => __('First Name', 'goodbye-captcha'),
+			'LNAME'     => __('Last Name', 'goodbye-captcha'),
+			'NNAME'     => __('Nick Name', 'goodbye-captcha'),
+			'GROUPINGS' => __('Group', 'goodbye-captcha'),
+			'EMAIL'     => __('Email', 'goodbye-captcha'),
 
 
-			'secretkey' => __('Secret key', GoodByeCaptcha::PLUGIN_SLUG),
-			'authorid'  => __('Author Id', GoodByeCaptcha::PLUGIN_SLUG),
+			'honoreestate' => __('State', 'goodbye-captcha'),
+			'honoreeprovince' => __('Province', 'goodbye-captcha'),
+			'honoreecountry' => __('Country', 'goodbye-captcha'),
+
+			'firstname' => __('First Name', 'goodbye-captcha'),
+			'lastname' => __('Last Name', 'goodbye-captcha'),
+			'phone' => __('Phone', 'goodbye-captcha'),
+
+
+			'country' => __('Country', 'goodbye-captcha'),
+			'coupon' => __('Coupon', 'goodbye-captcha'),
+			'item_name' => __('Item', 'goodbye-captcha'),
+			'amount' => __('Amount', 'goodbye-captcha'),
+			'paymentmethod' => __('Method', 'goodbye-captcha'),
+
+
+			'secretkey' => __('Secret key', 'goodbye-captcha'),
+			'authorid'  => __('Author Id', 'goodbye-captcha'),
 		);
 
 		$blockedKey = trim($blockedContentKey);

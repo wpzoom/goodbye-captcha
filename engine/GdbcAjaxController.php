@@ -19,6 +19,12 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// The public token endpoint verifies its own nonce in clientCanRetrieveToken();
+// the remaining $_POST reads only route the request and are validated there.
+// The token field is compared byte-for-byte against the value this plugin
+// issued, so it must not be passed through a sanitiser.
+// phpcs:disable WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput
+
 final class GdbcAjaxController
 {
 	CONST ACTION_RETRIEVE_TOKEN  = 'gdbcRetrieveToken';
@@ -107,8 +113,6 @@ final class GdbcAjaxController
 			// admin-ajax dispatches wp_ajax_* after init, so registering there is fine.
 			add_action('init', array(__CLASS__, 'registerNoticeDismissHandlers'), 20);
 
-			add_action('wp_ajax_gdbc-user-subscribed-newsletter', array(__CLASS__, 'userSubscribedToNewsLetter'));
-
 		}
 
 	}
@@ -121,11 +125,6 @@ final class GdbcAjaxController
 
 			add_action('wp_ajax_gdbc-dismiss-' . $adminNotice->getFormattedNoticeKey(), array($adminNotice, 'dismiss'));
 		}
-	}
-
-	public static function userSubscribedToNewsLetter()
-	{
-		GdbcSettingsAdminModule::getInstance()->saveOption(GdbcSettingsAdminModule::OPTION_HIDE_SUBSCRIBE_FORM, true);
 	}
 
 	private static function clientCanRetrieveToken()
@@ -142,10 +141,10 @@ final class GdbcAjaxController
 			return false;
 
 
-		if(!isset($_SERVER['HTTP_ACCEPT']) || false === stripos($_SERVER['HTTP_ACCEPT'], 'json'))
+		if(!isset($_SERVER['HTTP_ACCEPT']) || false === stripos(sanitize_text_field(wp_unslash($_SERVER['HTTP_ACCEPT'])), 'json'))
 			return false;
 
-		if(!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || (0 !== strcasecmp($_SERVER['HTTP_X_REQUESTED_WITH'], 'XMLHttpRequest')))
+		if(!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || (0 !== strcasecmp(sanitize_text_field(wp_unslash($_SERVER['HTTP_X_REQUESTED_WITH'])), 'XMLHttpRequest')))
 			return false;
 
 		require_once( ABSPATH . WPINC . '/pluggable.php' );

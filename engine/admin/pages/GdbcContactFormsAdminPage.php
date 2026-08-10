@@ -55,7 +55,7 @@ class GdbcContactFormsAdminPage extends GdbcBaseAdminPage
 			$modulesList[] = GdbcQuformAdminModule::getInstance();
 
 		$this->registerGroupedModules(array(
-				new MchGdbcGroupedModules(__('WPBruiser - Popular Contact Forms Settings', GoodByeCaptcha::PLUGIN_SLUG), $modulesList)
+				new MchGdbcGroupedModules(__('WPBruiser - Popular Contact Forms Settings', 'goodbye-captcha'), $modulesList)
 			)
 		);
 

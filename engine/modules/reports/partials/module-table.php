@@ -11,10 +11,10 @@ foreach(array_keys(GdbcModulesController::getRegisteredModules()) as $moduleName
 	?>
 		<div class="row">
 			<article class="col-sm-12">
-				<div id="wid-id-<?php echo $moduleId ?>" class="gdbcwidget clearfix module">
+				<div id="wid-id-<?php echo esc_attr($moduleId) ?>" class="gdbcwidget clearfix module">
 					<header>
 						<span class="widget-icon icon-primary"><span class="glyphicon glyphicon-th-list"></span></span>
-						<h2><?php echo $moduleName; ?> Attempts</h2>
+						<h2><?php echo esc_html($moduleName); ?> Attempts</h2>
 					</header>
 					<div class="no-padding">
 						<div class="widget-body" class="tab-content">
@@ -30,7 +30,7 @@ foreach(array_keys(GdbcModulesController::getRegisteredModules()) as $moduleName
 
 										</tbody>
 									</table>
-									<div class="module-pagination" id="mp-<?php echo $moduleId; ?>" style="text-align: right;margin-right: 20px">
+									<div class="module-pagination" id="mp-<?php echo esc_attr($moduleId); ?>" style="text-align: right;margin-right: 20px">
 									</div>
 								</div>
 							</div>

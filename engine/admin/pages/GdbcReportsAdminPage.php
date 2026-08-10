@@ -31,7 +31,7 @@ class GdbcReportsAdminPage extends GdbcBaseAdminPage
 			return;
 
 		$this->registerGroupedModules(array(
-				new MchGdbcGroupedModules(__('WPBruiser - Blocked Attempts', GoodByeCaptcha::PLUGIN_SLUG), array(GdbcReportsAdminModule::getInstance()))
+				new MchGdbcGroupedModules(__('WPBruiser - Blocked Attempts', 'goodbye-captcha'), array(GdbcReportsAdminModule::getInstance()))
 			)
 		);
 
@@ -53,7 +53,7 @@ class GdbcReportsAdminPage extends GdbcBaseAdminPage
 		$arrReportsNavigationTabUrl[] = esc_url(add_query_arg($arrQueryString, $pageAdminUrl));
 
 		echo '<div id = "gdbc-reports-holder" class = "clearfix">';
-		echo '<h3>' . __('WPBruiser - Blocked Attempts', GoodByeCaptcha::PLUGIN_SLUG) . '</h3>';
+		echo '<h3>' . esc_html__('WPBruiser - Blocked Attempts', 'goodbye-captcha') . '</h3>';
 
 		GdbcReportsAdminModule::getInstance()->renderReportsMainPageContent($arrReportsNavigationTabUrl);
 

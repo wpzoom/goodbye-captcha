@@ -25,7 +25,7 @@ final class GdbcNotificationsController
 
 	public static function sendTestModeEmailNotification(GdbcAttemptEntity $gdbcAttemptEntity)
 	{
-		GdbcEmailNotificationsPublicModule::getInstance()->EmailSubject = __('WPBruiser - Test Mode Notification', GoodByeCaptcha::PLUGIN_SLUG);
+		GdbcEmailNotificationsPublicModule::getInstance()->EmailSubject = __('WPBruiser - Test Mode Notification', 'goodbye-captcha');
 
 		$clientIpAddress = GdbcIPUtils::getClientIpAddress();
 		$currentSiteLink = MchGdbcWpUtils::getCurrentBlogLink();
@@ -41,7 +41,7 @@ final class GdbcNotificationsController
 
 		if(empty($moduleDirPath))
 		{
-			GdbcEmailNotificationsPublicModule::getInstance()->EmailBodyContent = __('WPBruiser encountered an error while trying to parse the email template!', GoodByeCaptcha::PLUGIN_SLUG);
+			GdbcEmailNotificationsPublicModule::getInstance()->EmailBodyContent = __('WPBruiser encountered an error while trying to parse the email template!', 'goodbye-captcha');
 		}
 		else
 		{
@@ -60,7 +60,7 @@ final class GdbcNotificationsController
 		if( ! GdbcEmailNotificationsPublicModule::getInstance()->getOption(GdbcEmailNotificationsAdminModule::OPTION_BRUTE_FORCE_ATTACK_DETECTED) )
 			return;
 
-		GdbcEmailNotificationsPublicModule::getInstance()->EmailSubject = __('Alert - Brute Force Attack Detected by WPBruiser!', GoodByeCaptcha::PLUGIN_SLUG);
+		GdbcEmailNotificationsPublicModule::getInstance()->EmailSubject = __('Alert - Brute Force Attack Detected by WPBruiser!', 'goodbye-captcha');
 
 		$adminFullName = MchGdbcWpUtils::getAdminFullName();
 		empty($adminFullName) ? $adminFullName = MchGdbcWpUtils::getAdminDisplayName() : null;
@@ -71,8 +71,8 @@ final class GdbcNotificationsController
 		$totalWebAttackers = 0;
 		$totalBlackListed  = 0;
 
-		$detectedDate = get_date_from_gmt ( date( 'Y-m-d H:i:s', MchGdbcHttpRequest::getServerRequestTime() ), 'l, F d, Y');
-		$detectedTime = get_date_from_gmt ( date( 'Y-m-d H:i:s', MchGdbcHttpRequest::getServerRequestTime() ), 'H:i:s');
+		$detectedDate = get_date_from_gmt ( gmdate( 'Y-m-d H:i:s', MchGdbcHttpRequest::getServerRequestTime() ), 'l, F d, Y');
+		$detectedTime = get_date_from_gmt ( gmdate( 'Y-m-d H:i:s', MchGdbcHttpRequest::getServerRequestTime() ), 'H:i:s');
 
 		foreach($arrLoginAttempts as $clientIp => $hits)
 		{
@@ -134,7 +134,11 @@ final class GdbcNotificationsController
 		$moduleDirPath = GdbcModulesController::getModuleDirectoryPath(GdbcModulesController::MODULE_EMAIL_NOTIFICATIONS);
 		if(empty($moduleDirPath))
 		{
-			GdbcEmailNotificationsPublicModule::getInstance()->EmailBodyContent = __("Brute Force attack detected on " . MchGdbcWpUtils::getCurrentBlogLink(), GoodByeCaptcha::PLUGIN_SLUG);
+			GdbcEmailNotificationsPublicModule::getInstance()->EmailBodyContent = sprintf(
+				/* translators: %s: link to the site the attack was detected on. */
+				__('Brute Force attack detected on %s', 'goodbye-captcha'),
+				MchGdbcWpUtils::getCurrentBlogLink()
+			);
 		}
 		else
 		{

@@ -49,24 +49,24 @@ class GdbcWordPressAdminModule extends GdbcBaseAdminModule
 			self::WORDPRESS_LOGIN_FORM => array(
 				'Id'          => 2,
 				'Value'       => NULL,
-				'LabelText'   => __('Protect Login Form', GoodByeCaptcha::PLUGIN_SLUG),
-				'DisplayText' => __('Login', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'   => __('Protect Login Form', 'goodbye-captcha'),
+				'DisplayText' => __('Login', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
 			),
 
 			self::WORDPRESS_LOST_PASSWORD_FORM  => array(
 				'Id'          => 3,
 				'Value'       => NULL,
-				'LabelText'   => __('Protect Lost Password Form', GoodByeCaptcha::PLUGIN_SLUG),
-				'DisplayText' => __('Lost Password', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'   => __('Protect Lost Password Form', 'goodbye-captcha'),
+				'DisplayText' => __('Lost Password', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
 			),
 
 			self::WORDPRESS_REGISTRATION_FORM => array(
 				'Id'          => 4,
 				'Value'       => NULL,
-				'LabelText'   => __('Protect Registration Form', GoodByeCaptcha::PLUGIN_SLUG),
-				'DisplayText' => __('Registration', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'   => __('Protect Registration Form', 'goodbye-captcha'),
+				'DisplayText' => __('Registration', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
 			),
 
@@ -74,49 +74,49 @@ class GdbcWordPressAdminModule extends GdbcBaseAdminModule
 				'Id'          => 5,
 				'Value'       => NULL,
 				'LabelText'   => null,
-				'DisplayText' => __('XML-RPC Login', GoodByeCaptcha::PLUGIN_SLUG),
+				'DisplayText' => __('XML-RPC Login', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_HIDDEN
 			),
 
 			self::WORDPRESS_COMMENTS_FORM  => array(
 				'Id'          => 1,
 				'Value'       => NULL,
-				'LabelText'   => __('Protect Comments Form', GoodByeCaptcha::PLUGIN_SLUG),
-				'DisplayText' => __('Comments', GoodByeCaptcha::PLUGIN_SLUG),
-				'Description' => __('If this option is not selected the Fields Maximum Length options have no effect!', GoodByeCaptcha::PLUGIN_SLUG),
-				//'Description' => __('It seamlessly working with <a target="_blank" href="https://wordpress.org/plugins/wpdiscuz">wpDiscuz</a> - the AJAX realtime commenting system', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'   => __('Protect Comments Form', 'goodbye-captcha'),
+				'DisplayText' => __('Comments', 'goodbye-captcha'),
+				'Description' => __('If this option is not selected the Fields Maximum Length options have no effect!', 'goodbye-captcha'),
+				//'Description' => __('It seamlessly working with <a target="_blank" href="https://wordpress.org/plugins/wpdiscuz">wpDiscuz</a> - the AJAX realtime commenting system', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
 			),
 
 			self::WORDPRESS_COMMENTS_FORM_CONTENT_LENGTH => array(
 				'Id'          => 6,
 				'Value'       => 65525,
-				'LabelText'   => __('Comment Field Maximum Length', GoodByeCaptcha::PLUGIN_SLUG),
-				'Description' => __('Sets the maximum number of characters for the Comment field', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'   => __('Comment Field Maximum Length', 'goodbye-captcha'),
+				'Description' => __('Sets the maximum number of characters for the Comment field', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_TEXT
 			),
 
 			self::WORDPRESS_COMMENTS_FORM_NAME_LENGTH => array(
 				'Id'          => 7,
 				'Value'       => 245,
-				'LabelText'   => __('Comment Name Field Maximum Length', GoodByeCaptcha::PLUGIN_SLUG),
-				'Description' => __('Sets the maximum number of characters for the Name field', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'   => __('Comment Name Field Maximum Length', 'goodbye-captcha'),
+				'Description' => __('Sets the maximum number of characters for the Name field', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_TEXT
 			),
 
 			self::WORDPRESS_COMMENTS_FORM_EMAIL_LENGTH => array(
 				'Id'          => 8,
 				'Value'       => 100,
-				'LabelText'   => __('Comment Email Field Maximum Length', GoodByeCaptcha::PLUGIN_SLUG),
-				'Description' => __('Sets the maximum number of characters for the Email field', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'   => __('Comment Email Field Maximum Length', 'goodbye-captcha'),
+				'Description' => __('Sets the maximum number of characters for the Email field', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_TEXT
 			),
 
 			self::WORDPRESS_COMMENTS_FORM_WEBSITE_LENGTH => array(
 				'Id'          => 9,
 				'Value'       => 200,
-				'LabelText'   => __('Comment Website Field Maximum Length', GoodByeCaptcha::PLUGIN_SLUG),
-				'Description' => __('Sets the maximum number of characters for the Website field', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'   => __('Comment Website Field Maximum Length', 'goodbye-captcha'),
+				'Description' => __('Sets the maximum number of characters for the Website field', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_TEXT
 			),
 
@@ -172,7 +172,11 @@ class GdbcWordPressAdminModule extends GdbcBaseAdminModule
 
 		if(empty($arrSettingOptions[self::WORDPRESS_COMMENTS_FORM_CONTENT_LENGTH]) || $arrSettingOptions[self::WORDPRESS_COMMENTS_FORM_CONTENT_LENGTH] > $arrDefaultOptionsValues[self::WORDPRESS_COMMENTS_FORM_CONTENT_LENGTH])
 		{
-			$this->registerErrorMessage(__("The Comment Field Maximum Length should be a numeric value between 1 and {$arrDefaultOptionsValues[self::WORDPRESS_COMMENTS_FORM_CONTENT_LENGTH]} !", GoodByeCaptcha::PLUGIN_SLUG));
+			$this->registerErrorMessage(sprintf(
+				/* translators: %d: maximum allowed number of characters. */
+				__('The Comment Field Maximum Length should be a numeric value between 1 and %d!', 'goodbye-captcha'),
+				$arrDefaultOptionsValues[self::WORDPRESS_COMMENTS_FORM_CONTENT_LENGTH]
+			));
 
 			if(!empty($arrOldSettingsValues[self::WORDPRESS_COMMENTS_FORM_CONTENT_LENGTH]))
 				$arrSettingOptions[self::WORDPRESS_COMMENTS_FORM_CONTENT_LENGTH] = $arrOldSettingsValues[self::WORDPRESS_COMMENTS_FORM_CONTENT_LENGTH];
@@ -183,7 +187,11 @@ class GdbcWordPressAdminModule extends GdbcBaseAdminModule
 
 		if(empty($arrSettingOptions[self::WORDPRESS_COMMENTS_FORM_EMAIL_LENGTH]) || $arrSettingOptions[self::WORDPRESS_COMMENTS_FORM_EMAIL_LENGTH] > $arrDefaultOptionsValues[self::WORDPRESS_COMMENTS_FORM_EMAIL_LENGTH])
 		{
-			$this->registerErrorMessage(__("The Email Field Maximum Length should be a numeric value between 1 and {$arrDefaultOptionsValues[self::WORDPRESS_COMMENTS_FORM_EMAIL_LENGTH]} !", GoodByeCaptcha::PLUGIN_SLUG));
+			$this->registerErrorMessage(sprintf(
+				/* translators: %d: maximum allowed number of characters. */
+				__('The Email Field Maximum Length should be a numeric value between 1 and %d!', 'goodbye-captcha'),
+				$arrDefaultOptionsValues[self::WORDPRESS_COMMENTS_FORM_EMAIL_LENGTH]
+			));
 			if(!empty($arrOldSettingsValues[self::WORDPRESS_COMMENTS_FORM_EMAIL_LENGTH]))
 				$arrSettingOptions[self::WORDPRESS_COMMENTS_FORM_EMAIL_LENGTH] = $arrOldSettingsValues[self::WORDPRESS_COMMENTS_FORM_EMAIL_LENGTH];
 			else
@@ -192,7 +200,11 @@ class GdbcWordPressAdminModule extends GdbcBaseAdminModule
 
 		if(empty($arrSettingOptions[self::WORDPRESS_COMMENTS_FORM_NAME_LENGTH]) || $arrSettingOptions[self::WORDPRESS_COMMENTS_FORM_NAME_LENGTH] > $arrDefaultOptionsValues[self::WORDPRESS_COMMENTS_FORM_NAME_LENGTH])
 		{
-			$this->registerErrorMessage(__("The Email Field Maximum Length should be a numeric value between 1 and {$arrDefaultOptionsValues[self::WORDPRESS_COMMENTS_FORM_NAME_LENGTH]} !", GoodByeCaptcha::PLUGIN_SLUG));
+			$this->registerErrorMessage(sprintf(
+				/* translators: %d: maximum allowed number of characters. */
+				__('The Email Field Maximum Length should be a numeric value between 1 and %d!', 'goodbye-captcha'),
+				$arrDefaultOptionsValues[self::WORDPRESS_COMMENTS_FORM_NAME_LENGTH]
+			));
 			if(!empty($arrOldSettingsValues[self::WORDPRESS_COMMENTS_FORM_NAME_LENGTH]))
 				$arrSettingOptions[self::WORDPRESS_COMMENTS_FORM_NAME_LENGTH] = $arrOldSettingsValues[self::WORDPRESS_COMMENTS_FORM_NAME_LENGTH];
 			else
@@ -201,20 +213,24 @@ class GdbcWordPressAdminModule extends GdbcBaseAdminModule
 
 		if(empty($arrSettingOptions[self::WORDPRESS_COMMENTS_FORM_WEBSITE_LENGTH]) || $arrSettingOptions[self::WORDPRESS_COMMENTS_FORM_WEBSITE_LENGTH] > $arrDefaultOptionsValues[self::WORDPRESS_COMMENTS_FORM_NAME_LENGTH])
 		{
-			$this->registerErrorMessage(__("The Website Field Maximum Length should be a numeric value between 1 and {$arrDefaultOptionsValues[self::WORDPRESS_COMMENTS_FORM_NAME_LENGTH]}!", GoodByeCaptcha::PLUGIN_SLUG));
+			$this->registerErrorMessage(sprintf(
+				/* translators: %d: maximum allowed number of characters. */
+				__('The Website Field Maximum Length should be a numeric value between 1 and %d!', 'goodbye-captcha'),
+				$arrDefaultOptionsValues[self::WORDPRESS_COMMENTS_FORM_NAME_LENGTH]
+			));
 			if(!empty($arrOldSettingsValues[self::WORDPRESS_COMMENTS_FORM_WEBSITE_LENGTH]))
 				$arrSettingOptions[self::WORDPRESS_COMMENTS_FORM_WEBSITE_LENGTH] = $arrOldSettingsValues[self::WORDPRESS_COMMENTS_FORM_WEBSITE_LENGTH];
 			else
 				$arrSettingOptions[self::WORDPRESS_COMMENTS_FORM_WEBSITE_LENGTH] = $arrDefaultOptionsValues[self::WORDPRESS_COMMENTS_FORM_WEBSITE_LENGTH];
 		}
 
-		$this->registerSuccessMessage(__('Your changes were successfully saved!', GoodByeCaptcha::PLUGIN_SLUG));
+		$this->registerSuccessMessage(__('Your changes were successfully saved!', 'goodbye-captcha'));
 		return $arrSettingOptions;
 	}
 
 //	public  function renderModuleSettingsSectionHeader(array $arrSectionInfo)
 //	{
-//		echo '<h3>' . __('WordPress Standard Forms Protection', GoodByeCaptcha::PLUGIN_SLUG) . '</h3><hr />';
+//		echo '<h3>' . esc_html__('WordPress Standard Forms Protection', 'goodbye-captcha') . '</h3><hr />';
 //	}
 
 
@@ -233,12 +249,13 @@ class GdbcWordPressAdminModule extends GdbcBaseAdminModule
 		$tableBodyRows = '';
 
 		$tableHeadRows .= '<tr>';
-			$tableHeadRows .= '<th colspan="2">' . sprintf(__("Blocked %s Attempt", GoodByeCaptcha::PLUGIN_SLUG), $this->getOptionDisplayTextByOptionId($attemptEntity->SectionId)) . '</th>';
+			/* translators: %s: name of the WordPress form the attempt was blocked on. */
+			$tableHeadRows .= '<th colspan="2">' . sprintf(__("Blocked %s Attempt", 'goodbye-captcha'), $this->getOptionDisplayTextByOptionId($attemptEntity->SectionId)) . '</th>';
 		$tableHeadRows .= '</tr>';
 
 		$tableHeadRows .= '<tr>';
-			$tableHeadRows .= '<th>' . __('Field', GoodByeCaptcha::PLUGIN_SLUG) . '</th>';
-			$tableHeadRows .= '<th>' . __('Value', GoodByeCaptcha::PLUGIN_SLUG) . '</th>';
+			$tableHeadRows .= '<th>' . __('Field', 'goodbye-captcha') . '</th>';
+			$tableHeadRows .= '<th>' . __('Value', 'goodbye-captcha') . '</th>';
 		$tableHeadRows .= '</tr>';
 
 		if(isset($attemptEntity->Notes['comment_content']))
@@ -252,7 +269,7 @@ class GdbcWordPressAdminModule extends GdbcBaseAdminModule
 		if(isset($attemptEntity->Notes['comment_parent']))
 		{
 			$parentCommentLink = (string)get_comment_link(absint($attemptEntity->Notes['comment_parent']));
-			$parentCommentFiledValue = __('Comment Id ', GoodByeCaptcha::PLUGIN_SLUG);
+			$parentCommentFiledValue = __('Comment Id ', 'goodbye-captcha');
 
 			if(strpos($parentCommentLink, 'http') === 0) {
 				$attemptEntity->Notes['comment_parent'] = '<a target = "blank" href = '. esc_attr($parentCommentLink) .'>' . $parentCommentFiledValue . absint($attemptEntity->Notes['comment_parent']) . '</a>';
@@ -287,7 +304,7 @@ class GdbcWordPressAdminModule extends GdbcBaseAdminModule
 		{
 			$tableBodyRows .='<tr>';
 				$tableBodyRows .= '<td>' . self::getBlockedContentDisplayableKey($key) . '</td>';
-				$tableBodyRows .= '<td>' . wp_kses_stripslashes(wp_filter_kses(print_r($value, true)))  . '</td>';
+				$tableBodyRows .= '<td>' . esc_html(self::getBlockedContentDisplayableValue($value))  . '</td>';
 			$tableBodyRows .='</tr>';
 		}
 

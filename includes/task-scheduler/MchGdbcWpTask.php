@@ -48,6 +48,6 @@ abstract class MchGdbcWpTask implements MchGdbcWpITask
 
 	public function getTaskCronActionHookName()
 	{
-		return get_class($this) . '-' . $this->runningInterval . '-' . var_export($this->isRecurringTask, true);
+		return get_class($this) . '-' . $this->runningInterval . '-' . ($this->isRecurringTask ? 'true' : 'false');
 	}
 }

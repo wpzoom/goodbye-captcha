@@ -19,6 +19,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// This module inspects submissions to a third-party public form to decide whether
+// they came from a bot. Those forms carry no plugin nonce, so reading $_POST
+// without one is intentional; values are validated before use.
+// phpcs:disable WordPress.Security.NonceVerification
+
 class GdbcBruteForcePublicModule extends GdbcBasePublicModule
 {
 	private $preventUserEnumHookIndex = null;

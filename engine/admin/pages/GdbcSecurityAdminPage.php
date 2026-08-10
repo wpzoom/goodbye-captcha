@@ -32,7 +32,7 @@ class GdbcSecurityAdminPage  extends GdbcBaseAdminPage
 		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_BRUTE_FORCE))
 		{
 			$this->registerGroupedModules(array(
-				new MchGdbcGroupedModules(__('WPBruiser Brute Force Settings', GoodByeCaptcha::PLUGIN_SLUG), array(
+				new MchGdbcGroupedModules(__('WPBruiser Brute Force Settings', 'goodbye-captcha'), array(
 						GdbcBruteForceAdminModule::getInstance())
 				)
 			));
@@ -41,7 +41,7 @@ class GdbcSecurityAdminPage  extends GdbcBaseAdminPage
 		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_WHITE_LISTED_IPS))
 		{
 			$this->whiteListedIpsGroupIndex = $this->registerGroupedModules(array(
-				new MchGdbcGroupedModules(__('White Listed IPs', GoodByeCaptcha::PLUGIN_SLUG), array(
+				new MchGdbcGroupedModules(__('White Listed IPs', 'goodbye-captcha'), array(
 						GdbcWhiteListedIpsAdminModule::getInstance())
 				)
 			));
@@ -50,7 +50,7 @@ class GdbcSecurityAdminPage  extends GdbcBaseAdminPage
 		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_BLACK_LISTED_IPS))
 		{
 			$this->blackListedIpsGroupIndex = $this->registerGroupedModules(array(
-				new MchGdbcGroupedModules(__('Black Listed IPs', GoodByeCaptcha::PLUGIN_SLUG), array(
+				new MchGdbcGroupedModules(__('Black Listed IPs', 'goodbye-captcha'), array(
 						GdbcBlackListedIpsAdminModule::getInstance())
 				)
 			));
@@ -59,7 +59,7 @@ class GdbcSecurityAdminPage  extends GdbcBaseAdminPage
 		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_COUNTRY_BLOCKING))
 		{
 			$this->geoIpCountryGroupIndex = $this->registerGroupedModules(array(
-				new MchGdbcGroupedModules(__('Geo IP Country Blocking', GoodByeCaptcha::PLUGIN_SLUG), array(
+				new MchGdbcGroupedModules(__('Geo IP Country Blocking', 'goodbye-captcha'), array(
 						GdbcGeoIpCountryAdminModule::getInstance())
 				)
 			));
@@ -139,7 +139,7 @@ class GdbcSecurityAdminPage  extends GdbcBaseAdminPage
 
 		add_meta_box(
 			"gdbc-help-web-attackers-list",
-			__('Web Attackers IPs List', GoodByeCaptcha::PLUGIN_SLUG),
+			__('Web Attackers IPs List', 'goodbye-captcha'),
 			array( $this, 'renderWebAttackersMetaBox' ),
 			$this->getAdminScreenId(),
 			'side',
@@ -149,7 +149,7 @@ class GdbcSecurityAdminPage  extends GdbcBaseAdminPage
 
 		add_meta_box(
 			"gdbc-help-proxy-anonymizers-list",
-			__('Anonymous Proxy IPs List', GoodByeCaptcha::PLUGIN_SLUG),
+			__('Anonymous Proxy IPs List', 'goodbye-captcha'),
 			array( $this, 'renderProxyAnonymizersMetaBox' ),
 			$this->getAdminScreenId(),
 			'side',
@@ -161,18 +161,18 @@ class GdbcSecurityAdminPage  extends GdbcBaseAdminPage
 
 	public function renderWebAttackersMetaBox()
 	{
-		$textInfo   = __('Provides security against the most well known attackers\' IP Addresses involved in Brute Force Attacks, with the minimum of false positives.', GoodByeCaptcha::PLUGIN_SLUG);
+		$textInfo   = __('Provides security against the most well known attackers\' IP Addresses involved in Brute Force Attacks, with the minimum of false positives.', 'goodbye-captcha');
 
 
-		echo '<p>' . $textInfo . '</p>';
+		echo '<p>' . wp_kses_post($textInfo) . '</p>';
 	}
 
 	public function renderProxyAnonymizersMetaBox()
 	{
-		$textInfo   = __('Provides protection against the most Proxy used IP addresses identified as high risk. ', GoodByeCaptcha::PLUGIN_SLUG);
-		$textInfo  .= __('The list also contains the most fraudulent TOR network, TOR Nodes and TOR Exit Points IP Addresses.', GoodByeCaptcha::PLUGIN_SLUG);
+		$textInfo   = __('Provides protection against the most Proxy used IP addresses identified as high risk. ', 'goodbye-captcha');
+		$textInfo  .= __('The list also contains the most fraudulent TOR network, TOR Nodes and TOR Exit Points IP Addresses.', 'goodbye-captcha');
 
-		echo '<p style="text-align: justify">' . $textInfo . '</p>';
+		echo '<p style="text-align: justify">' . wp_kses_post($textInfo) . '</p>';
 	}
 
 }

@@ -71,7 +71,7 @@ final class GdbcSeamlessDonationsPublicModule extends GdbcBasePublicModule
 		if(GdbcRequestController::isValid($this->attemptEntity))
 			return true;
 
-		return __('Invalid request received',  GoodByeCaptcha::PLUGIN_SLUG);
+		return __('Invalid request received', 'goodbye-captcha');
 
 	}
 

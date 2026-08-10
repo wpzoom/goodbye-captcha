@@ -52,7 +52,10 @@ abstract class GdbcBasePublicModule extends MchGdbcBasePublicModule
 		if(!@is_readable($filePath))
 			return null;
 
-		return $appendScriptTag ? '<script type="text/javascript">' . file_get_contents($filePath) . '</script>' : file_get_contents($filePath);
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- reading a script file shipped inside the plugin, not a remote URL.
+		$scriptContent = file_get_contents($filePath);
+
+		return $appendScriptTag ? '<script type="text/javascript">' . $scriptContent . '</script>' : $scriptContent;
 
 	}
 
@@ -122,7 +125,10 @@ abstract class GdbcBasePublicModule extends MchGdbcBasePublicModule
 
 	public function renderTokenFieldIntoForm()
 	{
-		echo $this->getTokenFieldHtml();
+		echo wp_kses($this->getTokenFieldHtml(), array('input' => array(
+			'type' => array(), 'name' => array(), 'value' => array(),
+			'autocomplete' => array(), 'autocorrect' => array(),
+		)));
 	}
 
 	public function getTokenFieldHtml()

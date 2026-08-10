@@ -28,7 +28,7 @@ class GdbcWordpressAdminPage  extends GdbcBaseAdminPage
 		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_WORDPRESS))
 		{
 			$this->registerGroupedModules(array(
-				new MchGdbcGroupedModules(__('WordPress Standard Forms Settings', GoodByeCaptcha::PLUGIN_SLUG), array(
+				new MchGdbcGroupedModules(__('WordPress Standard Forms Settings', 'goodbye-captcha'), array(
 						GdbcWordPressAdminModule::getInstance(),
 					)
 				)
@@ -36,7 +36,7 @@ class GdbcWordpressAdminPage  extends GdbcBaseAdminPage
 
 
 			$this->registerGroupedModules(array(
-				new MchGdbcGroupedModules(__('Tweaking WordPress', GoodByeCaptcha::PLUGIN_SLUG), array(
+				new MchGdbcGroupedModules(__('Tweaking WordPress', 'goodbye-captcha'), array(
 						GdbcWordPressTweaksAdminModule::getInstance(),
 					)
 				)
@@ -55,7 +55,7 @@ class GdbcWordpressAdminPage  extends GdbcBaseAdminPage
 
 		add_meta_box(
 				"gdbc-help-xml-rpc",
-				__('Disabling XML-RPC Service', GoodByeCaptcha::PLUGIN_SLUG),
+				__('Disabling XML-RPC Service', 'goodbye-captcha'),
 				array( $this, 'renderXmlRpcMetaBox' ),
 				$this->getAdminScreenId(),
 				'side',
@@ -65,7 +65,7 @@ class GdbcWordpressAdminPage  extends GdbcBaseAdminPage
 
 		add_meta_box(
 				"gdbc-help-xml-rpc-pingback",
-				__('Disabling XML-RPC Pingbacks', GoodByeCaptcha::PLUGIN_SLUG),
+				__('Disabling XML-RPC Pingbacks', 'goodbye-captcha'),
 				array( $this, 'renderXmlRpcPingbacksMetaBox' ),
 				$this->getAdminScreenId(),
 				'side',
@@ -77,32 +77,34 @@ class GdbcWordpressAdminPage  extends GdbcBaseAdminPage
 
 	public function renderXmlRpcMetaBox()
 	{
-		$textInfo  = __('XML-RPC is used in WordPress as an API for third-party clients such as WordPress mobile apps, popular weblog clients like Windows Writer or popular plugins such as Jetpack.', GoodByeCaptcha::PLUGIN_SLUG);
-		$textInfo .= __('If you use any application which calls your XML-RPC Service, <b>do not</b> Completely Disable XML-RPC. Otherwise, completely disabling XML-RPC it is strongly recommended.', GoodByeCaptcha::PLUGIN_SLUG);
+		$textInfo  = __('XML-RPC is used in WordPress as an API for third-party clients such as WordPress mobile apps, popular weblog clients like Windows Writer or popular plugins such as Jetpack.', 'goodbye-captcha');
+		$textInfo .= __('If you use any application which calls your XML-RPC Service, <b>do not</b> Completely Disable XML-RPC. Otherwise, completely disabling XML-RPC it is strongly recommended.', 'goodbye-captcha');
 
-		echo '<p style="text-align: justify">' . $textInfo . '</p>';
+		echo '<p style="text-align: justify">' . wp_kses_post($textInfo) . '</p>';
 
 
 		$textInfo  = '<div class = "mch-meta-notice-info">';
-		$textInfo .= __('<span><b>Feel free to Completely Disable XML-RPC if you are using Jetpack plugin</b>. WPBruiser simply allows Jetpack\'s XML-RPC Requests</span>', GoodByeCaptcha::PLUGIN_SLUG);
+		$textInfo .= '<span><b>' . esc_html__('Feel free to Completely Disable XML-RPC if you are using Jetpack plugin', 'goodbye-captcha') . '</b>. '
+		          . esc_html__("WPBruiser simply allows Jetpack's XML-RPC Requests", 'goodbye-captcha') . '</span>';
 		$textInfo .= '</div>';
 
-		echo $textInfo;
+		echo wp_kses_post($textInfo);
 
 	}
 
 
 	public function renderXmlRpcPingbacksMetaBox()
 	{
-		$textInfo  = __('XML-RPC is used for Pingbacks and Trackbacks which can be heavily misused to start <a href="https://blog.sucuri.net/2014/03/more-than-162000-wordpress-sites-used-for-distributed-denial-of-service-attack.html">DDoS attacks</a>.', GoodByeCaptcha::PLUGIN_SLUG);
+		$textInfo  = __('XML-RPC is used for Pingbacks and Trackbacks which can be heavily misused to start <a href="https://blog.sucuri.net/2014/03/more-than-162000-wordpress-sites-used-for-distributed-denial-of-service-attack.html">DDoS attacks</a>.', 'goodbye-captcha');
 
-		echo '<p style="text-align: justify">' . $textInfo . '</p>';
+		echo '<p style="text-align: justify">' . wp_kses_post($textInfo) . '</p>';
 
 		$textInfo  = '<div class = "mch-meta-notice-info">';
-		$textInfo .= __('<span>If the <b>Completely Disable XML-RPC</b> option is checked, enabling/disabling this option has no effect!</span>', GoodByeCaptcha::PLUGIN_SLUG);
+		$textInfo .= '<span>' . esc_html__('If the', 'goodbye-captcha') . ' <b>' . esc_html__('Completely Disable XML-RPC', 'goodbye-captcha') . '</b> '
+		          . esc_html__('option is checked, enabling/disabling this option has no effect!', 'goodbye-captcha') . '</span>';
 		$textInfo .= '</div>';
 
-		echo $textInfo;
+		echo wp_kses_post($textInfo);
 	}
 
 

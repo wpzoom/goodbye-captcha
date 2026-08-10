@@ -19,6 +19,14 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// Settings pages are rendered inside the WordPress Settings API, which performs
+// its own nonce check via settings_fields()/check_admin_referer() before any
+// option is written; the reads below only decide which page to display.
+// The Settings API validates and sanitises the submitted option array itself
+// (register_setting() callbacks); the raw reads here only identify which
+// settings group is being saved.
+// phpcs:disable WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput
+
 abstract class MchGdbcBaseAdminPage
 {
 	private $pageBrowserTitle     = null;
@@ -95,7 +103,7 @@ abstract class MchGdbcBaseAdminPage
 					continue;
 
 				$arrMessages[$groupIndex] = true;
-				echo $message;
+				echo wp_kses_post($message);
 				break;
 			}
 		}
@@ -295,6 +303,9 @@ abstract class MchGdbcBaseAdminPage
 		$code .= '</div>';
 		$code .= '</div>';
 
+		// Contains do_meta_boxes() output (WordPress-generated settings forms).
+		// Deliberately not filtered: wp_kses would strip the form controls.
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- contains do_meta_boxes() output (WordPress-generated settings forms); filtering would strip the form controls.
 		echo $code;
 	}
 

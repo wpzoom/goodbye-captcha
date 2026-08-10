@@ -1,0 +1,7 @@
+# Files that must not ship in the WordPress.org package.
+.git
+.gitignore
+.gitattributes
+.distignore
+.DS_Store
+**/.DS_Store

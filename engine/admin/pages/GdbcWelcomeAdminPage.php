@@ -42,16 +42,25 @@ class GdbcWelcomeAdminPage extends GdbcBaseAdminPage
 		if( ! MchGdbcWpUtils::fileExists($templateFilePath) )
 			return;
 
-		$aboutPluginText = 'Thank you for installing! WPBruiser is an anti-spam and security plugin based on algorithms that identify spam bots without any annoying and hard to read captcha images.';
-
-
 		$arrPageDirectives = array(
-			'{page-main-title}' => __('Welcome to WPBruiser ' . GoodByeCaptcha::PLUGIN_VERSION, GoodByeCaptcha::PLUGIN_SLUG),
-			'{about-plugin}'    => __($aboutPluginText, GoodByeCaptcha::PLUGIN_SLUG),
+			'{page-main-title}' => esc_html(
+				sprintf(
+					/* translators: %s: plugin version number. */
+					__('Welcome to WPBruiser %s', 'goodbye-captcha'),
+					GoodByeCaptcha::PLUGIN_VERSION
+				)
+			),
+			'{about-plugin}'    => esc_html__(
+				'Thank you for installing! WPBruiser is an anti-spam and security plugin based on algorithms that identify spam bots without any annoying and hard to read captcha images.',
+				'goodbye-captcha'
+			),
 		);
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- reading a static template shipped inside the plugin, not a remote resource.
+		$pageTemplate = file_get_contents($templateFilePath);
 
-		echo str_replace(array_keys($arrPageDirectives), array_values($arrPageDirectives), file_get_contents($templateFilePath));
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static plugin template; both substituted values are escaped above.
+		echo str_replace(array_keys($arrPageDirectives), array_values($arrPageDirectives), $pageTemplate);
 
 
 	}

@@ -11,13 +11,13 @@
  * Plugin URI: https://wordpress.org/plugins/goodbye-captcha/
  * Description: An extremely powerful anti-spam plugin that blocks spambots without annoying captcha images.
  * Version: 3.2.0
- * Requires at least: 4.0
+ * Requires at least: 4.7
  * Requires PHP: 7.0
  * Author: Mihai Chelaru
  * Author URI: https://wordpress.org/plugins/goodbye-captcha/
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: wp-bruiser
+ * Text Domain: goodbye-captcha
  * Domain Path: /languages
  */
 
@@ -30,7 +30,11 @@ if(!class_exists('GoodByeCaptcha', false))
 	{
 		
 		CONST PLUGIN_VERSION    = '3.2.0';
-		CONST PLUGIN_SLUG       = 'wp-bruiser';
+		// PLUGIN_SLUG is also the prefix for option keys and admin menu slugs, so it
+		// must keep its historical value or existing installs lose their settings.
+		// The text domain is separate and must equal the WordPress.org slug.
+		CONST PLUGIN_SLUG        = 'wp-bruiser';
+		CONST PLUGIN_TEXT_DOMAIN = 'goodbye-captcha';
 		CONST PLUGIN_NAME       = 'WPBruiser';
 		CONST PLUGIN_SITE_URL   = 'https://wordpress.org/plugins/goodbye-captcha/';
 		CONST PLUGIN_SUPPORT_URL = 'https://wordpress.org/support/plugin/goodbye-captcha/';
@@ -83,6 +87,7 @@ if(!class_exists('GoodByeCaptcha', false))
 				'PLUGIN_SHORT_CODE'  => self::PLUGIN_SHORT_CODE,
 				'PLUGIN_VERSION'     => self::PLUGIN_VERSION,
 				'PLUGIN_SLUG'        => self::PLUGIN_SLUG,
+				'PLUGIN_TEXT_DOMAIN' => self::PLUGIN_TEXT_DOMAIN,
 			);
 
 			if (MchGdbcWpUtils::isAjaxRequest()) {
@@ -144,6 +149,7 @@ if(!class_exists('GoodByeCaptcha', false))
 
 		GdbcIPUtils::getClientIpAddress();
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only switch that serves a static client script; it changes no state.
 		if (!empty($_GET['gdbc-client']) && file_exists($filePath = dirname(__FILE__) . '/assets/public/scripts/gdbc-client-new.js.php')) {
 			require_once(ABSPATH . 'wp-includes/pluggable.php');
 			(!defined('LOGGED_IN_COOKIE') && function_exists('wp_cookie_constants')) ? wp_cookie_constants() : null;

@@ -23,6 +23,7 @@ abstract class MchGdbcBasePlugin
 {
 	protected static $PLUGIN_VERSION        = null;
 	protected static $PLUGIN_SLUG           = null;
+	protected static $PLUGIN_TEXT_DOMAIN    = null;
 	protected static $PLUGIN_MAIN_FILE      = null;
 	protected static $PLUGIN_SHORT_CODE     = null;
 
@@ -35,6 +36,7 @@ abstract class MchGdbcBasePlugin
 	protected function __construct(array $arrPluginInfo)
 	{
 		self::$PLUGIN_SLUG           = isset($arrPluginInfo['PLUGIN_SLUG'])        ? $arrPluginInfo['PLUGIN_SLUG']       : null;
+		self::$PLUGIN_TEXT_DOMAIN    = isset($arrPluginInfo['PLUGIN_TEXT_DOMAIN']) ? $arrPluginInfo['PLUGIN_TEXT_DOMAIN'] : self::$PLUGIN_SLUG;
 		self::$PLUGIN_VERSION        = isset($arrPluginInfo['PLUGIN_VERSION'])     ? $arrPluginInfo['PLUGIN_VERSION']    : null;
 		self::$PLUGIN_MAIN_FILE      = isset($arrPluginInfo['PLUGIN_MAIN_FILE'])   ? $arrPluginInfo['PLUGIN_MAIN_FILE']  : null;
 		self::$PLUGIN_SHORT_CODE     = isset($arrPluginInfo['PLUGIN_SHORT_CODE'])  ? $arrPluginInfo['PLUGIN_SHORT_CODE'] : null;
@@ -53,12 +55,18 @@ abstract class MchGdbcBasePlugin
 
 	public function initializePlugin()
 	{
-		$locale = apply_filters('plugin_locale', get_locale(), self::$PLUGIN_SLUG);
-
-		load_textdomain(self::$PLUGIN_SLUG, trailingslashit( WP_LANG_DIR ) . self::$PLUGIN_SLUG . DIRECTORY_SEPARATOR . self::$PLUGIN_SLUG . '-' . $locale . '.mo' );
-
-		load_plugin_textdomain(self::$PLUGIN_SLUG, false, self::$PLUGIN_SLUG . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR );
-
+		// The text domain must be the plugin's WordPress.org slug, which is not the
+		// same as PLUGIN_SLUG (that one is also used for option keys and menu slugs
+		// and must keep its historical value so existing settings keep working).
+		//
+		// The previous implementation loaded the domain "wp-bruiser" from
+		// "wp-bruiser/languages/", a directory that never existed, so bundled
+		// translations were never actually loaded.
+		load_plugin_textdomain(
+			self::$PLUGIN_TEXT_DOMAIN,
+			false,
+			self::$PLUGIN_DIRECTORY_NAME . '/languages'
+		);
 	}
 
 }

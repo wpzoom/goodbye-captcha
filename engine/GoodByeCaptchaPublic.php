@@ -82,6 +82,7 @@ final class GoodByeCaptchaPublic extends MchGdbcBasePublicPlugin
 		}
 
 		$scriptRendered = true;
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- returns a self-contained <script> block built from static JS plus an esc_url()'d URL.
 		echo GdbcBasePublicModule::getPublicScriptInlineContent();
 
 	}

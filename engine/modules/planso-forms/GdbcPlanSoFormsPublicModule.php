@@ -76,7 +76,7 @@ final class GdbcPlanSoFormsPublicModule  extends GdbcBasePublicModule
 
 		$this->attemptEntity->Notes = $arrCapturedData;
 
-		return GdbcRequestController::isValid($this->attemptEntity) ? true : __('There was an error while processing your request!', $this->PLUGIN_SLUG);
+		return GdbcRequestController::isValid($this->attemptEntity) ? true : __('There was an error while processing your request!', 'goodbye-captcha');
 	}
 
 	public static function getInstance()

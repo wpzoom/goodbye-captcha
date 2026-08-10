@@ -20,6 +20,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// This module inspects submissions to a third-party public form to decide whether
+// they came from a bot. Those forms carry no plugin nonce, so reading $_POST
+// without one is intentional; values are validated before use.
+// phpcs:disable WordPress.Security.NonceVerification
+
 final class GdbcJetPackContactFormPublicModule extends GdbcBasePublicModule
 {
 
@@ -101,10 +106,10 @@ final class GdbcJetPackContactFormPublicModule extends GdbcBasePublicModule
 		if(empty($arrSubmittedData))
 		{
 			$arrPostedMappedKeys = array(
-				'comment_author'       => __('Name'   , GoodByeCaptcha::PLUGIN_SLUG),
-				'comment_author_email' => __('Email'  , GoodByeCaptcha::PLUGIN_SLUG),
-				'comment_author_url'   => __('Website', GoodByeCaptcha::PLUGIN_SLUG),
-				'comment_content'      => __('Message', GoodByeCaptcha::PLUGIN_SLUG),
+				'comment_author'       => __('Name'   , 'goodbye-captcha'),
+				'comment_author_email' => __('Email'  , 'goodbye-captcha'),
+				'comment_author_url'   => __('Website', 'goodbye-captcha'),
+				'comment_content'      => __('Message', 'goodbye-captcha'),
 			);
 
 			foreach($arrPostedMappedKeys as $postedKey => $newKey)
@@ -117,7 +122,7 @@ final class GdbcJetPackContactFormPublicModule extends GdbcBasePublicModule
 			}
 		}
 
-		$postId = empty($_POST['contact-form-id']) ? 0 : stripslashes($_POST['contact-form-id']);
+		$postId = empty($_POST['contact-form-id']) ? 0 : stripslashes(sanitize_text_field(wp_unslash($_POST['contact-form-id'])));
 		$postId = (false !== strpos($postId, 'widget-')) ? absint(substr($postId, 7)) : absint($postId);
 
 		if($title = get_the_title($postId)){
@@ -132,8 +137,8 @@ final class GdbcJetPackContactFormPublicModule extends GdbcBasePublicModule
 		if(null !== $grunionForm && in_array('errors', (array)get_class_vars($grunionForm)))
 		{
 			is_wp_error($grunionForm->errors)
-				? $grunionForm->errors->add($this->PLUGIN_SLUG,           __('Your entry appears to be spam!', GoodByeCaptcha::PLUGIN_SLUG))
-				: $grunionForm->errors = new WP_Error($this->PLUGIN_SLUG, __('Your entry appears to be spam!', GoodByeCaptcha::PLUGIN_SLUG));
+				? $grunionForm->errors->add($this->PLUGIN_SLUG,           __('Your entry appears to be spam!', 'goodbye-captcha'))
+				: $grunionForm->errors = new WP_Error($this->PLUGIN_SLUG, __('Your entry appears to be spam!', 'goodbye-captcha'));
 		}
 
 		return new WP_Error();

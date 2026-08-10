@@ -42,16 +42,16 @@ final class GdbcZmAlrAdminModule extends GdbcBaseAdminModule
 			self::OPTION_ZM_ALR_LOGIN_FORM    => array(
 				'Id'          => 1,
 				'Value'       => NULL,
-				'LabelText'   => __('Protect Login Form', GoodByeCaptcha::PLUGIN_SLUG),
-				'DisplayText' => __('Login', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'   => __('Protect Login Form', 'goodbye-captcha'),
+				'DisplayText' => __('Login', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
 			),
 
 			self::OPTION_ZM_ALR_REGISTER_FORM  => array(
 				'Id'          => 2,
 				'Value'       => NULL,
-				'LabelText'   => __('Protect Register Form', GoodByeCaptcha::PLUGIN_SLUG),
-				'DisplayText' => __('Register', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'   => __('Protect Register Form', 'goodbye-captcha'),
+				'DisplayText' => __('Register', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
 			),
 
@@ -63,19 +63,46 @@ final class GdbcZmAlrAdminModule extends GdbcBaseAdminModule
 
 	public  function validateModuleSettingsFields($arrSettingOptions)
 	{
-		$this->registerSuccessMessage(__('Your changes were successfully saved!', GoodByeCaptcha::PLUGIN_SLUG));
+		$this->registerSuccessMessage(__('Your changes were successfully saved!', 'goodbye-captcha'));
 
 		return $arrSettingOptions;
 	}
 
 	public  function renderModuleSettingsSectionHeader(array $arrSectionInfo)
 	{
-		echo '<h3>' . __('ZM Ajax Login Register General Settings', GoodByeCaptcha::PLUGIN_SLUG) . '</h3>';
+		echo '<h3>' . esc_html__('ZM Ajax Login Register General Settings', 'goodbye-captcha') . '</h3>';
 	}
 
 	public function getFormattedBlockedContent(GdbcAttemptEntity $attemptEntity)
 	{
-		print_r($attemptEntity);exit;
+		// This used to be a leftover `print_r($attemptEntity); exit;` debug statement,
+		// which dumped the raw object and killed the Reports page whenever a blocked
+		// ZM Ajax Login Register attempt was inspected.
+		$attemptEntity->Notes = (array)GoodByeCaptchaUtils::safeMaybeUnserialize($attemptEntity->Notes);
+		$arrContent           = array('table-head-rows' => '', 'table-body-rows' => '');
+
+		$tableHeadRows  = '<tr>';
+		$tableHeadRows .= '<th colspan="2">' . esc_html__('ZM Ajax Login Register Blocked Attempt', 'goodbye-captcha') . '</th>';
+		$tableHeadRows .= '</tr>';
+
+		$tableHeadRows .= '<tr>';
+		$tableHeadRows .= '<th>' . esc_html__('Field', 'goodbye-captcha') . '</th>';
+		$tableHeadRows .= '<th>' . esc_html__('Value', 'goodbye-captcha') . '</th>';
+		$tableHeadRows .= '</tr>';
+
+		$tableBodyRows = '';
+		foreach($attemptEntity->Notes as $key => $value)
+		{
+			$tableBodyRows .= '<tr>';
+			$tableBodyRows .= '<td>' . esc_html(self::getBlockedContentDisplayableKey($key)) . '</td>';
+			$tableBodyRows .= '<td>' . esc_html(self::getBlockedContentDisplayableValue($value)) . '</td>';
+			$tableBodyRows .= '</tr>';
+		}
+
+		$arrContent['table-head-rows'] = $tableHeadRows;
+		$arrContent['table-body-rows'] = $tableBodyRows;
+
+		return $arrContent;
 	}
 
 	public static function getInstance()

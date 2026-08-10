@@ -72,7 +72,7 @@ final class GdbcWhiteListedIpsAdminModule extends GdbcBaseAdminModule
 			
 			if( isset($arrAlreadySavedIps[$ipVersion][$minIpValue]) && $arrAlreadySavedIps[$ipVersion][$minIpValue] == $maxIpValue)
 			{
-				$this->registerSuccessMessage(__('Your changes were successfully saved!', GoodByeCaptcha::PLUGIN_SLUG));
+				$this->registerSuccessMessage(__('Your changes were successfully saved!', 'goodbye-captcha'));
 				unset($arrAlreadySavedIps[$ipVersion][$minIpValue]);
 			}
 			
@@ -82,7 +82,7 @@ final class GdbcWhiteListedIpsAdminModule extends GdbcBaseAdminModule
 		
 		if(empty($preparedData[$ipVersion]) || !is_array($preparedData[$ipVersion]))
 		{
-			$this->registerErrorMessage(__('Invalid IP/CIDR/Range provided!', GoodByeCaptcha::PLUGIN_SLUG));
+			$this->registerErrorMessage(__('Invalid IP/CIDR/Range provided!', 'goodbye-captcha'));
 			$arrSettingOptions[self::OPTION_WHITE_LISTED_IPS] = $arrAlreadySavedIps;
 			
 			return $arrSettingOptions;
@@ -90,7 +90,7 @@ final class GdbcWhiteListedIpsAdminModule extends GdbcBaseAdminModule
 		
 		if(!in_array($ipVersion, array(MchGdbcIPUtils::IP_VERSION_4, MchGdbcIPUtils::IP_VERSION_6)))
 		{
-			$this->registerErrorMessage(__('Invalid IP/CIDR/Range provided', GoodByeCaptcha::PLUGIN_SLUG));
+			$this->registerErrorMessage(__('Invalid IP/CIDR/Range provided', 'goodbye-captcha'));
 			$arrSettingOptions[self::OPTION_WHITE_LISTED_IPS] = $arrAlreadySavedIps;
 			
 			return $arrSettingOptions;
@@ -100,7 +100,8 @@ final class GdbcWhiteListedIpsAdminModule extends GdbcBaseAdminModule
 		{
 			if (GdbcIPUtils::isIpWhiteListed($arrSettingOptions[self::OPTION_WHITE_LISTED_IPS]))
 			{
-				$this->registerErrorMessage(sprintf(__("The IP  %s is already white-listed!", GoodByeCaptcha::PLUGIN_SLUG), esc_html($arrSettingOptions[self::OPTION_WHITE_LISTED_IPS])));
+				/* translators: %s: the IP address that is already white-listed. */
+				$this->registerErrorMessage(sprintf(__("The IP  %s is already white-listed!", 'goodbye-captcha'), esc_html($arrSettingOptions[self::OPTION_WHITE_LISTED_IPS])));
 				$arrSettingOptions[self::OPTION_WHITE_LISTED_IPS] = $arrAlreadySavedIps;
 				
 				return $arrSettingOptions;
@@ -127,7 +128,8 @@ final class GdbcWhiteListedIpsAdminModule extends GdbcBaseAdminModule
 				
 				if( ($minValue <= $preparedData[$ipVersion][0]) && ($preparedData[$ipVersion][1] <= $maxValue) )
 				{
-					$this->registerErrorMessage(sprintf(__("The IP Range  %s is already white-listed!", GoodByeCaptcha::PLUGIN_SLUG), esc_html($arrSettingOptions[self::OPTION_WHITE_LISTED_IPS])));
+					/* translators: %s: the IP range that is already white-listed. */
+					$this->registerErrorMessage(sprintf(__("The IP Range  %s is already white-listed!", 'goodbye-captcha'), esc_html($arrSettingOptions[self::OPTION_WHITE_LISTED_IPS])));
 					$arrSettingOptions[self::OPTION_WHITE_LISTED_IPS] = $arrAlreadySavedIps;
 					
 					return $arrSettingOptions;
@@ -161,7 +163,7 @@ final class GdbcWhiteListedIpsAdminModule extends GdbcBaseAdminModule
 		
 		$arrSettingOptions[self::OPTION_WHITE_LISTED_IPS] = $arrAlreadySavedIps;
 		
-		$this->registerSuccessMessage(__('Your changes were successfully saved!', GoodByeCaptcha::PLUGIN_SLUG));
+		$this->registerSuccessMessage(__('Your changes were successfully saved!', 'goodbye-captcha'));
 		
 		return $arrSettingOptions;
 	}

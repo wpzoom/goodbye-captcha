@@ -19,6 +19,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// This module inspects submissions to a third-party public form to decide whether
+// they came from a bot. Those forms carry no plugin nonce, so reading $_POST
+// without one is intentional; values are validated before use.
+// phpcs:disable WordPress.Security.NonceVerification
+
 class GdbcWordPressTweaksPublicModule extends GdbcBasePublicModule
 {
 
@@ -92,7 +97,7 @@ class GdbcWordPressTweaksPublicModule extends GdbcBasePublicModule
 		if (!headers_sent()) {
 			header('Connection: close');
 			header('Content-Type: text/xml');
-			header('Date: ' . date('r'));
+			header('Date: ' . gmdate('r'));
 		}
 
 		echo '<?xml version="1.0"?><methodResponse><fault><value><struct><member><name>faultCode</name><value><int>405</int></value></member><member><name>faultString</name><value><string>XML-RPC services are disabled on this site!</string></value></member></struct></value></fault></methodResponse>';

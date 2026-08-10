@@ -83,7 +83,7 @@ foreach($detectedIpProxyHeaders as $index => $header)
 	<tr class = "even">
 
 		<td  colspan="2">
-			<form method="post" action="<?php echo $formAction ?>">
+			<form method="post" action="<?php echo esc_url($formAction) ?>">
 				<div class="clearfix" style="margin:0 auto; width: 99%">
 					<table style="width: 100%">
 
@@ -118,7 +118,7 @@ foreach($detectedIpProxyHeaders as $index => $header)
 							</td>
 
 							<td  style="text-align: center">
-								<input style = "margin-left: 50px" type="submit" value="<?php _e('Register Header', GoodByeCaptcha::PLUGIN_SLUG); ?>" class="button button-primary" />
+								<input style = "margin-left: 50px" type="submit" value="<?php esc_attr_e('Register Header', 'goodbye-captcha'); ?>" class="button button-primary" />
 							</td>
 						</tr>
 
@@ -144,7 +144,7 @@ foreach($detectedIpProxyHeaders as $index => $header)
 		echo '<td style="text-align: center">';
 		echo '<form method="post" action="' . esc_html($formAction) . '">';
 
-		echo '<input type="hidden" name="'.$fieldName.'"  value="remove-'.esc_attr($registeredHeader).'" />';
+		echo '<input type="hidden" name="'.esc_attr($fieldName).'"  value="remove-'.esc_attr($registeredHeader).'" />';
 		echo '<input type="submit" value="Remove" class="button" />';
 
 		settings_fields(  $this->getSettingGroupId($this->proxyHeadersGroupIndex) );
@@ -186,13 +186,13 @@ foreach($detectedIpProxyHeaders as $index => $header)
 			<?php if(!empty($proxyDetectionMessage)){ ?>
 
 				<div class="mch-meta-notice-warning" style="padding-top: 5px; padding-bottom: 5px; text-align: left">
-					<h3 style="margin: 0; padding: 0; font-size: 1.12em; line-height: 1.6;"><?php echo $proxyDetectionMessage; ?></h3>
+					<h3 style="margin: 0; padding: 0; font-size: 1.12em; line-height: 1.6;"><?php echo wp_kses_post($proxyDetectionMessage); ?></h3>
 				</div>
 
 			<?php } ?>
 
 			<p style="margin-top: 15px; padding: 0; font-size: 1.05em;">
-				If <b style = "color:#d54e21"> <?php echo GdbcIPUtils::getClientIpAddress(); ?> </b> is your current IP Address - check by clicking here: <a target="_blank" href = "http://www.whatsmyip.org/">What'sMyIP</a> - no additional action is required!
+				If <b style = "color:#d54e21"> <?php echo esc_html(GdbcIPUtils::getClientIpAddress()); ?> </b> is your current IP Address - check by clicking here: <a target="_blank" href = "http://www.whatsmyip.org/">What'sMyIP</a> - no additional action is required!
 			</p>
 
 
@@ -212,8 +212,8 @@ foreach($detectedIpProxyHeaders as $index => $header)
 
 					echo '<p style="margin-top: 8px; padding-top:8px; border-top:1px solid #e1e1e1; font-size: 1.05em;">';
 
-					echo 'If <b style = "color:#d54e21">' . MchGdbcHttpRequest::getClientIpAddressFromProxyHeader($proxyHeader) . '</b> is your current IP Address - check by clicking here: <a target="_blank" href = "http://www.whatsmyip.org/">What\'sMyIP</a> - ';
-					echo 'Register  <b style = "color:#d54e21">' . $proxyHeader . '</b> Proxy Header';
+					echo 'If <b style = "color:#d54e21">' . esc_html(MchGdbcHttpRequest::getClientIpAddressFromProxyHeader($proxyHeader)) . '</b> is your current IP Address - check by clicking here: <a target="_blank" href = "http://www.whatsmyip.org/">What\'sMyIP</a> - ';
+					echo 'Register  <b style = "color:#d54e21">' . esc_html($proxyHeader) . '</b> Proxy Header';
 
 					echo '</p>';
 				}

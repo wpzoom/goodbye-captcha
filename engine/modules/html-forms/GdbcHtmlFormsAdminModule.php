@@ -22,9 +22,9 @@ final class GdbcHtmlFormsAdminModule extends GdbcBaseAdminModule
 			self::OPTION_IS_HTML_FORMS_ACTIVATED => array(
 				'Id'         => 1,
 				'Value'      => NULL,
-				'LabelText'  => __('HTML Forms', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'  => __('HTML Forms', 'goodbye-captcha'),
 				'InputType'  => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX,
-				'Description' => __('Protects all your forms built with <a target="_blank" href="https://wordpress.org/plugins/html-forms/">HTML Forms Plugin</a>', GoodByeCaptcha::PLUGIN_SLUG),
+				'Description' => __('Protects all your forms built with <a target="_blank" href="https://wordpress.org/plugins/html-forms/">HTML Forms Plugin</a>', 'goodbye-captcha'),
 			),
 
 		);
@@ -40,8 +40,8 @@ final class GdbcHtmlFormsAdminModule extends GdbcBaseAdminModule
 	
 	public  function renderModuleSettingsSectionHeader(array $arrSectionInfo)
 	{
-		echo '<h3>' . __('Popular Contact Forms Settings', GoodByeCaptcha::PLUGIN_SLUG) . '</h3><hr />';
-		echo '<h4>' . __('Enable protection for the following popular contact forms:', GoodByeCaptcha::PLUGIN_SLUG) . '</h4>';
+		echo '<h3>' . esc_html__('Popular Contact Forms Settings', 'goodbye-captcha') . '</h3><hr />';
+		echo '<h4>' . esc_html__('Enable protection for the following popular contact forms:', 'goodbye-captcha') . '</h4>';
 	}
 
 	public function getFormattedBlockedContent(GdbcAttemptEntity $attemptEntity)

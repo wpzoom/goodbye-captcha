@@ -32,7 +32,7 @@ class GdbcNotificationsAdminPage extends GdbcBaseAdminPage
 			$modulesList[] = GdbcEmailNotificationsAdminModule::getInstance();
 
 		$this->registerGroupedModules(array(
-				new MchGdbcGroupedModules(__('WPBruiser - Notifications Settings', GoodByeCaptcha::PLUGIN_SLUG), $modulesList)
+				new MchGdbcGroupedModules(__('WPBruiser - Notifications Settings', 'goodbye-captcha'), $modulesList)
 			)
 		);
 

@@ -19,6 +19,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// One-off schema migrations against the plugin's own table. Table names derive
+// from $wpdb->base_prefix, not user input, and identifiers cannot be bound as
+// prepare() placeholders. These run once per upgrade, so caching does not apply.
+// phpcs:disable WordPress.DB
+
 final class GdbcUpdatesController
 {
 	public static function updateToCurrentVersion()
@@ -226,8 +231,8 @@ final class GdbcUpdatesController
 
 
 
-		$minDateTime = date('Y-m-d H:i:s',  strtotime(((-1) * (30)) . ' days', current_time( 'timestamp' )));
-		$maxDateTime = date('Y-m-d H:i:s',  current_time( 'timestamp' ));
+		$minDateTime = gmdate('Y-m-d H:i:s',  strtotime(((-1) * (30)) . ' days', current_time( 'timestamp' )));
+		$maxDateTime = gmdate('Y-m-d H:i:s',  current_time( 'timestamp' ));
 
 		$gdbcAttemptsQuery = "
 					SELECT Id, UNIX_TIMESTAMP(CreatedDate) AS CreatedDate, ModuleId, SectionId, ClientIp, CountryId, ReasonId

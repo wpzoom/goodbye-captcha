@@ -19,6 +19,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// This module inspects submissions to a third-party public form to decide whether
+// they came from a bot. Those forms carry no plugin nonce, so reading $_POST
+// without one is intentional; values are validated before use.
+// phpcs:disable WordPress.Security.NonceVerification
+
 class GdbcWordPressPublicModule extends GdbcBasePublicModule
 {
 	private $commentValidationHookIndex       = null;
@@ -89,6 +94,7 @@ class GdbcWordPressPublicModule extends GdbcBasePublicModule
 
 	public function renderPublicScriptIntoEpochIframe()
 	{
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- returns a self-contained <script> block built from static JS plus an esc_url()'d URL.
 		echo parent::getPublicScriptInlineContent();
 	}
 
@@ -211,7 +217,7 @@ class GdbcWordPressPublicModule extends GdbcBasePublicModule
 
 		return GdbcRequestController::isValid($this->attemptEntity)
 			? $wpUser
-			: new WP_Error(GoodByeCaptcha::PLUGIN_SLUG,  __('Invalid username or incorrect password!', GoodByeCaptcha::PLUGIN_SLUG));
+			: new WP_Error(GoodByeCaptcha::PLUGIN_SLUG,  __('Invalid username or incorrect password!', 'goodbye-captcha'));
 
 	}
 
@@ -265,7 +271,7 @@ class GdbcWordPressPublicModule extends GdbcBasePublicModule
 
 		empty($results['errors']) || !is_wp_error($results['errors']) ? $results['errors'] = new WP_Error() : null;
 
-		$results['errors']->add('gdbc-invalid-token', __('Registration Error!', GoodByeCaptcha::PLUGIN_SLUG));
+		$results['errors']->add('gdbc-invalid-token', __('Registration Error!', 'goodbye-captcha'));
 
 		return $results;
 	}
@@ -283,7 +289,7 @@ class GdbcWordPressPublicModule extends GdbcBasePublicModule
 
 		!is_wp_error($wpError) ? $wpError = new WP_Error() : null;
 
-		$wpError->add('gdbc-invalid-token', __('Registration Error!', GoodByeCaptcha::PLUGIN_SLUG));
+		$wpError->add('gdbc-invalid-token', __('Registration Error!', 'goodbye-captcha'));
 
 		return $wpError;
 	}
@@ -301,7 +307,7 @@ class GdbcWordPressPublicModule extends GdbcBasePublicModule
 
 		$this->getAttemptEntity()->SectionId = $this->getOptionIdByOptionName(GdbcWordpressAdminModule::WORDPRESS_LOST_PASSWORD_FORM);
 
-		$userName = !empty($_POST['user_login']) ?  $_POST['user_login'] : '';
+		$userName = !empty($_POST['user_login']) ?  sanitize_text_field(wp_unslash($_POST['user_login'])) : '';
 
 		if(!empty($userName))
 		{
@@ -327,13 +333,13 @@ class GdbcWordPressPublicModule extends GdbcBasePublicModule
 		$arrWordPressCommentsType = array('pingback' => 1, 'trackback' => 1);
 
 		if( (!empty($arrComment['comment_type']) && isset($arrWordPressCommentsType[strtolower($arrComment['comment_type'])]) ) ) {
-			wp_die( '<p>' . __( 'Link Notifications are disabled!', GoodByeCaptcha::PLUGIN_SLUG ) . '</p>', __( 'Comment Submission Failure' ), array( 'response' => 200 ) );
+			wp_die( '<p>' . esc_html__( 'Link Notifications are disabled!', 'goodbye-captcha') . '</p>', esc_html__( 'Comment Submission Failure' ), array( 'response' => 200 ) );
 		}
 
 		$arrComment['comment_post_ID'] = (!empty($arrComment['comment_post_ID']) && is_numeric($arrComment['comment_post_ID'])) ? (int)$arrComment['comment_post_ID'] : 0;
 
 		if ( ! isset( $arrComment['comment_agent'] ) ) {
-			$arrComment['comment_agent'] = isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT']: '';
+			$arrComment['comment_agent'] = isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])): '';
 		}
 		$arrComment['comment_agent'] = substr( $arrComment['comment_agent'], 0, 254 );
 
@@ -355,11 +361,11 @@ class GdbcWordPressPublicModule extends GdbcBasePublicModule
 
 			if( MchGdbcWpUtils::isAjaxRequest() || defined('EPOCH_API') )
 			{
-				$errorMessage = strip_tags ($commentFieldsLengthError->get_error_message());
+				$errorMessage = wp_strip_all_tags($commentFieldsLengthError->get_error_message());
 				$errorCode    = 403;
 			}
 
-			wp_die( $errorMessage, __( 'Comment Submission Failure' ), array( 'response' => $errorCode, 'back_link' => true ) );
+			wp_die( esc_html( $errorMessage ), esc_html__( 'Comment Submission Failure' ), array( 'response' => (int) $errorCode, 'back_link' => true ) );
 
 		}
 
@@ -369,7 +375,7 @@ class GdbcWordPressPublicModule extends GdbcBasePublicModule
 
 		if(GdbcAjaxController::isWpDiscuzPostCommentAjaxRequest())
 		{
-			wp_die(json_encode(array('code' => 'wc_invalid_field')));
+			wp_die(wp_json_encode(array('code' => 'wc_invalid_field')));
 		}
 
 
@@ -391,7 +397,7 @@ class GdbcWordPressPublicModule extends GdbcBasePublicModule
 		$webSiteFieldLength = $this->getOption(GdbcWordPressAdminModule::WORDPRESS_COMMENTS_FORM_WEBSITE_LENGTH);
 		$contentFieldLength = $this->getOption(GdbcWordPressAdminModule::WORDPRESS_COMMENTS_FORM_CONTENT_LENGTH);
 
-		$comment_author       = isset($arrComment['comment_author'])       && is_string($arrComment['comment_author'])       ? trim(strip_tags($arrComment['comment_author'])) : null;
+		$comment_author       = isset($arrComment['comment_author'])       && is_string($arrComment['comment_author'])       ? trim(wp_strip_all_tags($arrComment['comment_author'])) : null;
 		$comment_content      = isset($arrComment['comment_content'])      && is_string($arrComment['comment_content'])      ? trim($arrComment['comment_content'])            : null;
 		$comment_author_url   = isset($arrComment['comment_author_url'])   && is_string($arrComment['comment_author_url'])   ? trim($arrComment['comment_author_url'])         : null;
 		$comment_author_email = isset($arrComment['comment_author_email']) && is_string($arrComment['comment_author_email']) ? trim($arrComment['comment_author_email'])       : null;

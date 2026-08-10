@@ -19,6 +19,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// $_SERVER values here are only compared against known strings or used to rebuild
+// the current URL; the file helpers operate on the plugin's own cache directory
+// and must work before WP_Filesystem is available.
+// phpcs:disable WordPress.WP.AlternativeFunctions, WordPress.Security.ValidatedSanitizedInput, WordPress.DB
+
 final class MchGdbcWpUtils
 {
 	public static function getSiteNameById($siteId)

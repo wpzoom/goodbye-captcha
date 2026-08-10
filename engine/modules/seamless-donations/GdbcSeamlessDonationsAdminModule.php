@@ -41,7 +41,7 @@ final class GdbcSeamlessDonationsAdminModule extends GdbcBaseAdminModule
 			self::OPTION_SEAMLESS_DONATIONS_PROTECTION_ACTIVATED    => array(
 				'Id'         => 1,
 				'Value'      => NULL,
-				'LabelText' => __('Protect Donation Form', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText' => __('Protect Donation Form', 'goodbye-captcha'),
 				'InputType'  => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
 			),
 
@@ -53,14 +53,14 @@ final class GdbcSeamlessDonationsAdminModule extends GdbcBaseAdminModule
 
 	public  function validateModuleSettingsFields($arrSettingOptions)
 	{
-		$this->registerSuccessMessage(__('Your changes were successfully saved!', GoodByeCaptcha::PLUGIN_SLUG));
+		$this->registerSuccessMessage(__('Your changes were successfully saved!', 'goodbye-captcha'));
 
 		return $arrSettingOptions;
 	}
 
 	public  function renderModuleSettingsSectionHeader(array $arrSectionInfo)
 	{
-		echo '<h3>' . __('Seamless Donations settings', GoodByeCaptcha::PLUGIN_SLUG) . '</h3>';
+		echo '<h3>' . esc_html__('Seamless Donations settings', 'goodbye-captcha') . '</h3>';
 	}
 
 	public function getFormattedBlockedContent(GdbcAttemptEntity $attemptEntity)
@@ -72,19 +72,19 @@ final class GdbcSeamlessDonationsAdminModule extends GdbcBaseAdminModule
 		$tableBodyRows = '';
 
 		$tableHeadRows .= '<tr>';
-		$tableHeadRows .= '<th colspan="2">' . __("Seamless Donations Blocked Attempt", GoodByeCaptcha::PLUGIN_SLUG) . '</th>';
+		$tableHeadRows .= '<th colspan="2">' . __("Seamless Donations Blocked Attempt", 'goodbye-captcha') . '</th>';
 		$tableHeadRows .= '</tr>';
 
 		$tableHeadRows .= '<tr>';
-		$tableHeadRows .= '<th>' . __('Field', GoodByeCaptcha::PLUGIN_SLUG) . '</th>';
-		$tableHeadRows .= '<th>' . __('Value', GoodByeCaptcha::PLUGIN_SLUG) . '</th>';
+		$tableHeadRows .= '<th>' . __('Field', 'goodbye-captcha') . '</th>';
+		$tableHeadRows .= '<th>' . __('Value', 'goodbye-captcha') . '</th>';
 		$tableHeadRows .= '</tr>';
 
 		foreach($attemptEntity->Notes as $key => $value)
 		{
 			$tableBodyRows .='<tr>';
 			$tableBodyRows .= '<td>' . self::getBlockedContentDisplayableKey($key) . '</td>';
-			$tableBodyRows .= '<td>' . wp_filter_kses(print_r($value, true))  . '</td>';
+			$tableBodyRows .= '<td>' . esc_html(self::getBlockedContentDisplayableValue($value))  . '</td>';
 			$tableBodyRows .='</tr>';
 		}
 

@@ -39,7 +39,7 @@ class GdbcMailChimpForWpAdminModule extends GdbcBaseAdminModule
 			self::OPTION_MODULE_MAIL_CHIMP_FOR_WP => array(
 				'Id'         => 1,
 				'Value'      => NULL,
-				'LabelText'  => __('MailChimp for WordPress', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'  => __('MailChimp for WordPress', 'goodbye-captcha'),
 				'InputType'  => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
 			),
 
@@ -52,14 +52,14 @@ class GdbcMailChimpForWpAdminModule extends GdbcBaseAdminModule
 
 	public  function validateModuleSettingsFields($arrSettingOptions)
 	{
-		$this->registerSuccessMessage(__('Your changes were successfully saved!', GoodByeCaptcha::PLUGIN_SLUG));
+		$this->registerSuccessMessage(__('Your changes were successfully saved!', 'goodbye-captcha'));
 		return $arrSettingOptions;
 	}
 
 	public  function renderModuleSettingsSectionHeader(array $arrSectionInfo)
 	{
-		echo '<h3>' . __('Popular Subscriptions Plugins Settings', GoodByeCaptcha::PLUGIN_SLUG) . '</h3><hr />';
-		echo '<h4>' . __('Enable protection for the following popular subscriptions plugins:', GoodByeCaptcha::PLUGIN_SLUG) . '</h4>';
+		echo '<h3>' . esc_html__('Popular Subscriptions Plugins Settings', 'goodbye-captcha') . '</h3><hr />';
+		echo '<h4>' . esc_html__('Enable protection for the following popular subscriptions plugins:', 'goodbye-captcha') . '</h4>';
 
 	}
 
@@ -75,12 +75,12 @@ class GdbcMailChimpForWpAdminModule extends GdbcBaseAdminModule
 		$tableBodyRows = '';
 
 		$tableHeadRows .= '<tr>';
-		$tableHeadRows .= '<th colspan="2">' . __("MailChimp for WP Blocked Subscription", GoodByeCaptcha::PLUGIN_SLUG) . '</th>';
+		$tableHeadRows .= '<th colspan="2">' . __("MailChimp for WP Blocked Subscription", 'goodbye-captcha') . '</th>';
 		$tableHeadRows .= '</tr>';
 
 		$tableHeadRows .= '<tr>';
-		$tableHeadRows .= '<th>' . __('Field', GoodByeCaptcha::PLUGIN_SLUG) . '</th>';
-		$tableHeadRows .= '<th>' . __('Value', GoodByeCaptcha::PLUGIN_SLUG) . '</th>';
+		$tableHeadRows .= '<th>' . __('Field', 'goodbye-captcha') . '</th>';
+		$tableHeadRows .= '<th>' . __('Value', 'goodbye-captcha') . '</th>';
 		$tableHeadRows .= '</tr>';
 
 		if(isset($attemptEntity->Notes['ADDRESS']) && is_array($attemptEntity->Notes['ADDRESS']))
@@ -105,7 +105,7 @@ class GdbcMailChimpForWpAdminModule extends GdbcBaseAdminModule
 
 			$tableBodyRows .='<tr>';
 				$tableBodyRows .= '<td>' . self::getBlockedContentDisplayableKey($key) . '</td>';
-				$tableBodyRows .= '<td>' . wp_filter_kses(print_r($value, true))  . '</td>';
+				$tableBodyRows .= '<td>' . esc_html(self::getBlockedContentDisplayableValue($value))  . '</td>';
 			$tableBodyRows .='</tr>';
 		}
 

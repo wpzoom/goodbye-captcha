@@ -65,16 +65,16 @@ $hiddenInputName = $settingsModuleInstance->getOption(GdbcSettingsAdminModule::O
 
             var requestObj = (window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP"));
 
-            var formFieldElm = formElement.querySelector('input[name="<?php echo $hiddenInputName; ?>"]');
+            var formFieldElm = formElement.querySelector('input[name="<?php echo esc_js($hiddenInputName); ?>"]');
             if(!requestObj || !formFieldElm) return;
             var ajaxData = {};
 
-            ajaxData[<?php echo "'$hiddenInputName'"; ?>] = '<?php echo GdbcAjaxController::getAjaxNonce(); ?>';
-            ajaxData['action']      = '<?php echo GdbcAjaxController::ACTION_RETRIEVE_TOKEN ?>';
+            ajaxData['<?php echo esc_js($hiddenInputName); ?>'] = '<?php echo esc_js(GdbcAjaxController::getAjaxNonce()); ?>';
+            ajaxData['action']      = '<?php echo esc_js(GdbcAjaxController::ACTION_RETRIEVE_TOKEN); ?>';
             ajaxData['requestTime'] = (new Date()).getTime();
             ajaxData['browserInfo'] = JSON.stringify(browserInfo);
 
-            requestObj.open('POST', '<?php echo MchGdbcWpUtils::getAjaxUrl() ?>', true);
+            requestObj.open('POST', '<?php echo esc_url(MchGdbcWpUtils::getAjaxUrl()); ?>', true);
             requestObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
             requestObj.setRequestHeader("X-Requested-With", "XMLHttpRequest");
             requestObj.setRequestHeader('Accept',"application/json, text/javascript, */*; q=0.01");

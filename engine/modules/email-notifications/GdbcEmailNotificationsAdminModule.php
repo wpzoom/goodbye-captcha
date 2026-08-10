@@ -41,22 +41,22 @@ class GdbcEmailNotificationsAdminModule extends GdbcBaseAdminModule
 
 			self::OPTION_BRUTE_FORCE_ATTACK_DETECTED  => array(
 				'Value'       => true,
-				'LabelText'   => __('Brute Force Attack Detected', GoodByeCaptcha::PLUGIN_SLUG),
-				'Description' => __('A notification email will be sent when a brute force attack is detected', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'   => __('Brute Force Attack Detected', 'goodbye-captcha'),
+				'Description' => __('A notification email will be sent when a brute force attack is detected', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
 			),
 
 			self::OPTION_ADMIN_LOGGED_IN_DETECTED => array(
 					'Value'       => true,
-					'LabelText'   => __('An Administrator Signs In', GoodByeCaptcha::PLUGIN_SLUG),
-					'Description' => __('A notification email will be sent when a user with administrator capabilities signs in', GoodByeCaptcha::PLUGIN_SLUG),
+					'LabelText'   => __('An Administrator Signs In', 'goodbye-captcha'),
+					'Description' => __('A notification email will be sent when a user with administrator capabilities signs in', 'goodbye-captcha'),
 					'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
 			),
 
 			self::OPTION_EMAIL_ADDRESS  => array(
 				'Value'       => MchGdbcWpUtils::getAdminEmailAddress(),
-				'LabelText'   => __('Administrator Email Address', GoodByeCaptcha::PLUGIN_SLUG),
-				'Description' => __('The email address where WPBruiser will send notifications', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'   => __('Administrator Email Address', 'goodbye-captcha'),
+				'Description' => __('The email address where WPBruiser will send notifications', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_TEXT
 			),
 
@@ -69,7 +69,7 @@ class GdbcEmailNotificationsAdminModule extends GdbcBaseAdminModule
 
 	public  function renderModuleSettingsSectionHeader(array $arrSectionInfo)
 	{
-		echo '<h3>' . __('Email Notifications Settings', GoodByeCaptcha::PLUGIN_SLUG) . '</h3><hr />';
+		echo '<h3>' . esc_html__('Email Notifications Settings', 'goodbye-captcha') . '</h3><hr />';
 	}
 
 	public  function renderModuleSettingsField(array $arrSettingsField)
@@ -86,12 +86,12 @@ class GdbcEmailNotificationsAdminModule extends GdbcBaseAdminModule
 		{
 			$arrSettingOptions[self::OPTION_EMAIL_ADDRESS] = sanitize_email($arrSettingOptions[self::OPTION_EMAIL_ADDRESS]);
 			if(false === is_email($arrSettingOptions[self::OPTION_EMAIL_ADDRESS])){
-				$this->registerErrorMessage(__('Please provide a valid email address!', GoodByeCaptcha::PLUGIN_SLUG));
+				$this->registerErrorMessage(__('Please provide a valid email address!', 'goodbye-captcha'));
 				unset($arrSettingOptions[self::OPTION_EMAIL_ADDRESS]);
 			}
 		}
 
-		$this->registerSuccessMessage(__('Your changes were successfully saved!', GoodByeCaptcha::PLUGIN_SLUG));
+		$this->registerSuccessMessage(__('Your changes were successfully saved!', 'goodbye-captcha'));
 
 		return $arrSettingOptions;
 

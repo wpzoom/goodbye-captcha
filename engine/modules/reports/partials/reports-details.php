@@ -6,18 +6,18 @@
 			<header>
 				<span class="widget-icon icon-primary"><span class="glyphicon glyphicon-dashboard"></span></span>
 
-				<h2><?php  _e('Dashboard', GoodByeCaptcha::PLUGIN_SLUG) ?></h2>
+				<h2><?php  esc_html_e('Dashboard', 'goodbye-captcha') ?></h2>
 				<ul id="dashboard-navigation" class="nav nav-tabs pull-right in">
 					<li>
-						<a href="<?php echo $arrReportsNavigationTabUrl[0]; ?>">
+						<a href="<?php echo esc_url($arrReportsNavigationTabUrl[0]); ?>">
 							<i class="glyphicon glyphicon-stats"></i>
-							<span class="hidden-mobile hidden-tablet"><?php  _e('Stats', GoodByeCaptcha::PLUGIN_SLUG) ?></span>
+							<span class="hidden-mobile hidden-tablet"><?php  esc_html_e('Stats', 'goodbye-captcha') ?></span>
 						</a>
 					</li>
 					<li class="active">
 						<a data-toggle="tab">
 							<i class="glyphicon glyphicon-list-alt"></i>
-							<span class="hidden-mobile hidden-tablet"><?php  _e('Detailed', GoodByeCaptcha::PLUGIN_SLUG) ?></span>
+							<span class="hidden-mobile hidden-tablet"><?php  esc_html_e('Detailed', 'goodbye-captcha') ?></span>
 						</a>
 					</li>
 				</ul>

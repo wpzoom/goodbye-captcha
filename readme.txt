@@ -1,8 +1,8 @@
-=== WPBruiser {no- Captcha anti-Spam} ===
+=== WPBruiser ===
 Contributors: mihche
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XVC3TSGEJQP2U
 Tags: captcha, antispam, anti-spam, spam, brute force
-Requires at least: 4.0
+Requires at least: 4.7
 Requires PHP: 7.0
 Tested up to: 7.0
 Stable tag: 3.2.0
@@ -179,8 +179,15 @@ Security release. Fixes an unauthenticated PHP Object Injection vulnerability (C
 - Removed all outbound requests to the discontinued vendor service, including a license-activation request that was sent with TLS certificate verification disabled. The plugin no longer contacts any external server.
 - Removed the external module-loading code path, which searched other installed plugins' directories and executed PHP files found there. The plugin now only loads code that ships inside its own directory.
 - Added direct-access (`ABSPATH`) protection to all plugin PHP files.
+- Escaped all remaining output, including the client user agent shown in test-mode notification emails, which was previously written into the email unescaped.
+
+**Internationalization**
+- Every translatable string now passes a literal `goodbye-captcha` text domain instead of a PHP constant. WordPress.org can only extract strings from literal domains, so previously none of the plugin's ~356 strings could be translated at all.
+- The declared text domain now matches the plugin slug, and bundled translations are loaded from the correct directory. The previous release looked for them in a folder that never existed.
+- Replaced concatenated and interpolated translation strings with `sprintf()` placeholders so they can be translated correctly in every language.
 
 **Removed**
+- The newsletter subscription form, its bundled MailChimp submission library and its AJAX endpoint. The form was already unreachable and pointed at a mailing list that is no longer operated.
 - The Extensions and Licenses admin pages, the licensing modules and the self-hosted plugin updater. These supported paid add-ons that are no longer distributed, and every endpoint they used is gone.
 - Promotional links to the discontinued vendor website throughout the admin interface, the notification emails and the readme. That domain no longer belongs to the project.
 
@@ -190,8 +197,17 @@ Security release. Fixes an unauthenticated PHP Object Injection vulnerability (C
 - WordPress 6.7 notice: "Translation loading for the wp-bruiser domain was triggered too early". Admin page titles and notice messages are now built on the `init` action instead of `plugins_loaded`, so no translation function runs before `init`.
 - The admin stylesheets no longer restyle `html` and `body`. Previous versions overrode the WordPress admin font, text colour and background on the plugin's screens; admin pages now inherit WordPress' own typography.
 
+**Coding standards**
+- The plugin now passes the WordPress Plugin Check with no outstanding errors or warnings. Where a rule genuinely does not apply — inspecting nonce-less public form submissions, querying the plugin's own custom table, comparing anti-spam tokens byte-for-byte — the exception is annotated in the code with the reason.
+- Escaped every remaining output, added the missing `translators:` comments, and replaced `_e()` with `esc_html_e()`/`esc_attr_e()`.
+- Replaced discouraged functions: `date()` with `gmdate()`, `strip_tags()` with `wp_strip_all_tags()`, `json_encode()` with `wp_json_encode()`, `parse_url()` with `wp_parse_url()`, `mt_rand()` with `wp_rand()`, and `wp_redirect()` with `wp_safe_redirect()`.
+- Added `wp_unslash()` and sanitisation to request data that lacked it, and stopped writing sanitised values back into `$_POST`.
+- Removed leftover debug code, including a `print_r()` that dumped a raw object and halted the Reports page whenever a blocked ZM Ajax Login Register attempt was viewed.
+- Removed hidden files and the superseded client script from the package.
+
 **Maintenance**
 - Declared `Requires at least`, `Requires PHP` and the plugin license in the plugin header.
+- Raised the minimum supported WordPress version to 4.7, which is what the REST API calls in the brute-force module actually need.
 - Raised the minimum supported PHP version to 7.0.
 - Updated `Tested up to` for current WordPress.
 - Support links now point to the WordPress.org support forum.

@@ -348,45 +348,6 @@ final class MchGdbcIPUtils
 	}
 
 
-	public static function generateRandomIPV4($justPublic = true)
-	{
-		$ipAddress = null;
-
-		while(true)
-		{
-			mt_srand();
-			$ipAddress = mt_rand(0,255).".".mt_rand(0,255).".".mt_rand(0,255).".".mt_rand(0,255);
-
-			if(!$justPublic)
-				break;
-
-			if(false !== filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE))
-				break;
-
-		}
-
-		return $ipAddress;
-	}
-
-	public static function generateRandomIPV6($justPublic = true)
-	{
-		$ipAddress = null;
-
-		while(true)
-		{
-			//mt_srand();
-			$ipAddress = self::compressIPV6(wordwrap('2001' . substr(sha1(mt_rand()), -28), 4, ':', true));
-
-			if(!$justPublic)
-				break;
-
-			if(false !== filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE))
-				break;
-		}
-
-		return $ipAddress;
-	}
-
 	public static function isIpInCIDRRange($ipAddress, $cidrRange, $ipVersion = -1, $alreadySanitized = false)
 	{
 		$ipVersion = (int)$ipVersion;

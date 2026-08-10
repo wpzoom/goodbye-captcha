@@ -51,7 +51,7 @@ class GdbcMembershipAdminPage extends GdbcBaseAdminPage
 			$arrModules[] =  GdbcUltimateMemberAdminModule::getInstance();
 
 		$this->registerGroupedModules(array(
-				new MchGdbcGroupedModules(__('WPBruiser - Membership Plugins Settings', GoodByeCaptcha::PLUGIN_SLUG), $arrModules)
+				new MchGdbcGroupedModules(__('WPBruiser - Membership Plugins Settings', 'goodbye-captcha'), $arrModules)
 			)
 		);
 

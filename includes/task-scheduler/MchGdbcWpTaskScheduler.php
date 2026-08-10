@@ -108,8 +108,17 @@ class MchGdbcWpTaskScheduler
 			if(!$mchTask->isRecurringTask() || isset($this->arrDefaultRecurrences[$this->getFormattedRecurrence($mchTask->getRunningInterval())]))
 				continue;
 
-			$arrCronSchedules[$this->getFormattedRecurrence($mchTask->getRunningInterval())] = array('interval' => $mchTask->getRunningInterval(),
-																					     'display'  =>  __('Every ' . $mchTask->getRunningInterval() . ' seconds'));
+			// The interval must be interpolated with sprintf(), not concatenated inside
+			// __(): a translation call has to receive a single literal string so the
+			// string can be extracted for translation.
+			$arrCronSchedules[$this->getFormattedRecurrence($mchTask->getRunningInterval())] = array(
+				'interval' => $mchTask->getRunningInterval(),
+				'display'  => sprintf(
+					/* translators: %d: number of seconds between two runs of a scheduled task. */
+					__('Every %d seconds', 'goodbye-captcha'),
+					$mchTask->getRunningInterval()
+				),
+			);
 		}
 
 		return $arrCronSchedules;

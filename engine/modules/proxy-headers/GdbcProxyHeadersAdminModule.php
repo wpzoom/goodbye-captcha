@@ -42,7 +42,7 @@ final class GdbcProxyHeadersAdminModule extends GdbcBaseAdminModule
 		$arrAlreadySavedHeaders = (array)$this->getOption(self::PROXY_HEADERS_IP);
 
 		if(empty($arrSettingOptions[self::PROXY_HEADERS_IP])){
-			$this->registerErrorMessage(__('Invalid Proxy Header Received!', GoodByeCaptcha::PLUGIN_SLUG));
+			$this->registerErrorMessage(__('Invalid Proxy Header Received!', 'goodbye-captcha'));
 			$arrSettingOptions[self::PROXY_HEADERS_IP] = $arrAlreadySavedHeaders;
 			return $arrSettingOptions;
 		}
@@ -56,7 +56,7 @@ final class GdbcProxyHeadersAdminModule extends GdbcBaseAdminModule
 				unset($arrAlreadySavedHeaders[$key]);
 			}
 
-			$this->registerSuccessMessage(__('Your changes were successfully saved!', GoodByeCaptcha::PLUGIN_SLUG));
+			$this->registerSuccessMessage(__('Your changes were successfully saved!', 'goodbye-captcha'));
 			$arrSettingOptions[self::PROXY_HEADERS_IP] = array_values($arrAlreadySavedHeaders);
 			return $arrSettingOptions;
 
@@ -64,7 +64,7 @@ final class GdbcProxyHeadersAdminModule extends GdbcBaseAdminModule
 
 
 		if(!in_array($arrSettingOptions[self::PROXY_HEADERS_IP], MchGdbcHttpRequest::getDetectedProxyHeaders())) {
-			$this->registerErrorMessage(__('Invalid Proxy Header Received!', GoodByeCaptcha::PLUGIN_SLUG));
+			$this->registerErrorMessage(__('Invalid Proxy Header Received!', 'goodbye-captcha'));
 			$arrSettingOptions[self::PROXY_HEADERS_IP] = $arrAlreadySavedHeaders;
 			return $arrSettingOptions;
 		}
@@ -78,7 +78,11 @@ final class GdbcProxyHeadersAdminModule extends GdbcBaseAdminModule
 
 		if (in_array($arrSettingOptions[self::PROXY_HEADERS_IP], $arrAlreadySavedHeaders))
 		{
-			$this->registerErrorMessage(__("The {$arrSettingOptions[self::PROXY_HEADERS_IP]} proxy header is already registered!" , GoodByeCaptcha::PLUGIN_SLUG));
+			$this->registerErrorMessage(sprintf(
+				/* translators: %s: name of the HTTP proxy header. */
+				__('The %s proxy header is already registered!', 'goodbye-captcha'),
+				$arrSettingOptions[self::PROXY_HEADERS_IP]
+			));
 			$arrSettingOptions[self::PROXY_HEADERS_IP] = $arrAlreadySavedHeaders;
 			return $arrSettingOptions;
 		}
@@ -87,7 +91,7 @@ final class GdbcProxyHeadersAdminModule extends GdbcBaseAdminModule
 		$arrAlreadySavedHeaders = $arrSettingOptions[self::PROXY_HEADERS_IP];
 
 
-		$this->registerSuccessMessage(__('Your changes were successfully saved!', GoodByeCaptcha::PLUGIN_SLUG));
+		$this->registerSuccessMessage(__('Your changes were successfully saved!', 'goodbye-captcha'));
 
 		$arrSettingOptions[self::PROXY_HEADERS_IP] = $arrAlreadySavedHeaders;
 		return $arrSettingOptions;
@@ -96,7 +100,7 @@ final class GdbcProxyHeadersAdminModule extends GdbcBaseAdminModule
 
 	public  function renderModuleSettingsSectionHeader(array $arrSectionInfo)
 	{
-		//echo '<h3>' . __('Geo IP - Block Country General Settings', GoodByeCaptcha::PLUGIN_SLUG) . '</h3>';
+		//echo '<h3>' . esc_html__('Geo IP - Block Country General Settings', 'goodbye-captcha') . '</h3>';
 	}
 
 	public function getPartialAdminSettingsFilePath()

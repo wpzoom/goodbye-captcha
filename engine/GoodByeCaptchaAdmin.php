@@ -55,15 +55,15 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 
 		$this->adminPagesList = array(
 
-				new GdbcSettingsAdminPage(__('Settings', self::$PLUGIN_SLUG), __('General Settings', self::$PLUGIN_SLUG), self::$PLUGIN_SLUG),
-				new GdbcSecurityAdminPage(__('Security', self::$PLUGIN_SLUG), __('Security Settings', self::$PLUGIN_SLUG), self::$PLUGIN_SLUG),
-				new GdbcWordpressAdminPage(__('WordPress', self::$PLUGIN_SLUG), __('WordPress Settings', self::$PLUGIN_SLUG), self::$PLUGIN_SLUG),
-				new GdbcContactFormsAdminPage(__('Contact Forms', self::$PLUGIN_SLUG), __('Contact Forms Plugins', self::$PLUGIN_SLUG), self::$PLUGIN_SLUG),
-				new GdbcMembershipAdminPage(__('Membership', self::$PLUGIN_SLUG), __('Membership Page Settings', self::$PLUGIN_SLUG), self::$PLUGIN_SLUG),
-				new GdbcECommerceAdminPage(__('eCommerce', self::$PLUGIN_SLUG), __('eCommerce Page Settings', self::$PLUGIN_SLUG), self::$PLUGIN_SLUG),
-				new GdbcOthersAdminPage(__('Others', self::$PLUGIN_SLUG), __('All other popular plugins settings', self::$PLUGIN_SLUG), self::$PLUGIN_SLUG),
-				new GdbcNotificationsAdminPage(__('Notifications', self::$PLUGIN_SLUG), __('Notifications Settings', self::$PLUGIN_SLUG), self::$PLUGIN_SLUG),
-				new GdbcReportsAdminPage(__('Reports', self::$PLUGIN_SLUG), __('WPBruiser - Blocked Attempts', self::$PLUGIN_SLUG), self::$PLUGIN_SLUG),
+				new GdbcSettingsAdminPage(__('Settings', 'goodbye-captcha'), __('General Settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
+				new GdbcSecurityAdminPage(__('Security', 'goodbye-captcha'), __('Security Settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
+				new GdbcWordpressAdminPage(__('WordPress', 'goodbye-captcha'), __('WordPress Settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
+				new GdbcContactFormsAdminPage(__('Contact Forms', 'goodbye-captcha'), __('Contact Forms Plugins', 'goodbye-captcha'), self::$PLUGIN_SLUG),
+				new GdbcMembershipAdminPage(__('Membership', 'goodbye-captcha'), __('Membership Page Settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
+				new GdbcECommerceAdminPage(__('eCommerce', 'goodbye-captcha'), __('eCommerce Page Settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
+				new GdbcOthersAdminPage(__('Others', 'goodbye-captcha'), __('All other popular plugins settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
+				new GdbcNotificationsAdminPage(__('Notifications', 'goodbye-captcha'), __('Notifications Settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
+				new GdbcReportsAdminPage(__('Reports', 'goodbye-captcha'), __('WPBruiser - Blocked Attempts', 'goodbye-captcha'), self::$PLUGIN_SLUG),
 
 		);
 	}
@@ -89,7 +89,8 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 			$adminNotice = new GdbcAdminNotice( GdbcAdminNotice::USER_IP_WEB_ATTACKER_NOTICE_KEY, GdbcAdminNotice::NOTICE_TYPE_DANGER );
 
 			$noticeMessage = '<p><b>';
-			$noticeMessage .= sprintf( __( "Your IP Address - %s - is reported as a Web Attacker! In order to keep <b>Block Web Attackers IPs</b> option activated you must white-list your IP Address!", GoodByeCaptcha::PLUGIN_SLUG ), esc_html( GdbcIPUtils::getClientIpAddress() ) );
+			/* translators: %s: the visitor IP address that was reported. */
+			$noticeMessage .= sprintf( __( "Your IP Address - %s - is reported as a Web Attacker! In order to keep <b>Block Web Attackers IPs</b> option activated you must white-list your IP Address!", 'goodbye-captcha'), esc_html( GdbcIPUtils::getClientIpAddress() ) );
 			$noticeMessage .= '</b></p>';
 
 			$adminNotice->setMessage( $noticeMessage );
@@ -105,7 +106,8 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 
 			$adminNotice = new GdbcAdminNotice(GdbcAdminNotice::USER_IP_PROXY_ANONYM_NOTICE_KEY, GdbcAdminNotice::NOTICE_TYPE_DANGER);
 			$noticeMessage  = '<p><b>';
-			$noticeMessage .= sprintf(__("Your IP Address - %s - is reported as a dangerous Anonymous Proxy IP! In order to keep <b>Block Anonymous Proxy IPs</b> option activated you must white-list your IP Address!", GoodByeCaptcha::PLUGIN_SLUG),   esc_html(GdbcIPUtils::getClientIpAddress()));
+			/* translators: %s: the visitor IP address that was reported. */
+			$noticeMessage .= sprintf(__("Your IP Address - %s - is reported as a dangerous Anonymous Proxy IP! In order to keep <b>Block Anonymous Proxy IPs</b> option activated you must white-list your IP Address!", 'goodbye-captcha'),   esc_html(GdbcIPUtils::getClientIpAddress()));
 			$noticeMessage .= '</b></p>';
 
 			$adminNotice->setMessage($noticeMessage);
@@ -143,11 +145,15 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 				if(null === $settingsPageUrl)
 					$settingsPageUrl = 'Settings';
 				else
-					$settingsPageUrl = MchGdbcHtmlUtils::createAnchorElement(__('Settings Page', GoodByeCaptcha::PLUGIN_SLUG), array('href' => $settingsPageUrl));
+					$settingsPageUrl = MchGdbcHtmlUtils::createAnchorElement(__('Settings Page', 'goodbye-captcha'), array('href' => $settingsPageUrl));
 
 				$adminNotice = new GdbcAdminNotice(GdbcAdminNotice::UNTRUSTED_PROXY_HEADER_DETECTED, GdbcAdminNotice::NOTICE_TYPE_DANGER);
 				$noticeMessage  = '<p><b>';
-				$noticeMessage .= __("WPBruiser has detected that your web site is behind a web proxy server! Please go to $settingsPageUrl and register detected proxy header!", GoodByeCaptcha::PLUGIN_SLUG);
+				$noticeMessage .= sprintf(
+					/* translators: %s: link to the plugin Settings page. */
+					__('WPBruiser has detected that your web site is behind a web proxy server! Please go to %s and register detected proxy header!', 'goodbye-captcha'),
+					$settingsPageUrl
+				);
 				$noticeMessage .= '</b></p>';
 
 				$adminNotice->setMessage($noticeMessage);
@@ -171,20 +177,24 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 			$arrPageHolderClasses[]= 'about-wrap';
 		}
 
-		$adminPageHtmlCode  = '<div class="' . implode(' ', $arrPageHolderClasses) . '">';
+		$adminPageHtmlCode  = '<div class="' . esc_attr(implode(' ', $arrPageHolderClasses)) . '">';
 
 		if(! is_a($activeAdminPage, 'GdbcWelcomeAdminPage') )
 		{
 			$adminPageHtmlCode .= '<h2 class="nav-tab-wrapper">';
 
 			foreach ($this->getRegisteredAdminPages() as $adminPage) {
-				$adminPageHtmlCode .= '<a class="nav-tab' . (($adminPage->isActive()) ? ' nav-tab-active' : '') . '" href="?page=' . $adminPage->getPageMenuSlug() . '">';
-				$adminPageHtmlCode .= $adminPage->getPageMenuTitle() . '</a>';
+				$adminPageHtmlCode .= '<a class="nav-tab' . (($adminPage->isActive()) ? ' nav-tab-active' : '') . '" href="?page=' . esc_attr($adminPage->getPageMenuSlug()) . '">';
+				$adminPageHtmlCode .= esc_html($adminPage->getPageMenuTitle()) . '</a>';
 			}
 
 			$adminPageHtmlCode .= '</h2>';
 		}
 
+		// Deliberately not filtered: this is an intentionally unbalanced fragment
+		// (the wrapping <div> is closed further down, after the page content), and
+		// every dynamic value in it is escaped where it is interpolated above.
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- intentionally unbalanced wrapper markup; every dynamic value above is escaped where it is interpolated.
 		echo $adminPageHtmlCode;
 
 

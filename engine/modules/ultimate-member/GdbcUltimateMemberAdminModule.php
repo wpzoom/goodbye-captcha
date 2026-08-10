@@ -43,24 +43,24 @@ final class GdbcUltimateMemberAdminModule extends GdbcBaseAdminModule
 			self::OPTION_ULTIMATE_MEMBER_LOGIN_FORM    => array(
 				'Id'          => 1,
 				'Value'       => NULL,
-				'LabelText'   => __('Protect Login Form', GoodByeCaptcha::PLUGIN_SLUG),
-				'DisplayText' => __('Login', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText'   => __('Protect Login Form', 'goodbye-captcha'),
+				'DisplayText' => __('Login', 'goodbye-captcha'),
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
 			),
 
 			self::OPTION_ULTIMATE_MEMBER_REGISTER_FORM  => array(
 				'Id'         => 2,
 				'Value'      => NULL,
-				'LabelText' => __('Protect Register Form', GoodByeCaptcha::PLUGIN_SLUG),
-				'DisplayText' => __('Register', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText' => __('Protect Register Form', 'goodbye-captcha'),
+				'DisplayText' => __('Register', 'goodbye-captcha'),
 				'InputType'  => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
 			),
 
 			self::OPTION_ULTIMATE_MEMBER_LOST_PASSWORD_FORM  => array(
 				'Id'         => 3,
 				'Value'      => NULL,
-				'LabelText' => __('Protect Reset Password Form', GoodByeCaptcha::PLUGIN_SLUG),
-				'DisplayText' => __('Reset Password', GoodByeCaptcha::PLUGIN_SLUG),
+				'LabelText' => __('Protect Reset Password Form', 'goodbye-captcha'),
+				'DisplayText' => __('Reset Password', 'goodbye-captcha'),
 				'InputType'  => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
 			),
 
@@ -77,7 +77,7 @@ final class GdbcUltimateMemberAdminModule extends GdbcBaseAdminModule
 
 	public  function renderModuleSettingsSectionHeader(array $arrSectionInfo)
 	{
-		echo '<h3>' . __('Ultimate Member General Settings', GoodByeCaptcha::PLUGIN_SLUG) . '</h3>';
+		echo '<h3>' . esc_html__('Ultimate Member General Settings', 'goodbye-captcha') . '</h3>';
 	}
 
 	public function getFormattedBlockedContent(GdbcAttemptEntity $attemptEntity)
@@ -95,12 +95,13 @@ final class GdbcUltimateMemberAdminModule extends GdbcBaseAdminModule
 		$tableBodyRows = '';
 
 		$tableHeadRows .= '<tr>';
-		$tableHeadRows .= '<th colspan="2">' . sprintf(__("Ultimate Member Blocked %s Attempt", GoodByeCaptcha::PLUGIN_SLUG), $optionName) . '</th>';
+		/* translators: %s: name of the Ultimate Member form the attempt was blocked on. */
+		$tableHeadRows .= '<th colspan="2">' . sprintf(__("Ultimate Member Blocked %s Attempt", 'goodbye-captcha'), $optionName) . '</th>';
 		$tableHeadRows .= '</tr>';
 
 		$tableHeadRows .= '<tr>';
-		$tableHeadRows .= '<th>' . __('Field', GoodByeCaptcha::PLUGIN_SLUG) . '</th>';
-		$tableHeadRows .= '<th>' . __('Value', GoodByeCaptcha::PLUGIN_SLUG) . '</th>';
+		$tableHeadRows .= '<th>' . __('Field', 'goodbye-captcha') . '</th>';
+		$tableHeadRows .= '<th>' . __('Value', 'goodbye-captcha') . '</th>';
 		$tableHeadRows .= '</tr>';
 
 
@@ -108,7 +109,7 @@ final class GdbcUltimateMemberAdminModule extends GdbcBaseAdminModule
 		{
 			$tableBodyRows .='<tr>';
 			$tableBodyRows .= '<td>' . self::getBlockedContentDisplayableKey($key) . '</td>';
-			$tableBodyRows .= '<td>' . wp_filter_kses(print_r($value, true))  . '</td>';
+			$tableBodyRows .= '<td>' . esc_html(self::getBlockedContentDisplayableValue($value))  . '</td>';
 			$tableBodyRows .='</tr>';
 		}
 

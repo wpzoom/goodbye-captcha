@@ -60,7 +60,7 @@ final class GdbcUltraCommunityPublicModule extends GdbcBasePublicModule
 		if(GdbcRequestController::isValid($this->attemptEntity))
 			return;
 		
-		throw new  \UltraCommunity\UltraCommException(__('Invalid Username or Password!', GoodByeCaptcha::PLUGIN_SLUG));
+		throw new  \UltraCommunity\UltraCommException(esc_html__('Invalid Username or Password!', 'goodbye-captcha'));
 		
 	}
 	
@@ -72,7 +72,7 @@ final class GdbcUltraCommunityPublicModule extends GdbcBasePublicModule
 		if(GdbcRequestController::isValid($this->attemptEntity))
 			return;
 		
-		throw new  \UltraCommunity\UltraCommException(__('We\'ve encountered an error while processing your request!', GoodByeCaptcha::PLUGIN_SLUG));
+		throw new  \UltraCommunity\UltraCommException(esc_html__('We\'ve encountered an error while processing your request!', 'goodbye-captcha'));
 		
 	}
 	
