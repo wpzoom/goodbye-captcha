@@ -11,8 +11,8 @@
  * Plugin URI: https://wordpress.org/plugins/goodbye-captcha/
  * Description: An extremely powerful anti-spam plugin that blocks spambots without annoying captcha images.
  * Version: 3.2.0
- * Requires at least: 4.7
- * Requires PHP: 7.0
+ * Requires at least: 6.5
+ * Requires PHP: 7.4
  * Author: Mihai Chelaru
  * Author URI: https://wordpress.org/plugins/goodbye-captcha/
  * License: GPLv2 or later

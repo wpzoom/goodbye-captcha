@@ -1,10 +1,9 @@
 === WPBruiser ===
 Contributors: mihche
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XVC3TSGEJQP2U
 Tags: captcha, antispam, anti-spam, spam, brute force
-Requires at least: 4.7
-Requires PHP: 7.0
-Tested up to: 7.0
+Requires at least: 6.5
+Requires PHP: 7.4
+Tested up to: 7.1
 Stable tag: 3.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
