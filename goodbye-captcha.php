@@ -10,7 +10,7 @@
  * Plugin Name: WPBruiser
  * Plugin URI: https://wordpress.org/plugins/goodbye-captcha/
  * Description: An extremely powerful anti-spam plugin that blocks spambots without annoying captcha images.
- * Version: 3.2.0
+ * Version: 3.2.1
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * Author: WPZOOM
@@ -29,7 +29,7 @@ if(!class_exists('GoodByeCaptcha', false))
 	class GoodByeCaptcha
 	{
 		
-		CONST PLUGIN_VERSION    = '3.2.0';
+		CONST PLUGIN_VERSION    = '3.2.1';
 		// PLUGIN_SLUG is also the prefix for option keys and admin menu slugs, so it
 		// must keep its historical value or existing installs lose their settings.
 		// The text domain is separate and must equal the WordPress.org slug.

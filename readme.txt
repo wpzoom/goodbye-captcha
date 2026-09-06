@@ -4,7 +4,7 @@ Tags: captcha, antispam, anti-spam, spam, brute force
 Requires at least: 6.5
 Requires PHP: 7.4
 Tested up to: 7.1
-Stable tag: 3.2.0
+Stable tag: 3.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -151,12 +151,22 @@ Studies shown that visual CAPTCHAs take around 5-10 seconds to complete and audi
 13. WPBruiser - Detailed Report
 
 
-== Upgrade Notice ==
-
-= 3.2.0 =
-Security release. Fixes an unauthenticated PHP Object Injection vulnerability (CVE-2026-65556) and removes all remaining calls to the discontinued vendor service. All users should update immediately.
-
 == Changelog ==
+
+= 3.2.1 =
+- Audited every third-party integration against the plugin directory and removed those whose plugin is gone: ZM Ajax Login & Register (closed 2023), PlanSo Forms (closed 2021), UltraCommunity (30 installs, last updated 2020) and Seamless Donations (last updated 2024, tested only to 6.4). Support for the Epoch comments iframe was removed as well; that plugin has not been updated since 2015. The readme no longer lists Postmatic and WP User Control, both closed, and now lists HTML Forms and WP-Members, which are supported but were never mentioned.
+- Raphaël updated from 2.1.2 to 2.3.0 (minified build). The bundled morris.js was already the project's final 0.5.1 release under an upstream banner that still read 0.5.0; the banner now states the real version and the file's provenance.
+- The client script is now a static file loaded with `wp_enqueue_script()` (deferred) and configured with `wp_localize_script()`. Previous versions printed an inline loader that fetched a PHP-generated script through a `?gdbc-client=` parameter handled before WordPress had finished loading, which also required including `pluggable.php` by hand. The token endpoint is now a registered `wp_ajax_nopriv_` action, and a nonce that has expired in a page-cached copy of a page is refreshed by the script through a second registered action, so page caches need no special handling.
+- Forms injected by AJAX (Ultimate Member, ZM Ajax Login & Register) are detected with a `MutationObserver`; the inline "refresh tokens" scripts that used to travel with their markup are gone.
+- The brute-force "site under attack" flag is stored as a transient. The plugin no longer writes any files: the file cache (which could fall back to `wp-content` itself), its `.htaccess`/`index.php` guards and seven unused cache back ends were removed.
+- Every settings callback registered with `register_setting()` now runs the submitted values through a whitelist that drops unknown keys and coerces each field by its declared type before any module-specific validation.
+- Admin styles that were printed inline from the settings partials and the Reports modal moved into the enqueued stylesheet; the Reports map data is localized instead of printed as an inline script.
+- The browser fingerprint posted with each token request is unslashed and validated field by field; nonces are unslashed and sanitised before `wp_verify_nonce()`; a dead URL helper that read `$_SERVER` unsanitised was removed.
+
+**Fixed**
+- Made an implicitly nullable constructor parameter explicit and replaced a non-canonical cast, both deprecated by PHP 8.4/8.5.
+- Upgrade routines and first-run defaults run on the `init` action instead of `plugins_loaded`, which removes the last remaining trigger of the "translation loading was triggered too early" notice on brand-new installs.
+- A fresh installation now creates its attempts table, token secret and module defaults on activation. Table creation used to happen only inside the 1.x-to-2.0 upgrade step, which new installs correctly skip, so a brand-new install ended up with no table at all.
 
 = 3.2.0 =
 **Security**
@@ -178,25 +188,13 @@ Security release. Fixes an unauthenticated PHP Object Injection vulnerability (C
 - Promotional links to the discontinued vendor website throughout the admin interface, the notification emails and the readme. That domain no longer belongs to the project.
 
 **Fixed**
-- Made an implicitly nullable constructor parameter explicit and replaced a non-canonical cast, both deprecated by PHP 8.4/8.5.
 - PHP 8 notice: "spl_autoload_register(): Argument #2 ($do_throw) has been ignored". The deprecated argument is no longer passed.
 - PHP 8 warning: "The magic method MchGdbcBasePublicPlugin::__wakeup() must have public visibility". The method is now public and throws, which both silences the warning and keeps the class from being rebuilt from serialized data.
 - WordPress 6.7 notice: "Translation loading for the wp-bruiser domain was triggered too early". Admin page titles and notice messages are now built on the `init` action instead of `plugins_loaded`, so no translation function runs before `init`.
 - The admin stylesheets no longer restyle `html` and `body`. Previous versions overrode the WordPress admin font, text colour and background on the plugin's screens; admin pages now inherit WordPress' own typography.
 - Brute force monitoring now starts on the `init` action instead of while the plugin file is still loading. It reached the translated settings metadata, which was the remaining cause of the "translation loading was triggered too early" notice on every request carrying POST data.
-- Fresh installations no longer run the 1.x to 3.x upgrade routines. The saved version was left unset on a new install, and because an unset version compares lower than every release, every historical migration step ran against a brand new database. This also removes the `version_compare(): Passing null` deprecation notices on PHP 8.1 and later. The attempts table, which one of those steps used to create, is now created on activation, together with the token secret and the module defaults.
-- Upgrade routines and first-run defaults run on the `init` action instead of `plugins_loaded`, which removes the last remaining trigger of the "translation loading was triggered too early" notice on brand-new installs.
+- Fresh installations no longer run the 1.x to 3.x upgrade routines. The saved version was left unset on a new install, and because an unset version compares lower than every release, every historical migration step ran against a brand new database. This also removes the `version_compare(): Passing null` deprecation notices on PHP 8.1 and later.
 - Fixed the Reports screen crashing when a blocked ZM Ajax Login Register attempt was inspected: the handler was an unfinished debug statement that dumped the raw object and stopped the page.
-
-**Changes requested by the WordPress.org plugin review**
-- Audited every third-party integration against the plugin directory and removed those whose plugin is gone: ZM Ajax Login & Register (closed 2023), PlanSo Forms (closed 2021), UltraCommunity (30 installs, last updated 2020) and Seamless Donations (last updated 2024, tested only to 6.4). Support for the Epoch comments iframe was removed as well; that plugin has not been updated since 2015. The readme no longer lists Postmatic and WP User Control, both closed, and now lists HTML Forms and WP-Members, which are supported but were never mentioned.
-- Raphaël updated from 2.1.2 to 2.3.0 (minified build). The bundled morris.js was already the project's final 0.5.1 release under an upstream banner that still read 0.5.0; the banner now states the real version and the file's provenance.
-- The client script is now a static file loaded with `wp_enqueue_script()` (deferred) and configured with `wp_localize_script()`. Previous versions printed an inline loader that fetched a PHP-generated script through a `?gdbc-client=` parameter handled before WordPress had finished loading, which also required including `pluggable.php` by hand. The token endpoint is now a registered `wp_ajax_nopriv_` action, and a nonce that has expired in a page-cached copy of a page is refreshed by the script through a second registered action, so page caches need no special handling.
-- Forms injected by AJAX (Ultimate Member, ZM Ajax Login & Register) are detected with a `MutationObserver`; the inline "refresh tokens" scripts that used to travel with their markup are gone.
-- The brute-force "site under attack" flag is stored as a transient. The plugin no longer writes any files: the file cache (which could fall back to `wp-content` itself), its `.htaccess`/`index.php` guards and seven unused cache back ends were removed.
-- Every settings callback registered with `register_setting()` now runs the submitted values through a whitelist that drops unknown keys and coerces each field by its declared type before any module-specific validation.
-- Admin styles that were printed inline from the settings partials and the Reports modal moved into the enqueued stylesheet; the Reports map data is localized instead of printed as an inline script.
-- The browser fingerprint posted with each token request is unslashed and validated field by field; nonces are unslashed and sanitised before `wp_verify_nonce()`; a dead URL helper that read `$_SERVER` unsanitised was removed.
 
 **Coding standards**
 - The plugin now passes the WordPress Plugin Check with no outstanding errors or warnings. Where a rule genuinely does not apply — inspecting nonce-less public form submissions, querying the plugin's own custom table, comparing anti-spam tokens byte-for-byte — the exception is annotated in the code with the reason.
