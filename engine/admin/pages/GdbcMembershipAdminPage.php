@@ -27,9 +27,6 @@ class GdbcMembershipAdminPage extends GdbcBaseAdminPage
 
 		$arrModules  = array();
 		
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_ULTRA_COMMUNITY))
-			$arrModules[] =  GdbcUltraCommunityAdminModule::getInstance();
-		
 		
 		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_WP_MEMBERS))
 			$arrModules[] =  GdbcWPMembersAdminModule::getInstance();

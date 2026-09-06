@@ -74,9 +74,6 @@ class GdbcWordPressPublicModule extends GdbcBasePublicModule
 			$this->addFilterHook('wp_get_comment_fields_max_lengths', array($this, 'getCommentFieldsMaxLength'), 999, 1);
 		}
 
-		if(defined('EPOCH_VER')){
-			$this->addActionHook('epoch_iframe_footer', array($this, 'renderPublicScriptIntoEpochIframe'));
-		}
 
 	}
 
@@ -92,11 +89,6 @@ class GdbcWordPressPublicModule extends GdbcBasePublicModule
 	}
 
 
-	public function renderPublicScriptIntoEpochIframe()
-	{
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- returns a self-contained <script> block built from static JS plus an esc_url()'d URL.
-		echo parent::getPublicScriptInlineContent();
-	}
 
 	public function getCommentFieldsMaxLength($arrFieldsMaxLength)
 	{

@@ -70,10 +70,6 @@ final class GdbcUltimateMemberAdminModule extends GdbcBaseAdminModule
 
 	}
 
-	public  function validateModuleSettingsFields($arrSettingOptions)
-	{
-		return $arrSettingOptions;
-	}
 
 	public  function renderModuleSettingsSectionHeader(array $arrSectionInfo)
 	{

@@ -33,9 +33,6 @@ class GdbcEmailNotificationsPublicModule extends GdbcBasePublicModule
 	{
 		parent::__construct();
 
-		if( ! function_exists('wp_mail') ) {
-			require_once( ABSPATH . 'wp-includes/pluggable.php' );
-		}
 
 		if(!empty($_POST) && $this->getOption(GdbcEmailNotificationsAdminModule::OPTION_ADMIN_LOGGED_IN_DETECTED)) {
 			$this->addActionHook( 'wp_login', array( $this, 'userSuccessfullyLoggedIn' ), 0, 1 );

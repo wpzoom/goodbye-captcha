@@ -19,42 +19,6 @@
 
 defined( 'ABSPATH' ) || exit;
 ?>
-<style type="text/css">
-
-	.gdbc-settings tr.even
-	{
-		background-color:#f5f5f5;
-	}
-
-	.gdbc-blacklisted-ips-holder input[type="text"]
-	{
-		width: 99%;
-		padding:3px 5px;
-	}
-	.gdbc-blacklisted-ips-holder thead tbody > tr form > td:first-child
-	{
-		padding: 0 30px !important;
-	}
-
-	.gdbc-blacklisted-ips-holder td
-	{
-		vertical-align: middle !important;
-		word-wrap: normal !important;
-	}
-	.gdbc-blacklisted-ips-holder th
-	{
-		font-weight: 700;
-	}
-
-	.gdbc-settings .tablenav-pages span.current {
-		font-size: 18px;
-		font-weight: bold;
-		line-height: 30px;
-		padding: 4px 6px;
-		text-decoration: none;
-	}
-
-</style>
 
 <?php
 

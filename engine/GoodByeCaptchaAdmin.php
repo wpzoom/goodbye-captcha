@@ -290,11 +290,14 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 
 			wp_enqueue_script(self::$PLUGIN_SLUG . '-jquery-flot-tooltip', plugins_url('/assets/admin/scripts/jquery-flot-tooltip.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION, false);
 
-			wp_enqueue_script(self::$PLUGIN_SLUG . '-raphael', plugins_url('/assets/admin/scripts/raphael.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION, false);
+			wp_enqueue_script(self::$PLUGIN_SLUG . '-raphael', plugins_url('/assets/admin/scripts/raphael.min.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION, false);
 
-			wp_enqueue_script(self::$PLUGIN_SLUG . '-morris', plugins_url('/assets/admin/scripts/morris.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION, false);
+			wp_enqueue_script(self::$PLUGIN_SLUG . '-morris', plugins_url('/assets/admin/scripts/morris.js', self::$PLUGIN_MAIN_FILE), array('jquery', self::$PLUGIN_SLUG . '-raphael'), self::$PLUGIN_VERSION, false);
 
 			wp_enqueue_script(self::$PLUGIN_SLUG . '-reports-script', plugins_url('/assets/admin/scripts/gdbc-reports.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION, false);
+			wp_localize_script(self::$PLUGIN_SLUG . '-reports-script', 'GdbcReportsData', array(
+				'attemptsByCountry' => GdbcReportsAdminModule::getInstance()->getAttemptsByCountry(),
+			));
 
 			wp_enqueue_script(self::$PLUGIN_SLUG . '-bootstrap', plugins_url('/assets/admin/scripts/bootstrap.min.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION, false);
 
@@ -391,7 +394,15 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 	}
 
 	public static function onPluginActivate()
-	{}
+	{
+		// Set a new install up completely at activation: the attempts table, the
+		// token secret and hidden-field name, the module defaults and the version.
+		// Table creation used to live only in the 2.0 upgrade step, which new installs
+		// (rightly) no longer run, so without this a fresh install had no table.
+		GdbcDbAccessController::createAttemptsTable();
+		GdbcSettingsAdminModule::getInstance()->saveSecuredOptions(false);
+		GdbcUpdatesController::updateToCurrentVersion();
+	}
 
 
 	private function __clone()

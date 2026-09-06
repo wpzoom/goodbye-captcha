@@ -79,8 +79,6 @@ if(!class_exists('GoodByeCaptcha', false))
 		public static function startRunning()
 		{
 
-			GdbcUpdatesController::updateToCurrentVersion();
-
 			$arrPluginInfo = array(
 				'PLUGIN_DOMAIN_PATH' => 'languages',
 				'PLUGIN_MAIN_FILE'   => self::getMainFilePath(),
@@ -149,17 +147,12 @@ if(!class_exists('GoodByeCaptcha', false))
 
 		GdbcIPUtils::getClientIpAddress();
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only switch that serves a static client script; it changes no state.
-		if (!empty($_GET['gdbc-client']) && file_exists($filePath = dirname(__FILE__) . '/assets/public/scripts/gdbc-client-new.js.php')) {
-			require_once(ABSPATH . 'wp-includes/pluggable.php');
-			(!defined('LOGGED_IN_COOKIE') && function_exists('wp_cookie_constants')) ? wp_cookie_constants() : null;
-			require $filePath;
-			exit;
-		}
 
-		if (MchGdbcWpUtils::isAjaxRequest()) {
-			GdbcAjaxController::processRequest();
-		}
+		// Upgrade steps and first-run defaults run on `init`, not `plugins_loaded`: saving
+		// the defaults reads the modules' translated option metadata, and translating
+		// before `init` triggers WordPress' too-early text domain notice. Registered
+		// before the brute-force guard below, so at equal priority it runs first.
+		add_action('init', array('GdbcUpdatesController', 'updateToCurrentVersion'), 0);
 
 		// Hooked to `init` rather than called here: startGuarding() reaches the admin
 		// modules' option metadata, which is translated, and calling __() before `init`

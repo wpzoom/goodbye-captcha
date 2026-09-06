@@ -36,10 +36,6 @@ final class GoodByeCaptchaUtils
 		return class_exists('Easy_Digital_Downloads');
 	}
 
-	public static function isZmAlrActivated()
-	{
-		return defined('ZM_ALR_NAMESPACE');
-	}
 
 	public static function isUserProfileMadeEasyActivated()
 	{
@@ -81,15 +77,7 @@ final class GoodByeCaptchaUtils
 		return class_exists('Ninja_Forms');
 	}
 
-	public static function isPlanSoFormsActivated()
-	{
-		return function_exists('psfb_register');
-	}
 
-	public static function isSeamlessDonationsActivated()
-	{
-		return function_exists('seamless_donations_init');
-	}
 
 	public static function isGravityFormsActivated()
 	{
@@ -558,9 +546,6 @@ final class GoodByeCaptchaUtils
 					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName), GdbcUltimateMemberAdminModule::OPTION_ULTIMATE_MEMBER_LOGIN_FORM);
 					break;
 
-				case GdbcModulesController::MODULE_ULTRA_COMMUNITY :
-					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName), GdbcUltraCommunityAdminModule::OPTION_LOGIN_FORM_PROTECTION_ACTIVATED);
-					break;
 
 				case GdbcModulesController::MODULE_WP_MEMBERS :
 					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName), GdbcWPMembersAdminModule::OPTION_LOGIN_FORM_PROTECTION_ACTIVATED);
@@ -578,13 +563,7 @@ final class GoodByeCaptchaUtils
 					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName),  GdbcUPMEAdminModule::UPME_LOGIN_FORM);
 					break;
 
-				case GdbcModulesController::MODULE_ZM_ALR :
-					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName), GdbcZmAlrAdminModule::OPTION_ZM_ALR_LOGIN_FORM);
-					break;
 
-				case GdbcModulesController::MODULE_PLANSO_FORMS :
-					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName), GdbcPlanSoFormsAdminModule::OPTION_PLANSO_LOGIN_FORM);
-					break;
 
 				case GdbcModulesController::MODULE_MEMBER_PRESS :
 					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName), GdbcMemberPressAdminModule::OPTION_MEMBER_PRESS_LOGIN_FORM);
@@ -669,31 +648,21 @@ final class GoodByeCaptchaUtils
 	/*
 	 * return /MchGdbcCache
 	 */
-	public static function getAvailableCacheStorage($dirPathForFileStorage)
+	/**
+	 * Cache used for the brute-force "site under attack" flag.
+	 *
+	 * Transients only. Earlier releases preferred a file store under wp-content,
+	 * which the WordPress.org guidelines do not allow; nothing else was kept there,
+	 * and the transient API already sits on top of the object cache when the site
+	 * has one.
+	 */
+	public static function getAvailableCacheStorage()
 	{
-		static $cacheStorage = false;
-		if(false !== $cacheStorage)
+		static $cacheStorage = null;
+		if(null !== $cacheStorage)
 			return $cacheStorage;
 
-		$arrPossibleCacheStorage = array(
-			!empty($dirPathForFileStorage) ? new MchGdbcCacheFileStorage($dirPathForFileStorage, true, 'wbr') : null,
-			new MchGdbcWordPressTransientsStorage(false),
-			new MchGdbcCacheAPCUStorage(),
-			new MchGdbcCacheAPCStorage(),
-			new MchGdbcCacheXCacheStorage(),
-			new MchGdbcCacheZendMemoryStorage(),
-			new MchGdbcCacheZendDiskStorage(),
-			new MchGdbcWordPressTransientsStorage(true),
-		);
-
-		foreach ($arrPossibleCacheStorage as $cacheStorageObject) {
-			if (null === $cacheStorageObject || !$cacheStorageObject->isAvailable())
-				continue;
-
-			return $cacheStorage = new MchGdbcCache($cacheStorageObject);
-		}
-
-		return $cacheStorage = null;
+		return $cacheStorage = new MchGdbcCache(new MchGdbcWordPressTransientsStorage(true));
 	}
 
 	/**

@@ -24,9 +24,9 @@ defined( 'ABSPATH' ) || exit;
 // registration) to decide whether they came from a bot. Those forms are not the
 // plugin's own and carry no plugin nonce, so reading $_POST without one is the
 // whole point of the check. Values are validated before use.
-// The token fields below are compared byte-for-byte against the value this
-// plugin issued; running them through a sanitiser would alter the bytes and
-// break validation. They are never echoed or stored unfiltered.
+// The token fields below are unslashed and then compared byte-for-byte against
+// the value this plugin issued; a sanitiser would alter the bytes and break the
+// check. Everything else read here is validated by getSubmittedBrowserInfo().
 // phpcs:disable WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput
 
 final class GdbcRequestController
@@ -131,7 +131,7 @@ final class GdbcRequestController
 			return false;
 		}
 
-		$receivedToken = isset($_POST[$hiddenInputName]) ? $_POST[$hiddenInputName] : null;
+		$receivedToken = (isset($_POST[$hiddenInputName]) && is_string($_POST[$hiddenInputName])) ? wp_unslash($_POST[$hiddenInputName]) : null;
 
 		if(null === $receivedToken){
 			self::$rejectReasonCode = self::REJECT_REASON_TOKEN_MISSING;
@@ -154,7 +154,7 @@ final class GdbcRequestController
 
 		self::$browserInfoInputName = substr($arrDecryptedToken[0], 0, $tokenIndex);
 
-		$receivedBrowserInfoInput = isset($_POST[self::$browserInfoInputName]) ? $_POST[self::$browserInfoInputName] : null;
+		$receivedBrowserInfoInput = (isset($_POST[self::$browserInfoInputName]) && is_string($_POST[self::$browserInfoInputName])) ? wp_unslash($_POST[self::$browserInfoInputName]) : null;
 
 		if( null === $receivedBrowserInfoInput )
 		{
@@ -204,18 +204,53 @@ final class GdbcRequestController
 	}
 
 
-	public static function getEncryptedToken()
+	/**
+	 * The browser fingerprint the client posted, decoded and validated.
+	 *
+	 * json_decode() does not sanitise, so every key and value is checked against a
+	 * strict shape and anything else is dropped. Values are validated rather than
+	 * transformed on purpose: the browser later re-sends the same values
+	 * byte-for-byte to prove the token is its own, so altering them here would make
+	 * every legitimate visitor fail that comparison.
+	 *
+	 * @return array<string, bool|int|float|string>
+	 */
+	private static function getSubmittedBrowserInfo()
 	{
-		if( ! isset($_POST['browserInfo']) || null === ($arrBrowserInfo = json_decode(stripcslashes($_POST['browserInfo']), true)))
+		if(!isset($_POST['browserInfo']) || !is_string($_POST['browserInfo']))
 			return array();
 
-		foreach ((array)$arrBrowserInfo as $prop => $propValue)
+		$rawJson = wp_unslash($_POST['browserInfo']);
+		if(!isset($rawJson[1]) || isset($rawJson[4096])) // a fingerprint is a few hundred bytes
+			return array();
+
+		$arrDecoded = json_decode($rawJson, true);
+		if(!is_array($arrDecoded))
+			return array();
+
+		$arrBrowserInfo = array();
+		foreach($arrDecoded as $key => $value)
 		{
-			if(!is_array($propValue) && false === strpos($prop, ' '))
+			if(!is_string($key) || !preg_match('/^[A-Za-z0-9_+\-]{1,64}$/', $key))
 				continue;
 
-			unset($arrBrowserInfo[$prop]);
+			if(is_bool($value) || is_int($value) || is_float($value)) {
+				$arrBrowserInfo[$key] = $value;
+			}
+			elseif(is_string($value) && preg_match('/^[A-Za-z0-9_.+\- ]{0,128}$/', $value)) {
+				$arrBrowserInfo[$key] = $value;
+			}
+			// arrays, objects and anything with other characters are rejected
 		}
+
+		return $arrBrowserInfo;
+	}
+
+	public static function getEncryptedToken()
+	{
+		$arrBrowserInfo = self::getSubmittedBrowserInfo();
+		if(empty($arrBrowserInfo))
+			return array();
 
 		if( ($arrBrowserInfoLength = count($arrBrowserInfo)) < 3)
 			return array();

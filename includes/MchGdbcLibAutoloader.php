@@ -62,13 +62,7 @@ final class MchGdbcLibAutoloader
 				//'MchMaxMindGeoIp' => '/vendor/MaxMind/MchMaxMindGeoIp.php',
 
 				'MchGdbcCache' => '/vendor/MchCache/MchGdbcCache.php',
-				'MchGdbcCacheFileStorage' => '/vendor/MchCache/Storage/MchGdbcCacheFileStorage.php',
 				'MchGdbcWordPressTransientsStorage' => '/vendor/MchCache/Storage/MchGdbcWordPressTransientsStorage.php',
-				'MchGdbcCacheAPCUStorage' => '/vendor/MchCache/Storage/MchGdbcCacheAPCUStorage.php',
-				'MchGdbcCacheAPCStorage' => '/vendor/MchCache/Storage/MchGdbcCacheAPCStorage.php',
-				'MchGdbcCacheXCacheStorage' => '/vendor/MchCache/Storage/MchGdbcCacheXCacheStorage.php',
-				'MchGdbcCacheZendMemoryStorage' => '/vendor/MchCache/Storage/MchGdbcCacheZendMemoryStorage.php',
-				'MchGdbcCacheZendDiskStorage' => '/vendor/MchCache/Storage/MchGdbcCacheZendDiskStorage.php',
 
 				'MchGdbcCacheBaseStorage' => '/vendor/MchCache/Storage/MchGdbcCacheBaseStorage.php',
 

@@ -179,7 +179,7 @@ class GdbcSettingsAdminModule extends GdbcBaseAdminModule
 	public  function validateModuleSettingsFields($arrSettingOptions)
 	{
 
-		$arrSettingOptions = array_map('sanitize_text_field', (array)$arrSettingOptions);
+		$arrSettingOptions = $this->sanitizeSubmittedOptions($arrSettingOptions);
 
 		if (empty($arrSettingOptions[self::OPTION_MIN_SUBMISSION_TIME])
 		    || false === ($arrSettingOptions[self::OPTION_MIN_SUBMISSION_TIME] = filter_var($arrSettingOptions[self::OPTION_MIN_SUBMISSION_TIME], FILTER_VALIDATE_INT))
@@ -199,9 +199,6 @@ class GdbcSettingsAdminModule extends GdbcBaseAdminModule
 
 		if(!empty($arrOldSavedOptions[self::OPTION_HIDDEN_INPUT_NAME]))
 			$arrSettingOptions[self::OPTION_HIDDEN_INPUT_NAME] = $arrOldSavedOptions[self::OPTION_HIDDEN_INPUT_NAME];
-
-		if(!empty($arrOldSavedOptions[self::OPTION_CACHE_DIR_PATH]))
-			$arrSettingOptions[self::OPTION_CACHE_DIR_PATH] = $arrOldSavedOptions[self::OPTION_CACHE_DIR_PATH];
 
 		$arrSettingOptions[self::OPTION_PLUGIN_VERSION] = GoodByeCaptcha::PLUGIN_VERSION;
 

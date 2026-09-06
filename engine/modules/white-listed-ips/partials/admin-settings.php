@@ -19,33 +19,6 @@
 
 defined( 'ABSPATH' ) || exit;
 ?>
-<style type="text/css">
-
-	.gdbc-settings tr.even
-	{
-		background-color:#f5f5f5;
-	}
-
-	.gdbc-blacklisted-ips-holder input[type="text"]
-	{
-		width: 99%;
-	}
-	.gdbc-blacklisted-ips-holder thead tbody > tr form > td:first-child
-	{
-		padding: 0 30px !important;
-	}
-
-	.gdbc-blacklisted-ips-holder td
-	{
-		vertical-align: middle !important;
-		word-wrap: normal !important;
-	}
-	.gdbc-blacklisted-ips-holder th
-	{
-		font-weight: 700;
-	}
-
-</style>
 
 <?php
 

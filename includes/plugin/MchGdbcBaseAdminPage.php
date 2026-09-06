@@ -22,10 +22,6 @@ defined( 'ABSPATH' ) || exit;
 // Settings pages are rendered inside the WordPress Settings API, which performs
 // its own nonce check via settings_fields()/check_admin_referer() before any
 // option is written; the reads below only decide which page to display.
-// The Settings API validates and sanitises the submitted option array itself
-// (register_setting() callbacks); the raw reads here only identify which
-// settings group is being saved.
-// phpcs:disable WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput
 
 abstract class MchGdbcBaseAdminPage
 {
@@ -133,7 +129,11 @@ abstract class MchGdbcBaseAdminPage
 
 	public function saveModulesNetworkSettingsOptions()
 	{
-		if( empty($_REQUEST['action']) || strcasecmp($_REQUEST['action'], 'update') !== 0 || empty($_REQUEST['_wpnonce'])  || empty($_REQUEST['option_page']))
+		$requestAction = isset($_REQUEST['action'])      ? sanitize_text_field(wp_unslash($_REQUEST['action']))      : '';
+		$optionPage    = isset($_REQUEST['option_page']) ? sanitize_text_field(wp_unslash($_REQUEST['option_page'])) : '';
+		$nonce         = isset($_REQUEST['_wpnonce'])    ? sanitize_text_field(wp_unslash($_REQUEST['_wpnonce']))    : '';
+
+		if('' === $nonce || '' === $optionPage || 0 !== strcasecmp($requestAction, 'update'))
 			return;
 
 		if( ! MchGdbcWpUtils::isAdminInNetworkDashboard() || !$this->isActive())
@@ -142,15 +142,17 @@ abstract class MchGdbcBaseAdminPage
 		foreach($this->groupModulesList as $groupIndex => $groupedModules)
 		{
 			$settingsGroup = $this->getSettingGroupId($groupIndex);
-			if(0 !== strcmp($settingsGroup, $_REQUEST['option_page']))
+			if(0 !== strcmp($settingsGroup, $optionPage))
 				continue;
 
-			if( ! wp_verify_nonce($_REQUEST['_wpnonce'], "$settingsGroup-options") )
+			if( ! wp_verify_nonce($nonce, "$settingsGroup-options") )
 				continue;
 
 			foreach( ((array)$groupedModules->getGroupedModules()) as $moduleIndex => $adminModuleInstance )
 			{
-				$moduleNetworkOptions = isset($_REQUEST[$adminModuleInstance->getSettingKey()]) ? (array)$_REQUEST[$adminModuleInstance->getSettingKey()] : array();
+				$settingKey = $adminModuleInstance->getSettingKey();
+				// Each module's validateModuleSettingsFields() whitelists and sanitises this array.
+				$moduleNetworkOptions = isset($_REQUEST[$settingKey]) ? map_deep((array) wp_unslash($_REQUEST[$settingKey]), 'sanitize_text_field') : array();
 				$adminModuleInstance->saveNetworkSettingOptions($moduleNetworkOptions);
 			}
 
@@ -188,7 +190,11 @@ abstract class MchGdbcBaseAdminPage
 					add_option($adminModuleInstance->getSettingKey(), array(), '', 'yes' );
 				}
 
-				register_setting($settingsGroup, $adminModuleInstance->getSettingKey(), array( $adminModuleInstance, 'validateModuleSettingsFields' ) );
+				register_setting($settingsGroup, $adminModuleInstance->getSettingKey(), array(
+					'type'              => 'array',
+					'default'           => array(),
+					'sanitize_callback' => array( $adminModuleInstance, 'validateModuleSettingsFields' ),
+				));
 
 				//$sectionTitle = !empty($this->arrGroupSectionTitle[$groupIndex]) ? (string)$this->arrGroupSectionTitle[$groupIndex] : '';
 

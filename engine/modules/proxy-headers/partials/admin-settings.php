@@ -6,49 +6,6 @@
 
 defined( 'ABSPATH' ) || exit;
 ?>
-<style type="text/css">
-
-	table.gdbc-proxy-headers-holder
-	{
-		width: 70% !important;
-		/*margin-left:20%;*/
-		/*margin-right:20%;*/
-	}
-	.gdbc-settings tr.even
-	{
-		background-color:#f5f5f5;
-	}
-
-	.gdbc-proxy-headers-holder input[type="text"]
-	{
-		width: 99%;
-		padding:3px 5px;
-	}
-	.gdbc-proxy-headers-holder thead tbody > tr form > td:first-child
-	{
-		padding: 0 30px !important;
-	}
-
-	.gdbc-proxy-headers-holder td
-	{
-		vertical-align: middle !important;
-		word-wrap: normal !important;
-		border-bottom: 1px solid #e1e1e1;
-	}
-	.gdbc-proxy-headers-holder th
-	{
-		font-weight: 700;
-	}
-
-	.gdbc-settings .tablenav-pages span.current {
-		font-size: 18px;
-		font-weight: bold;
-		line-height: 30px;
-		padding: 4px 6px;
-		text-decoration: none;
-	}
-
-</style>
 
 <?php
 

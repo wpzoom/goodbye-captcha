@@ -52,7 +52,7 @@ final class GdbcBlackListedIpsAdminModule extends GdbcBaseAdminModule
 
 	public  function validateModuleSettingsFields($arrSettingOptions)
 	{
-		$arrSettingOptions  = array_map('sanitize_text_field', (array)$arrSettingOptions);
+		$arrSettingOptions = $this->sanitizeSubmittedOptions($arrSettingOptions);
 		$arrAlreadySavedIps = (array)$this->getOption(self::OPTION_BLACK_LISTED_IPS);
 
 		$action = 'add';

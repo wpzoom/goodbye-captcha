@@ -33,7 +33,6 @@ final class GoodByeCaptchaPublic extends MchGdbcBasePublicPlugin
 		if(null === $settingsModuleInstance)
 			return;
 
-		//$this->clientScriptUrl     = plugins_url( '/assets/public/scripts/gdbc-public.js', self::$PLUGIN_MAIN_FILE );
 		$this->formHiddenInputName = $settingsModuleInstance->getOption(GdbcSettingsAdminModule::OPTION_HIDDEN_INPUT_NAME);
 
 		foreach(array_keys((array)GdbcModulesController::getRegisteredModules()) as $moduleName)
@@ -68,24 +67,10 @@ final class GoodByeCaptchaPublic extends MchGdbcBasePublicPlugin
 
 	public function enqueuePublicScriptsAndStyles()
 	{
-
-		$printScriptsHook = (!!apply_filters('wpbruiser_scripts_in_head', false)) ? 'wp_print_scripts' : 'wp_print_footer_scripts';
-		add_action($printScriptsHook, array($this, 'renderPublicScript'), 0 );
-
+		// Hooked to both wp_enqueue_scripts and login_enqueue_scripts.
+		GdbcBasePublicModule::enqueueClientScript();
 	}
 
-	public function renderPublicScript()
-	{
-		static $scriptRendered = false;
-		if($scriptRendered) {
-			return;
-		}
-
-		$scriptRendered = true;
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- returns a self-contained <script> block built from static JS plus an esc_url()'d URL.
-		echo GdbcBasePublicModule::getPublicScriptInlineContent();
-
-	}
 
 
 

@@ -1,8 +1,12 @@
 /* @license
-morris.js v0.5.0
+morris.js v0.5.1
 Copyright 2014 Olly Smith All rights reserved.
 Licensed under the BSD-2-Clause License.
 */
+/* Provenance: this is the unmodified morris.js 0.5.1 release build from
+   https://github.com/morrisjs/morris.js/tree/0.5.1 (git blob 3a1a830841bef73bd18cef86c4c51624cd11d8ce).
+   0.5.1 is the project's final release; upstream did not bump the version in
+   the build banner above, which is the only change made to this file. */
 
 
 (function() {

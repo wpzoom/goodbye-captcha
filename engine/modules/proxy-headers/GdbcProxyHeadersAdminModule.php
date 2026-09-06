@@ -39,6 +39,8 @@ final class GdbcProxyHeadersAdminModule extends GdbcBaseAdminModule
 
 	public  function validateModuleSettingsFields($arrSettingOptions)
 	{
+		$arrSettingOptions = $this->sanitizeSubmittedOptions($arrSettingOptions);
+
 		$arrAlreadySavedHeaders = (array)$this->getOption(self::PROXY_HEADERS_IP);
 
 		if(empty($arrSettingOptions[self::PROXY_HEADERS_IP])){

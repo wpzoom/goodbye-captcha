@@ -53,20 +53,9 @@ final class GdbcUltimateMemberPublicModule extends GdbcBasePublicModule
 		add_action('um_submit_form_errors_hook_login', array($this, 'validateFormEncryptedToken'), 1);
 		add_action('um_after_login_fields', array($this, 'renderHiddenFieldIntoForm'));
 
-		if(MchGdbcWpUtils::isAjaxRequest()){
-			add_action('um_after_form', array($this, 'renderRefreshTokensScript'), 10, 1);
-		}
 
 	}
 
-	public function renderRefreshTokensScript($arrRequestInfo)
-	{
-		if((empty($arrRequestInfo['mode'])  ||  'login' !== $arrRequestInfo['mode']))
-			return;
-
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- returns a static <script> block shipped with the plugin.
-		echo GdbcBasePublicModule::getRefreshTokensScriptFileContent(true);
-	}
 
 	public function registerRegistrationHooks()
 	{

@@ -40,44 +40,64 @@ abstract class GdbcBasePublicModule extends MchGdbcBasePublicModule
 		$this->attemptEntity = new GdbcAttemptEntity($this->getModuleId());
 	}
 
-	public static function getMainScriptUrl()
+	const CLIENT_SCRIPT_HANDLE = 'wp-bruiser-client';
+
+	/**
+	 * Register the client script and hand it its configuration.
+	 *
+	 * Earlier releases printed an inline loader that fetched a PHP-generated
+	 * script through a ?gdbc-client= GET parameter handled before WordPress had
+	 * finished loading. The script is now a static file registered through the
+	 * scripts API; the per-site values it needs are localised, and a nonce that has
+	 * expired in a page-cached copy of the HTML is refreshed by the script itself
+	 * through a registered AJAX action, so page caches need no special handling.
+	 */
+	public static function registerClientScript()
 	{
-		return plugins_url( '/assets/public/scripts/gdbc-public.js', GoodByeCaptcha::getMainFilePath() );
+		if(wp_script_is(self::CLIENT_SCRIPT_HANDLE, 'registered'))
+			return true;
+
+		$settingsModuleInstance = GdbcModulesController::getPublicModuleInstance(GdbcModulesController::MODULE_SETTINGS);
+		if(null === $settingsModuleInstance)
+			return false;
+
+		$hiddenInputName = $settingsModuleInstance->getOption(GdbcSettingsAdminModule::OPTION_HIDDEN_INPUT_NAME);
+		if(empty($hiddenInputName))
+		{
+			// First page view of a new install: the secured options are created on
+			// demand, exactly as getTokenFieldHtml() does when it renders the field.
+			GdbcSettingsAdminModule::getInstance()->saveSecuredOptions(true);
+			$hiddenInputName = $settingsModuleInstance->getOption(GdbcSettingsAdminModule::OPTION_HIDDEN_INPUT_NAME);
+		}
+
+		if(empty($hiddenInputName))
+			return false;
+
+		$inFooter = ! (bool) apply_filters('wpbruiser_scripts_in_head', false);
+
+		wp_register_script(
+			self::CLIENT_SCRIPT_HANDLE,
+			plugins_url('/assets/public/scripts/gdbc-client.js', GoodByeCaptcha::getMainFilePath()),
+			array(),
+			GoodByeCaptcha::PLUGIN_VERSION,
+			array('in_footer' => $inFooter, 'strategy' => 'defer')
+		);
+
+		wp_localize_script(self::CLIENT_SCRIPT_HANDLE, 'WPBruiserConfig', array(
+			'ajaxUrl'     => MchGdbcWpUtils::getAjaxUrl(),
+			'action'      => GdbcAjaxController::ACTION_RETRIEVE_TOKEN,
+			'nonceAction' => GdbcAjaxController::ACTION_RETRIEVE_NONCE,
+			'inputName'   => $hiddenInputName,
+			'nonce'       => GdbcAjaxController::getAjaxNonce(),
+		));
+
+		return true;
 	}
 
-	public static function getRefreshTokensScriptFileContent($appendScriptTag = true)
+	public static function enqueueClientScript()
 	{
-		$filePath =  dirname(GoodByeCaptcha::getMainFilePath()) . '/assets/public/scripts/gdbc-refresh-tokens.js';
-
-		if(!@is_readable($filePath))
-			return null;
-
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- reading a script file shipped inside the plugin, not a remote URL.
-		$scriptContent = file_get_contents($filePath);
-
-		return $appendScriptTag ? '<script type="text/javascript">' . $scriptContent . '</script>' : $scriptContent;
-
-	}
-
-
-	public static function getRefreshTokensScriptUrl()
-	{
-		return plugins_url('/assets/public/scripts/gdbc-refresh-tokens.js', GoodByeCaptcha::getMainFilePath());
-	}
-
-	public static function getPublicScriptInlineContent($addScriptTag = true)
-	{
-		$clientUrl = esc_attr(esc_url(home_url('/', MchGdbcWpUtils::isSslRequest() ? 'https' : 'http') . '?gdbc-client=' . GoodByeCaptcha::PLUGIN_VERSION . '-'));
-
-		$inlineContent  = '<script type="text/javascript">';
-		$inlineContent .= "!function(t,e){\"use strict\";function n(){if(!a){a=!0;for(var t=0;t<d.length;t++)d[t].fn.call(window,d[t].ctx);d=[]}}function o(){\"complete\"===document.readyState&&n()}t=t||\"docReady\",e=e||window;var d=[],a=!1,c=!1;e[t]=function(t,e){return a?void setTimeout(function(){t(e)},1):(d.push({fn:t,ctx:e}),void(\"complete\"===document.readyState||!document.attachEvent&&\"interactive\"===document.readyState?setTimeout(n,1):c||(document.addEventListener?(document.addEventListener(\"DOMContentLoaded\",n,!1),window.addEventListener(\"load\",n,!1)):(document.attachEvent(\"onreadystatechange\",o),window.attachEvent(\"onload\",n)),c=!0)))}}(\"wpBruiserDocReady\",window);";
-		$inlineContent .= "
-			(function(){var wpbrLoader = (function(){var g=document,b=g.createElement('script'),c=g.scripts[0];b.async=1;b.src='$clientUrl'+(new Date()).getTime();c.parentNode.insertBefore(b,c);});wpBruiserDocReady(wpbrLoader);window.onunload=function(){};window.addEventListener('pageshow',function(event){if(event.persisted){(typeof window.WPBruiserClient==='undefined')?wpbrLoader():window.WPBruiserClient.requestTokens();}},false);})();
-";
-
-		$inlineContent .= '</script>';
-
-		return $inlineContent;
+		if(self::registerClientScript())
+			wp_enqueue_script(self::CLIENT_SCRIPT_HANDLE);
 	}
 
 

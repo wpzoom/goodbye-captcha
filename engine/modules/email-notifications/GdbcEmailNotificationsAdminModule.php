@@ -81,7 +81,7 @@ class GdbcEmailNotificationsAdminModule extends GdbcBaseAdminModule
 	public  function validateModuleSettingsFields($arrSettingOptions)
 	{
 
-		$arrSettingOptions = array_map('sanitize_text_field', (array)$arrSettingOptions);
+		$arrSettingOptions = $this->sanitizeSubmittedOptions($arrSettingOptions);
 		if(!empty($arrSettingOptions[self::OPTION_EMAIL_ADDRESS]))
 		{
 			$arrSettingOptions[self::OPTION_EMAIL_ADDRESS] = sanitize_email($arrSettingOptions[self::OPTION_EMAIL_ADDRESS]);

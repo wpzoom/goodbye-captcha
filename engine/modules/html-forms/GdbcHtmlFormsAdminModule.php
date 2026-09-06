@@ -33,10 +33,6 @@ final class GdbcHtmlFormsAdminModule extends GdbcBaseAdminModule
 
 	}
 
-	public  function validateModuleSettingsFields($arrSettingOptions)
-	{
-		return $arrSettingOptions;
-	}
 	
 	public  function renderModuleSettingsSectionHeader(array $arrSectionInfo)
 	{

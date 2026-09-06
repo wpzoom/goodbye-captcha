@@ -1,3 +1,5 @@
+// Country data is localized by PHP (wp_localize_script); previously an inline <script>.
+var attemptsCountryArray = (window.GdbcReportsData && window.GdbcReportsData.attemptsByCountry) || {};
 jQuery( document ).ready(function($) {
 	
 	

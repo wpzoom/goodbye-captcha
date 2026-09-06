@@ -144,7 +144,7 @@ class GdbcWordPressAdminModule extends GdbcBaseAdminModule
 	public  function validateModuleSettingsFields($arrSettingOptions)
 	{
 
-		$arrSettingOptions = array_map('sanitize_text_field', (array)$arrSettingOptions);
+		$arrSettingOptions = $this->sanitizeSubmittedOptions($arrSettingOptions);
 		$arrDefaultOptionsValues = $this->getDefaultOptionsValues();
 
 		$arrOldSettingsValues = $this->getAllSavedOptions();

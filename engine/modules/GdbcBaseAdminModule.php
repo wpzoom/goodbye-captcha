@@ -44,6 +44,59 @@ abstract class GdbcBaseAdminModule extends MchGdbcBaseAdminModule
 		return parent::saveOption($optionName, $optionValue,  GoodByeCaptcha::isNetworkActivated());
 	}
 
+	/**
+	 * Sanitise a submitted settings array against this module's option definitions.
+	 *
+	 * Used as the register_setting() sanitize_callback (through
+	 * validateModuleSettingsFields()) and by the network-admin save path. Keys that
+	 * are not defined by getDefaultOptions() are dropped; the remaining values are
+	 * coerced by their declared InputType: checkboxes become 1 (an unchecked box is
+	 * simply absent from the submission), everything else is a scalar run through
+	 * sanitize_text_field(). Modules that need stricter rules (numeric ranges, IP
+	 * syntax, e-mail addresses) apply them on top of this in their own override.
+	 *
+	 * @param mixed $arrSubmitted Raw value handed to the sanitize callback.
+	 * @return array Whitelisted, sanitised options.
+	 */
+	protected function sanitizeSubmittedOptions($arrSubmitted)
+	{
+		if(!is_array($arrSubmitted))
+			return array();
+
+		$arrClean = array();
+
+		foreach((array)$this->getDefaultOptions() as $optionName => $arrOptionInfo)
+		{
+			if(!array_key_exists($optionName, $arrSubmitted))
+				continue;
+
+			$value     = $arrSubmitted[$optionName];
+			$inputType = isset($arrOptionInfo['InputType']) ? $arrOptionInfo['InputType'] : MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_TEXT;
+
+			if(MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX === $inputType)
+			{
+				$arrClean[$optionName] = empty($value) ? 0 : 1;
+				continue;
+			}
+
+			if(!is_scalar($value))
+				continue;
+
+			$arrClean[$optionName] = sanitize_text_field((string)$value);
+		}
+
+		return $arrClean;
+	}
+
+	public function validateModuleSettingsFields($arrSettingOptions)
+	{
+		$arrSettingOptions = $this->sanitizeSubmittedOptions($arrSettingOptions);
+
+		$this->registerSuccessMessage(__('Your changes were successfully saved!', 'goodbye-captcha'));
+
+		return $arrSettingOptions;
+	}
+
 	public  function renderModuleSettingsSectionHeader(array $arrSectionInfo)
 	{
 		//echo '<h3>' . esc_html__('WordPress General Settings', 'goodbye-captcha') . '</h3><hr />';
@@ -137,16 +190,6 @@ abstract class GdbcBaseAdminModule extends MchGdbcBaseAdminModule
 		return null;
 	}
 
-	/**
-	 * Render a single logged value for the "blocked content" table.
-	 *
-	 * Replaces the print_r() calls the modules used to rely on: print_r() is a
-	 * debugging helper, and its output for anything other than a scalar is not
-	 * something to show a site owner.
-	 *
-	 * @param mixed $value Value stored in the attempt notes.
-	 * @return string Safe, human readable representation.
-	 */
 	/**
 	 * Render one logged value, escaped for display in the blocked-content table.
 	 *

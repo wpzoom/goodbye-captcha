@@ -94,7 +94,7 @@ class GdbcBruteForceAdminModule extends GdbcBaseAdminModule
 
 	public  function validateModuleSettingsFields($arrSettingOptions)
 	{
-		$arrSettingOptions = array_map('sanitize_text_field', (array)$arrSettingOptions);
+		$arrSettingOptions = $this->sanitizeSubmittedOptions($arrSettingOptions);
 
 		$this->registerSuccessMessage(__('Your changes were successfully saved!', 'goodbye-captcha'));
 

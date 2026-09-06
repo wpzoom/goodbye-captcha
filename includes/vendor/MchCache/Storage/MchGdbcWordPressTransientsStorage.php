@@ -25,7 +25,7 @@ class MchGdbcWordPressTransientsStorage extends MchGdbcCacheBaseStorage
 
 	public function __construct($canUseDataBase = true)
 	{
-		$this->canUseDataBase = (boolean)$canUseDataBase;
+		$this->canUseDataBase = (bool)$canUseDataBase;
 		parent::__construct();
 
 	}

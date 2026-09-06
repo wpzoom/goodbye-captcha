@@ -923,3 +923,28 @@ div.wp-bruiser-extensions p.authors
     position:absolute;
     top:118px;
 }
+
+/* ------------------------------------------------------------------------
+ * Settings tables (proxy headers, IP lists) and the Reports blocked-content
+ * modal. These rules used to be printed inline from the PHP partials; the
+ * WordPress.org review requires stylesheets to be enqueued instead.
+ * ------------------------------------------------------------------------ */
+.gdbc-settings tr.even { background-color: #f5f5f5; }
+
+table.gdbc-proxy-headers-holder { width: 70% !important; }
+
+.gdbc-proxy-headers-holder input[type="text"],
+.gdbc-blacklisted-ips-holder input[type="text"] { width: 99%; padding: 3px 5px; }
+
+.gdbc-proxy-headers-holder thead tbody > tr form > td:first-child,
+.gdbc-blacklisted-ips-holder thead tbody > tr form > td:first-child { padding: 0 30px !important; }
+
+.gdbc-proxy-headers-holder td { vertical-align: middle !important; word-wrap: normal !important; border-bottom: 1px solid #e1e1e1; }
+.gdbc-blacklisted-ips-holder td { vertical-align: middle !important; word-wrap: normal !important; }
+
+.gdbc-proxy-headers-holder th,
+.gdbc-blacklisted-ips-holder th { font-weight: 700; }
+
+.gdbc-settings .tablenav-pages span.current { font-size: 18px; font-weight: bold; line-height: 30px; padding: 4px 6px; text-decoration: none; }
+
+.table-striped-column > tbody > tr td:nth-of-type(odd) { background-color: #f9f9f9; }

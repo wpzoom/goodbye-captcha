@@ -20,7 +20,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // The public token endpoint verifies its own nonce in clientCanRetrieveToken();
-// the remaining $_POST reads only route the request and are validated there.
+// the remaining $_POST reads only decide which third-party AJAX hooks to attach.
 // The token field is compared byte-for-byte against the value this plugin
 // issued, so it must not be passed through a sanitiser.
 // phpcs:disable WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput
@@ -28,37 +28,28 @@ defined( 'ABSPATH' ) || exit;
 final class GdbcAjaxController
 {
 	CONST ACTION_RETRIEVE_TOKEN  = 'gdbcRetrieveToken';
-	CONST AJAX_NONCE_VALUE       = __CLASS__;
+	CONST ACTION_RETRIEVE_NONCE  = 'gdbcRetrieveNonce';
+	CONST CLIENT_NONCE_ACTION    = 'gdbc-retrieve-token'; // nonce action for the public token flow
+	CONST AJAX_NONCE_VALUE       = __CLASS__;             // nonce action for the admin reports actions
 
 	public static function processRequest()
 	{
 		if( ! GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_SETTINGS) )
 			return;
 
-		if(self::isPublicGdbcAjaxRequest() ) {
+		// Public token flow, registered the standard way (available to logged-out visitors).
+		add_action('wp_ajax_nopriv_' . self::ACTION_RETRIEVE_TOKEN, array(__CLASS__, 'sendEncryptedToken'));
+		add_action('wp_ajax_'        . self::ACTION_RETRIEVE_TOKEN, array(__CLASS__, 'sendEncryptedToken'));
+		add_action('wp_ajax_nopriv_' . self::ACTION_RETRIEVE_NONCE, array(__CLASS__, 'sendFreshNonce'));
+		add_action('wp_ajax_'        . self::ACTION_RETRIEVE_NONCE, array(__CLASS__, 'sendFreshNonce'));
 
-			self::sendAjaxHeaders();
 
-			if ( ! self::clientCanRetrieveToken() ) {
-				wp_send_json_error();
-			}
-
-			$arrTokenData = GdbcRequestController::getEncryptedToken();
-
-			wp_send_json_success( $arrTokenData );
-
-			exit;
-		}
-
-		if( ! did_action ('plugins_loaded') )
-			return;
 
 
 		foreach(array(
 
 			        GdbcModulesController::MODULE_MAIL_CHIMP_FOR_WP,
 					GdbcModulesController::MODULE_MAIL_POET,
-					GdbcModulesController::MODULE_ZM_ALR,
 			        GdbcModulesController::MODULE_NINJA_FORMS,
 			        GdbcModulesController::MODULE_USER_PRO,
 					GdbcModulesController::MODULE_EASY_FORMS_FOR_MAILCHIMP,
@@ -69,7 +60,6 @@ final class GdbcAjaxController
 			        GdbcModulesController::MODULE_QUFORM,
 					GdbcModulesController::MODULE_HTML_FORMS,
 					GdbcModulesController::MODULE_WP_FORMS,
-					GdbcModulesController::MODULE_ULTRA_COMMUNITY,
 
 		        ) as $moduleName){
 
@@ -127,38 +117,56 @@ final class GdbcAjaxController
 		}
 	}
 
+	/**
+	 * Whether the current request may be issued an anti-spam token.
+	 *
+	 * @return true|string true, or an error code for the client ("invalid_nonce"
+	 *                     tells it the page-cached nonce expired and to fetch a new one).
+	 */
 	private static function clientCanRetrieveToken()
 	{
-
 		$settingsModuleInstance = GdbcModulesController::getPublicModuleInstance(GdbcModulesController::MODULE_SETTINGS);
 		if(null === $settingsModuleInstance)
-			return false;
+			return 'unavailable';
 
 		if(null === ($hiddenInputName = $settingsModuleInstance->getOption(GdbcSettingsAdminModule::OPTION_HIDDEN_INPUT_NAME)))
-			return false;
+			return 'unavailable';
 
-		if(empty($_POST[$hiddenInputName]))
-			return false;
+		$accept        = isset($_SERVER['HTTP_ACCEPT'])           ? sanitize_text_field(wp_unslash($_SERVER['HTTP_ACCEPT']))           : '';
+		$requestedWith = isset($_SERVER['HTTP_X_REQUESTED_WITH']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_X_REQUESTED_WITH'])) : '';
 
+		if(false === stripos($accept, 'json') || 0 !== strcasecmp($requestedWith, 'XMLHttpRequest'))
+			return 'bad_request';
 
-		if(!isset($_SERVER['HTTP_ACCEPT']) || false === stripos(sanitize_text_field(wp_unslash($_SERVER['HTTP_ACCEPT'])), 'json'))
-			return false;
-
-		if(!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || (0 !== strcasecmp(sanitize_text_field(wp_unslash($_SERVER['HTTP_X_REQUESTED_WITH'])), 'XMLHttpRequest')))
-			return false;
-
-		require_once( ABSPATH . WPINC . '/pluggable.php' );
-
-		( !defined('LOGGED_IN_COOKIE') && function_exists('wp_cookie_constants') ) ? wp_cookie_constants() : null;
-
-		if(false === wp_verify_nonce($_POST[$hiddenInputName], __CLASS__))
-			return false;
+		$nonce = isset($_POST[$hiddenInputName]) ? sanitize_text_field(wp_unslash($_POST[$hiddenInputName])) : '';
+		if('' === $nonce || false === wp_verify_nonce($nonce, self::CLIENT_NONCE_ACTION))
+			return 'invalid_nonce';
 
 		if(GdbcIPUtils::isClientIpBlackListed())
-			return false;
+			return 'blocked';
 
 		return true;
+	}
 
+	public static function sendEncryptedToken()
+	{
+		$canRetrieve = self::clientCanRetrieveToken();
+		if(true !== $canRetrieve) {
+			wp_send_json_error(array('code' => $canRetrieve));
+		}
+
+		wp_send_json_success( GdbcRequestController::getEncryptedToken() );
+	}
+
+	/**
+	 * A fresh nonce for the token flow. Pages served from a page cache carry the
+	 * nonce that was current when they were rendered; once it expires the client
+	 * calls this and retries. The token endpoint is meant for anonymous visitors,
+	 * so handing out its nonce on request gives nothing away.
+	 */
+	public static function sendFreshNonce()
+	{
+		wp_send_json_success(array('nonce' => self::getAjaxNonce()));
 	}
 
 
@@ -167,33 +175,11 @@ final class GdbcAjaxController
 		return !empty($_POST['wpdiscuz_unique_id']) && !empty($_POST['postId']) && MchGdbcWpUtils::isAjaxRequest() && GoodByeCaptchaUtils::isWPDiscuzPluginActivated();
 	}
 
-	private static function sendAjaxHeaders()
-	{
-		wp_magic_quotes();
-		send_origin_headers();
 
-		@header('X-Robots-Tag: noindex' );
-
-		send_nosniff_header();
-		nocache_headers();
-
-		@header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-		@header('Content-Type: application/json; charset=' . get_option( 'blog_charset' ));
-	}
-
-	private static function isPublicGdbcAjaxRequest()
-	{
-		if(empty($_POST['browserInfo']) || empty($_POST['action']) || (self::ACTION_RETRIEVE_TOKEN !== $_POST['action']))
-			return false;
-
-		return true;
-	}
 
 	public static function getAjaxNonce()
 	{
-		require_once( ABSPATH . WPINC . '/pluggable.php' );
-
-		return wp_create_nonce(__CLASS__);
+		return wp_create_nonce(self::CLIENT_NONCE_ACTION);
 	}
 
 	public static function isAdminAjaxRequestValid()

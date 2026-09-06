@@ -133,30 +133,34 @@ final class GdbcReportsAdminModule extends GdbcBaseAdminModule
 
 	}
 
-	private function renderAttemptsByClientIp()
+	/**
+	 * Blocked attempts grouped by country code, for the Reports map.
+	 *
+	 * Handed to the reports script with wp_localize_script(); it used to be
+	 * printed as an inline <script> from the partial.
+	 *
+	 * @return array<string,int> country code => attempts
+	 */
+	public function getAttemptsByCountry()
 	{
-		$countryAttemptsJs = '';
-		$latestAttemptsByClientIp = GdbcDbAccessController::getAttemptsByClientIp(1, PHP_INT_MAX);
-
 		$arrCountryAttempts = array();
-		foreach($latestAttemptsByClientIp as $key => $gdbcAttempt)
+
+		foreach(GdbcDbAccessController::getAttemptsByClientIp(1, PHP_INT_MAX) as $gdbcAttempt)
 		{
-
-//			if(null === ($countryCode = GoodByeCaptchaUtils::getCountryCodeById($gdbcAttempt->CountryId)))
-//				continue;
-
-			//$gdbcAttempt->ClientIp    = MchGdbcIPUtils::ipAddressFromBinary($gdbcAttempt->ClientIp);
-
 			if(null === ($countryCode = GdbcIPUtils::getCountryCodeByIpAddress($gdbcAttempt->ClientIp)))
 				continue;
 
 			$countryCode = sanitize_text_field($countryCode);
 
-			isset($arrCountryAttempts[$countryCode]) ? $arrCountryAttempts[$countryCode] += $gdbcAttempt->Attempts
-													 : $arrCountryAttempts[$countryCode] = $gdbcAttempt->Attempts;
+			isset($arrCountryAttempts[$countryCode]) ? $arrCountryAttempts[$countryCode] += (int)$gdbcAttempt->Attempts
+													 : $arrCountryAttempts[$countryCode]  = (int)$gdbcAttempt->Attempts;
 		}
 
-		$countryAttemptsJs = wp_json_encode($arrCountryAttempts);
+		return $arrCountryAttempts;
+	}
+
+	private function renderAttemptsByClientIp()
+	{
 		require_once dirname(__FILE__) . '/partials/latest-attempts-locations.php';
 	}
 
@@ -562,9 +566,6 @@ final class GdbcReportsAdminModule extends GdbcBaseAdminModule
 		return array();
 	}
 
-	public function validateModuleSettingsFields( $arrOptions ) {
-		return $arrOptions;
-	}
 
 	public static function getInstance()
 	{
@@ -600,11 +601,7 @@ final class GdbcReportsAdminModule extends GdbcBaseAdminModule
 
 		$formattedHtmlCode = str_replace(array('{table-head-rows}', '{table-body-rows}'), array($arrFormattedSavedContent['table-head-rows'], $arrFormattedSavedContent['table-body-rows']), $formattedHtmlCode);
 
-		// Deliberately not filtered: the template carries a <style> block that
-		// wp_kses_post() would strip. The row content is the only untrusted part and
-		// it is already run through wp_filter_kses() by getFormattedBlockedContent().
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- template markup with a <style> block; the row content is already filtered through wp_filter_kses().
-		echo $formattedHtmlCode;
+		echo wp_kses_post($formattedHtmlCode);
 
 		exit;
 	}

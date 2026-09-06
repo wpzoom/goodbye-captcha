@@ -36,6 +36,8 @@ final class GdbcUpdatesController
 
 		if(null === $savedPluginVersion) // fresh install. Save default options
 		{
+			GdbcDbAccessController::createAttemptsTable();
+
 			foreach(array_keys(GdbcModulesController::getRegisteredModules()) as $moduleName)
 			{
 				if(null === ($adminModuleInstance = GdbcModulesController::getAdminModuleInstance($moduleName)))
@@ -311,10 +313,6 @@ final class GdbcUpdatesController
 		if(!empty($oldSettingsOptions['IsJCFctivated']) && GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_JETPACK_CONTACT_FORM))
 		{
 			GdbcJetPackContactFormAdminModule::getInstance()->saveOption(GdbcJetPackContactFormAdminModule::OPTION_IS_JETPACK_CONTACT_FORM_ACTIVATE, true);
-		}
-		if(!empty($oldSettingsOptions['IsPFActivated']) && GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_PLANSO_FORMS))
-		{
-			GdbcPlanSoFormsAdminModule::getInstance()->saveOption(GdbcPlanSoFormsAdminModule::OPTION_PLANSO_GENERAL_FORM, true);
 		}
 
 		delete_site_option('gdbcsettingsadminmodule-settings');

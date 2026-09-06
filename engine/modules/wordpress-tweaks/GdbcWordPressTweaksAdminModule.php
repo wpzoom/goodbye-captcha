@@ -121,11 +121,6 @@ class GdbcWordPressTweaksAdminModule extends GdbcBaseAdminModule
 
 	}
 
-	public  function validateModuleSettingsFields($arrSettingOptions)
-	{
-		$this->registerSuccessMessage(__('Your changes were successfully saved!', 'goodbye-captcha'));
-		return $arrSettingOptions;
-	}
 
 //	public  function renderModuleSettingsSectionHeader(array $arrSectionInfo)
 //	{

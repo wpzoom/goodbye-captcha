@@ -25,7 +25,7 @@ class MchGdbcGroupedModules
 	private $groupTitle         = null;
 	private $groupDescription   = null;
 
-	public function __construct($groupTitle = null, array $groupedModulesList = null)
+	public function __construct($groupTitle = null, ?array $groupedModulesList = null)
 	{
 		$this->groupTitle = $groupTitle;
 		$this->groupedModulesList = array();
