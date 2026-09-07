@@ -35,14 +35,8 @@ div.gdbc-settings  .clearfix:after
     zoom: 1
 }
 
-#gdbc-reports-holder
-{
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-}
-#gdbc-reports-holder h3
-{
-    font-size: 1.5em;
-}
+/* No font-family override here: Reports must inherit the admin typography like
+   every other screen (see the note at the top of this file). */
 
 #adminmenuwrap{
     height: 100%
@@ -63,11 +57,10 @@ div.gdbc-settings  .clearfix:after
 }
 
 .gdbcwidget header {
-    border-radius: 0;
-    box-shadow: 0 -2px 0 rgba(0, 0, 0, 0.05) inset;
-    background: none repeat scroll 0 0 #fafafa;
-    border: 1px solid #c2c2c2;
-    color: #333;
+    border-radius: 4px 4px 0 0;
+    background: #f6f7f7;
+    border: 1px solid #c3c4c7;
+    color: #1d2327;
     height: 34px;
     line-height: 40px;
     padding: 0;
@@ -75,9 +68,9 @@ div.gdbc-settings  .clearfix:after
 }
 
 .gdbcwidget > header {
-    background: none repeat scroll 0 0 #fafafa;
-    border: 1px solid #c2c2c2;
-    color: #333;
+    background: #f6f7f7;
+    border: 1px solid #c3c4c7;
+    color: #1d2327;
 }
 
 .gdbcwidget header h2 {
@@ -95,13 +88,13 @@ div.gdbc-settings  .clearfix:after
 }
 
 .gdbcwidget > div {
-    border-bottom-color: #ccc !important;
-    border-left-color: #ccc !important;
-    border-radius: 0;
-    border-right-color: #ccc !important;
+    border-bottom-color: #c3c4c7 !important;
+    border-left-color: #c3c4c7 !important;
+    border-radius: 0 0 4px 4px;
+    border-right-color: #c3c4c7 !important;
     border-style: none solid solid;
     border-top: medium none;
-    border-width: medium 1px 2px;
+    border-width: medium 1px 1px;
     float: left;
     font-size: 13px;
     margin: 0;
@@ -175,18 +168,11 @@ div.gdbc-settings  .clearfix:after
 }
 
 .gdbcwidget header .nav-tabs > li.active > a, .gdbcwidget header .nav-tabs > li.active > a:focus, .gdbcwidget header .nav-tabs > li.active > a:hover {
-    -moz-border-bottom-colors: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: none;
     background-color: #fff;
-    border-color: -moz-use-text-color #c2c2c2 transparent;
-    border-image: none;
-    border-left: 1px solid #c2c2c2;
-    border-right: 1px solid #c2c2c2;
+    border-color: transparent #c3c4c7 #c3c4c7;
     border-style: none solid solid;
     border-width: medium 1px 1px;
-    color: #555;
+    color: #1d2327;
     cursor: default;
 }
 
@@ -204,22 +190,17 @@ div.gdbc-settings  .clearfix:after
 
 .nav-tabs > li.active > a {
     border-top-width: 0 !important;
-    box-shadow: 0 -2px 0 #57889c;
+    box-shadow: 0 -2px 0 #2271b1;
     font-weight: 700;
     margin-top: 1px !important;
 }
 
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
-    -moz-border-bottom-colors: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: none;
     background-color: #fff;
-    border-color: #ddd #ddd transparent;
-    border-image: none;
+    border-color: #c3c4c7 #c3c4c7 transparent;
     border-style: solid;
     border-width: 1px;
-    color: #555;
+    color: #1d2327;
     cursor: default;
 }
 
@@ -383,15 +364,15 @@ div.gdbc-settings  .clearfix:after
 }
 
 .icon-success{
-    color: #5cb85c
+    color: #00a32a
 }
 
 .icon-danger{
-    color: #d9534f
+    color: #d63638
 }
 
 .icon-primary{
-    color: #428bca
+    color: #2271b1
 }
 
 a.badge:hover{
@@ -427,7 +408,7 @@ a.easy-tool-tip:hover span:hover {
     background-position: 0 0;
     background-repeat: repeat;
     background-size: auto auto;
-    border-bottom-color: #ccc;
+    border-bottom-color: #dcdcde;
     border-bottom-style: solid;
     border-bottom-width: 1px;
     min-height: 42px;
@@ -441,6 +422,14 @@ a.easy-tool-tip:hover span:hover {
     outline-style: none;
     outline-width: 0;
     position: relative;
+}
+
+#gdbc-reports-holder #widget-grid{
+    margin-top: 10px;
+}
+
+#gdbc-reports-holder #widget-grid .col-sm-6{
+    padding-left: 0px;
 }
 
 #modules-chart .inline-group:after {
@@ -520,7 +509,7 @@ input[type="checkbox"], input[type="radio"] {
     text-align: center;
     top: -1px;
     width: 15px;
-    color: #3276b1;
+    color: #2271b1;
     margin-right: 10px;
 }
 
@@ -542,7 +531,7 @@ input[type="checkbox"], input[type="radio"] {
     text-align: center;
     top: -1px;
     width: 15px;
-    color: #3276b1;
+    color: #2271b1;
     margin-right: 10px;
 }
 
@@ -551,14 +540,14 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 #modules-chart .checkbox input:checked + i, #modules-chart .radio input:checked + i, #modules-chart .toggle input:checked + i {
-    border-bottom-color: #3276b1;
+    border-bottom-color: #2271b1;
     border-left-color-ltr-source: physical;
     border-left-color-rtl-source: physical;
-    border-left-color-value: #3276b1;
+    border-left-color-value: #2271b1;
     border-right-color-ltr-source: physical;
     border-right-color-rtl-source: physical;
-    border-right-color-value: #3276b1;
-    border-top-color: #3276b1
+    border-right-color-value: #2271b1;
+    border-top-color: #2271b1
 }
 
 #flot-container {
