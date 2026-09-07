@@ -470,7 +470,7 @@ final class GdbcModulesController
 			self::MODULE_WP_FORMS => array(
 				'info'    => array(
 					'ModuleId' => 37,
-					'IsLicensed' => true,
+					'IsLicensed' => false,
 				),
 				'classes' => array(
 					'GdbcWpFormsAdminModule'  => '/modules/wp-forms/GdbcWpFormsAdminModule.php',
