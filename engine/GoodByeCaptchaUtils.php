@@ -154,6 +154,11 @@ final class GoodByeCaptchaUtils
 		return defined('WPFORMS_VERSION') || function_exists('wpforms');
 	}
 
+	public static function isContactForm7PluginActivated()
+	{
+		return defined('WPCF7_VERSION') || class_exists('WPCF7_ContactForm');
+	}
+
 //	public static function setCookie($cookieKey, $cookieValue, $cookieTime, $path = null, $httpOnly = true)
 //	{
 //		if(headers_sent()) return;

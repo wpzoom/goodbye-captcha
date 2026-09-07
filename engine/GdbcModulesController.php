@@ -128,7 +128,7 @@ final class GdbcModulesController
 			self::MODULE_CONTACT_FORM_7 => array(
 					'info'    => array(
 							'ModuleId' => 5,
-							'IsLicensed' => true,
+							'IsLicensed' => false,
 					),
 					'classes' => array(
 							'GdbcContactForm7AdminModule'  => '/modules/contact-form-7/GdbcContactForm7AdminModule.php',
