@@ -676,6 +676,20 @@ input[type="checkbox"], input[type="radio"] {
     margin: 15px 0 5px !important;
 }
 
+/* Success/error/warning banner a module prints above its own settings form */
+.gdbc-settings .mch-settings-message
+{
+    padding: 8px 12px;
+    margin: 0 0 15px;
+}
+
+.gdbc-settings .mch-settings-message h3
+{
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 13px;
+}
+
 .gdbc-settings #normal-sortables:empty, .gdbc-settings #advanced-sortables:empty, .gdbc-settings #bottom-sortables:empty
 {
     display:none;
