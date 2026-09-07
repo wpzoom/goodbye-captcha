@@ -27,6 +27,11 @@ class GdbcContactFormsAdminPage extends GdbcBaseAdminPage
 
 		$modulesList = array();
 		
+		// Listed first, and so also the module that renders the heading introducing
+		// the whole list - see GdbcWPZoomFormsAdminModule::renderModuleSettingsSectionHeader().
+		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_WPZOOM_FORMS))
+			$modulesList[] = GdbcWPZoomFormsAdminModule::getInstance();
+		
 		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_HTML_FORMS))
 			$modulesList[] = GdbcHtmlFormsAdminModule::getInstance();
 		

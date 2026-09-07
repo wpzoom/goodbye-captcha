@@ -34,11 +34,8 @@ final class GdbcHtmlFormsAdminModule extends GdbcBaseAdminModule
 	}
 
 	
-	public  function renderModuleSettingsSectionHeader(array $arrSectionInfo)
-	{
-		echo '<h3>' . esc_html__('Popular Contact Forms Settings', 'goodbye-captcha') . '</h3><hr />';
-		echo '<h4>' . esc_html__('Enable protection for the following popular contact forms:', 'goodbye-captcha') . '</h4>';
-	}
+	// The heading for the Contact Forms page is rendered by whichever module is
+	// registered first on it, which is GdbcWPZoomFormsAdminModule.
 
 	public function getFormattedBlockedContent(GdbcAttemptEntity $attemptEntity)
 	{

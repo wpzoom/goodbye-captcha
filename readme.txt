@@ -29,6 +29,7 @@ WPBruiser was originally created by Mihai Chelaru. It is now maintained by [WPZO
 * Standard WordPress Register form integration
 * Standard WordPress Forgot Password form integration
 * Standard WordPress Comments form integration
+* WPZOOM Forms integration - protects every form built with it
 * Ability to set the maximum number of characters for each comment field
 * Logging with the ability to enable/disable it
 * Automatically Block IP Addresses
@@ -57,6 +58,9 @@ WPBruiser was originally created by Mihai Chelaru. It is now maintained by [WPZO
 
 
 **WPBruiser is also integrated with the following plugins:**
+
+* **WPZOOM Forms** (https://wordpress.org/plugins/wpzoom-forms/)
+	WPBruiser offers protection for all forms built with WPZOOM Forms, whether they are placed as a block, as a [wpzf_form] shortcode or as an Elementor widget
 
 * **wpDiscuz** (https://wordpress.org/plugins/wpdiscuz/)
 	WPBruiser offers protection for the entire commenting system

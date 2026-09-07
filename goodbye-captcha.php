@@ -45,6 +45,7 @@ if(!class_exists('GoodByeCaptcha', false))
 			'GoodByeCaptchaPublic'        => '/engine/GoodByeCaptchaPublic.php',
 			'GoodByeCaptchaAdmin'         => '/engine/GoodByeCaptchaAdmin.php',
 			'GdbcAjaxController'          => '/engine/GdbcAjaxController.php',
+			'GdbcAdminPostController'     => '/engine/GdbcAdminPostController.php',
 			'GoodByeCaptchaUtils'         => '/engine/GoodByeCaptchaUtils.php',
 			'GdbcRequestController'       => '/engine/GdbcRequestController.php',
 			'GdbcIPUtils'                 => '/engine/GdbcIPUtils.php',
@@ -90,6 +91,11 @@ if(!class_exists('GoodByeCaptcha', false))
 
 			if (MchGdbcWpUtils::isAjaxRequest()) {
 				GdbcAjaxController::processRequest();
+			} elseif (GdbcAdminPostController::isProtectedRequest()) {
+				// A front-end form posting to admin-post.php. WordPress serves that
+				// endpoint with WP_ADMIN defined, so the dashboard branch below would
+				// otherwise claim the request and no public module would ever validate it.
+				GdbcAdminPostController::processRequest();
 			} elseif (MchGdbcWpUtils::isUserInDashboard()) {
 				GoodByeCaptchaAdmin::getInstance($arrPluginInfo);
 			} else {

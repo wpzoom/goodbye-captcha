@@ -41,6 +41,7 @@ final class GdbcModulesController
 	CONST MODULE_CONTACT_FORM_7   = 'ContactForm7';
 	CONST MODULE_GRAVITY_FORMS    = 'GravityForms';
 	CONST MODULE_HTML_FORMS       = 'HTMLForms';
+	CONST MODULE_WPZOOM_FORMS     = 'WPZoomForms';
 	CONST MODULE_FAST_SECURE_FORM = 'FastSecureForm';
 	CONST MODULE_FORMIDABLE_FORMS = 'FormidableForms';
 	CONST MODULE_JETPACK_CONTACT_FORM  = 'JetPackContactForm';
@@ -476,6 +477,17 @@ final class GdbcModulesController
 					'GdbcWpFormsPublicModule' => '/modules/wp-forms/GdbcWpFormsPublicModule.php',
 				)
 			),
+
+			self::MODULE_WPZOOM_FORMS => array(
+				'info'    => array(
+					'ModuleId' => 38,
+					'IsLicensed' => false,
+				),
+				'classes' => array(
+					'GdbcWPZoomFormsAdminModule'  => '/modules/wpzoom-forms/GdbcWPZoomFormsAdminModule.php',
+					'GdbcWPZoomFormsPublicModule' => '/modules/wpzoom-forms/GdbcWPZoomFormsPublicModule.php',
+				)
+			),
 	
 	);
 
@@ -503,6 +515,7 @@ final class GdbcModulesController
 			case self::MODULE_UPME                     : return !$isForLicensing ? 'UPME' : 'User Profiles Made Easy';
 			case self::MODULE_EASY_DIGITAL_DOWNLOADS   : return 'Easy Digital Downloads';
 			case self::MODULE_COUNTRY_BLOCKING         : return 'Country Blocking';
+			case self::MODULE_WPZOOM_FORMS             : return 'WPZOOM Forms';
 
 		}
 
