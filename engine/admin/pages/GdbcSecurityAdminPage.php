@@ -23,7 +23,6 @@ class GdbcSecurityAdminPage  extends GdbcBaseAdminPage
 {
 	private $blackListedIpsGroupIndex = null;
 	private $whiteListedIpsGroupIndex = null;
-	private $geoIpCountryGroupIndex   = null;
 
 	public function __construct($pageMenuTitle, $pageBrowserTitle, $pluginSlug)
 	{
@@ -56,15 +55,6 @@ class GdbcSecurityAdminPage  extends GdbcBaseAdminPage
 			));
 		}
 
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_COUNTRY_BLOCKING))
-		{
-			$this->geoIpCountryGroupIndex = $this->registerGroupedModules(array(
-				new MchGdbcGroupedModules(__('Geo IP Country Blocking', 'goodbye-captcha'), array(
-						GdbcGeoIpCountryAdminModule::getInstance())
-				)
-			));
-
-		}
 
 	}
 
@@ -110,16 +100,6 @@ class GdbcSecurityAdminPage  extends GdbcBaseAdminPage
 			if(null !== GdbcBlackListedIpsAdminModule::getInstance()->getPartialAdminSettingsFilePath())
 			{
 				include_once GdbcBlackListedIpsAdminModule::getInstance()->getPartialAdminSettingsFilePath();
-			}
-
-			return;
-		}
-
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_COUNTRY_BLOCKING) && $this->geoIpCountryGroupIndex == $groupIndex)
-		{
-			if(null !== GdbcGeoIpCountryAdminModule::getInstance()->getPartialAdminSettingsFilePath())
-			{
-				include_once GdbcGeoIpCountryAdminModule::getInstance()->getPartialAdminSettingsFilePath();
 			}
 
 			return;

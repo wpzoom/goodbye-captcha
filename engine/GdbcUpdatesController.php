@@ -231,22 +231,13 @@ final class GdbcUpdatesController
 		unset($alreadyBlockedIpsList, $ipAddressObject, $clientIp);
 
 
-		$arrModulesIdMapping = array( // key - oldModuleId
+		// key - oldModuleId. Entries for integrations that no longer ship are gone;
+		// v1 rows belonging to them simply do not migrate (see the empty check below).
+		$arrModulesIdMapping = array(
 			1  => GdbcModulesController::MODULE_WORDPRESS             ,
 			2  => GdbcModulesController::MODULE_JETPACK_CONTACT_FORM  ,
-			3  => GdbcModulesController::MODULE_BUDDY_PRESS           ,
-			4  => GdbcModulesController::MODULE_NINJA_FORMS           ,
-			5  => GdbcModulesController::MODULE_CONTACT_FORM_7        ,
-			6  => GdbcModulesController::MODULE_GRAVITY_FORMS         ,
-			7  => GdbcModulesController::MODULE_FAST_SECURE_FORM      ,
-			8  => GdbcModulesController::MODULE_FORMIDABLE_FORMS      ,
 			9  => GdbcModulesController::MODULE_MAIL_CHIMP_FOR_WP     ,
-			11 => GdbcModulesController::MODULE_USER_PRO             ,
 			12 => GdbcModulesController::MODULE_ULTIMATE_MEMBER       ,
-			13 => GdbcModulesController::MODULE_WOOCOMMERCE           ,
-			14 => GdbcModulesController::MODULE_UPME                 ,
-			15 => GdbcModulesController::MODULE_PLANSO_FORMS          ,
-			16 => GdbcModulesController::MODULE_SEAMLESS_DONATIONS    ,
 		);
 
 

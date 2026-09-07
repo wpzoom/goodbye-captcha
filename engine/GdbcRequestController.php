@@ -73,10 +73,6 @@ final class GdbcRequestController
 			self::$rejectReasonCode = self::REJECT_REASON_CLIENT_IP_BLOCKED;
 		}
 
-		if((null === self::$rejectReasonCode) && GdbcIPUtils::isClientIpBlockedByCountry()){
-			self::$rejectReasonCode = self::REJECT_REASON_COUNTRY_IP_BLOCKED;
-		}
-
 		if( (null === self::$rejectReasonCode) && GoodByeCaptchaUtils::isLoginAttemptEntity($attemptEntity))
 		{
 			if ( GdbcIPUtils::isClientIpWebAttacker() ) {

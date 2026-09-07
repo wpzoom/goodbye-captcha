@@ -60,7 +60,6 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 				new GdbcWordpressAdminPage(__('WordPress', 'goodbye-captcha'), __('WordPress Settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
 				new GdbcContactFormsAdminPage(__('Contact Forms', 'goodbye-captcha'), __('Contact Forms Plugins', 'goodbye-captcha'), self::$PLUGIN_SLUG),
 				new GdbcMembershipAdminPage(__('Membership', 'goodbye-captcha'), __('Membership Page Settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
-				new GdbcECommerceAdminPage(__('eCommerce', 'goodbye-captcha'), __('eCommerce Page Settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
 				new GdbcOthersAdminPage(__('Others', 'goodbye-captcha'), __('All other popular plugins settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
 				new GdbcNotificationsAdminPage(__('Notifications', 'goodbye-captcha'), __('Notifications Settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
 				new GdbcReportsAdminPage(__('Reports', 'goodbye-captcha'), __('WPBruiser - Blocked Attempts', 'goodbye-captcha'), self::$PLUGIN_SLUG),

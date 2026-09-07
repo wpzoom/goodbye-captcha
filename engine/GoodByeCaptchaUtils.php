@@ -94,16 +94,6 @@ final class GoodByeCaptchaUtils
 		return class_exists('FSCF_Util');
 	}
 
-	public static function isFormidableFormsActivated()
-	{
-		return class_exists('FrmSettings');
-	}
-
-	public static function isUserProPluginActivated()
-	{
-		return class_exists('userpro_api');
-	}
-
 	public static function isWPRocketPluginActivated()
 	{
 		return defined('WP_ROCKET_FILE');
@@ -117,21 +107,6 @@ final class GoodByeCaptchaUtils
 	public static function isGoogleAppsLoginPluginActivated()
 	{
 		return class_exists('core_google_apps_login');
-	}
-
-	public static function isMemberPressPluginActivated()
-	{
-		return defined('MEPR_VERSION');
-	}
-
-	public static function isBuddyPressPluginActivated()
-	{
-		return class_exists('BP_Core');
-	}
-
-	public static function isEasyFormsForMailChimpPluginActivated()
-	{
-		return class_exists('Yikes_Inc_Easy_Mailchimp_Extender');
 	}
 
 	public static function isWPDJSPluginActivated() // WP Deferred JavaScripts
@@ -549,32 +524,6 @@ final class GoodByeCaptchaUtils
 
 				case GdbcModulesController::MODULE_WP_MEMBERS :
 					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName), GdbcWPMembersAdminModule::OPTION_LOGIN_FORM_PROTECTION_ACTIVATED);
-					break;
-
-				case GdbcModulesController::MODULE_WOOCOMMERCE :
-					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName),  GdbcWooCommerceAdminModule::WOOCOMMERCE_LOGIN_FORM);
-					break;
-
-				case GdbcModulesController::MODULE_USER_PRO :
-					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName),  GdbcUserProAdminModule::OPTION_LOGIN_FORM_PROTECTION_ACTIVATED);
-					break;
-
-				case GdbcModulesController::MODULE_UPME :
-					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName),  GdbcUPMEAdminModule::UPME_LOGIN_FORM);
-					break;
-
-
-
-				case GdbcModulesController::MODULE_MEMBER_PRESS :
-					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName), GdbcMemberPressAdminModule::OPTION_MEMBER_PRESS_LOGIN_FORM);
-					break;
-
-				case GdbcModulesController::MODULE_EASY_DIGITAL_DOWNLOADS :
-					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName), GdbcEDDAdminModule::EDD_LOGIN_FORM);
-					break;
-
-				case GdbcModulesController::MODULE_AFFILIATE_WP :
-					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName), GdbcAffiliateWPAdminModule::AFFILIATE_WP_LOGIN_FORM);
 					break;
 
 			}

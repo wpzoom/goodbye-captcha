@@ -32,50 +32,29 @@ final class GdbcModulesController
 
 	CONST MODULE_REPORTS		  = 'Reports';
 
-	CONST MODULE_WOOCOMMERCE      = 'WooCommerce';
 
 	CONST MODULE_MAIL_CHIMP_FOR_WP = 'MailChimpForWp';
-	CONST MODULE_MAIL_POET         = 'MailPoet';
 
-	CONST MODULE_NINJA_FORMS      = 'NinjaForms';
-	CONST MODULE_CONTACT_FORM_7   = 'ContactForm7';
-	CONST MODULE_GRAVITY_FORMS    = 'GravityForms';
 	CONST MODULE_HTML_FORMS       = 'HTMLForms';
-	CONST MODULE_FAST_SECURE_FORM = 'FastSecureForm';
-	CONST MODULE_FORMIDABLE_FORMS = 'FormidableForms';
 	CONST MODULE_JETPACK_CONTACT_FORM  = 'JetPackContactForm';
 
 
 	CONST MODULE_ULTIMATE_MEMBER  = 'UltimateMember';
-	CONST MODULE_ULTRA_COMMUNITY  = 'UltraCommunity';
 	CONST MODULE_WP_MEMBERS       = 'WPMembers';
 
-	CONST MODULE_USER_PRO         = 'UserPro';
-	CONST MODULE_UPME             = 'UPME';
-	CONST MODULE_BUDDY_PRESS      = 'BuddyPress';
-	CONST MODULE_BB_PRESS         = 'bbPress';
 
 	CONST MODULE_BLACK_LISTED_IPS = 'BlackListedIps';
 	CONST MODULE_WHITE_LISTED_IPS = 'WhiteListedIps';
 
-	CONST MODULE_ZM_ALR               = 'ZM-ALR';
-	CONST MODULE_QUFORM               = 'Quform';
 	
 	CONST MODULE_WP_FORMS             = 'WPForms';
 	
-	CONST MODULE_SEAMLESS_DONATIONS   = 'SeamlessDonations';
 	CONST MODULE_WORDPRESS_TWEAKS     = 'WordPressTweaks';
 
-	CONST MODULE_PLANSO_FORMS         = 'PlanSoForms';
 	CONST MODULE_EMAIL_NOTIFICATIONS  = 'EmailNotifications';
-	CONST MODULE_MEMBER_PRESS         = 'MemberPress';
 
 	CONST MODULE_PROXY_HEADERS          = 'ProxyHeaders';
-	CONST MODULE_COUNTRY_BLOCKING       = 'CountryBlocking';
-	CONST MODULE_EASY_DIGITAL_DOWNLOADS = 'EDD';
-	CONST MODULE_AFFILIATE_WP           = 'AffiliateWP';
 
-	CONST MODULE_EASY_FORMS_FOR_MAILCHIMP = 'EasyFormsForMailChimp';
 
 	private static $arrRegisteredModules = null;
 	private static $arrAllModules = array(
@@ -113,61 +92,6 @@ final class GdbcModulesController
 					)
 			),
 
-			self::MODULE_NINJA_FORMS => array(
-					'info'    => array(
-							'ModuleId' => 4,
-							'IsLicensed' => true,
-					),
-					'classes' => array(
-							'GdbcNinjaFormsAdminModule'  => '/modules/ninja-forms/GdbcNinjaFormsAdminModule.php',
-							'GdbcNinjaFormsPublicModule' => '/modules/ninja-forms/GdbcNinjaFormsPublicModule.php',
-					)
-			),
-
-			self::MODULE_CONTACT_FORM_7 => array(
-					'info'    => array(
-							'ModuleId' => 5,
-							'IsLicensed' => true,
-					),
-					'classes' => array(
-							'GdbcContactForm7AdminModule'  => '/modules/contact-form-7/GdbcContactForm7AdminModule.php',
-							'GdbcContactForm7PublicModule' => '/modules/contact-form-7/GdbcContactForm7PublicModule.php',
-					)
-			),
-
-			self::MODULE_GRAVITY_FORMS => array(
-					'info'    => array(
-							'ModuleId' => 6,
-							'IsLicensed' => true,
-					),
-					'classes' => array(
-						'GdbcGravityFormsAdminModule'  => '/modules/gravity-forms/GdbcGravityFormsAdminModule.php',
-						'GdbcGravityFormsPublicModule' => '/modules/gravity-forms/GdbcGravityFormsPublicModule.php',
-					)
-			),
-
-			self::MODULE_FAST_SECURE_FORM => array(
-					'info'    => array(
-							'ModuleId' => 7,
-							'IsLicensed' => true,
-					),
-					'classes' => array(
-							'GdbcFastSecureFormAdminModule'  => '/modules/fast-secure-form/GdbcFastSecureFormAdminModule.php',
-							'GdbcFastSecureFormPublicModule' => '/modules/fast-secure-form/GdbcFastSecureFormPublicModule.php',
-					)
-			),
-
-			self::MODULE_FORMIDABLE_FORMS => array(
-					'info'    => array(
-							'ModuleId' => 8,
-							'IsLicensed' => true,
-					),
-					'classes' => array(
-							'GdbcFormidableFormsAdminModule'  => '/modules/formidable-forms/GdbcFormidableFormsAdminModule.php',
-							'GdbcFormidableFormsPublicModule' => '/modules/formidable-forms/GdbcFormidableFormsPublicModule.php',
-					)
-			),
-
 			self::MODULE_ULTIMATE_MEMBER => array(
 					'info'    => array(
 							'ModuleId' => 9,
@@ -179,50 +103,6 @@ final class GdbcModulesController
 					)
 			),
 
-			self::MODULE_BUDDY_PRESS => array(
-					'info'    => array(
-							'ModuleId' => 10,
-							'IsLicensed' => true,
-					),
-					'classes' => array(
-							'GdbcBuddyPressAdminModule'  => '/modules/buddy-press/GdbcBuddyPressAdminModule.php',
-							'GdbcBuddyPressPublicModule' => '/modules/buddy-press/GdbcBuddyPressPublicModule.php',
-					)
-			),
-
-			self::MODULE_BB_PRESS => array(
-					'info'    => array(
-							'ModuleId' => 11,
-							'IsLicensed' => true,
-					),
-					'classes' => array(
-							'GdbcBbPressAdminModule'  => '/modules/bb-press/GdbcBbPressAdminModule.php',
-							'GdbcBbPressPublicModule' => '/modules/bb-press/GdbcBbPressPublicModule.php',
-					)
-			),
-
-			self::MODULE_USER_PRO => array(
-					'info'    => array(
-							'ModuleId' => 12,
-							'IsLicensed' => true,
-					),
-					'classes' => array(
-							'GdbcUserProAdminModule'  => '/modules/user-pro/GdbcUserProAdminModule.php',
-							'GdbcUserProPublicModule' => '/modules/user-pro/GdbcUserProPublicModule.php',
-					)
-			),
-
-			self::MODULE_UPME => array(
-					'info'    => array(
-							'ModuleId' => 13,
-							'IsLicensed' => true,
-					),
-					'classes' => array(
-							'GdbcUPMEAdminModule'  => '/modules/upme/GdbcUPMEAdminModule.php',
-							'GdbcUPMEPublicModule' => '/modules/upme/GdbcUPMEPublicModule.php',
-					)
-			),
-
 			self::MODULE_MAIL_CHIMP_FOR_WP => array(
 					'info'    => array(
 							'ModuleId' => 14,
@@ -231,28 +111,6 @@ final class GdbcModulesController
 					'classes' => array(
 							'GdbcMailChimpForWpAdminModule'  => '/modules/mc-for-wp/GdbcMailChimpForWpAdminModule.php',
 							'GdbcMailChimpForWpPublicModule' => '/modules/mc-for-wp/GdbcMailChimpForWpPublicModule.php',
-					)
-			),
-
-			self::MODULE_MAIL_POET => array(
-					'info'    => array(
-							'ModuleId' => 15,
-							'IsLicensed' => true,
-					),
-					'classes' => array(
-							'GdbcMailPoetAdminModule'  => '/modules/mail-poet/GdbcMailPoetAdminModule.php',
-							'GdbcMailPoetPublicModule' => '/modules/mail-poet/GdbcMailPoetPublicModule.php',
-					)
-			),
-
-			self::MODULE_WOOCOMMERCE => array(
-					'info'    => array(
-							'ModuleId' => 16,
-							'IsLicensed' => true,
-					),
-					'classes' => array(
-							'GdbcWooCommerceAdminModule'  => '/modules/woocommerce/GdbcWooCommerceAdminModule.php',
-							'GdbcWooCommercePublicModule' => '/modules/woocommerce/GdbcWooCommercePublicModule.php',
 					)
 			),
 
@@ -301,28 +159,6 @@ final class GdbcModulesController
 					),
 			),
 
-			self::MODULE_ZM_ALR => array(
-					'info'    => array(
-							'ModuleId'      => 21,
-							'IsLicensed' => false,
-					),
-					'classes' => array(
-							'GdbcZmAlrAdminModule'  => '/modules/zm-ajax-login-register/GdbcZmAlrAdminModule.php',
-							'GdbcZmAlrPublicModule' => '/modules/zm-ajax-login-register/GdbcZmAlrPublicModule.php',
-					),
-			),
-
-			self::MODULE_SEAMLESS_DONATIONS => array(
-					'info'    => array(
-							'ModuleId'      => 22,
-							'IsLicensed' => false,
-					),
-					'classes' => array(
-							'GdbcSeamlessDonationsAdminModule'  => '/modules/seamless-donations/GdbcSeamlessDonationsAdminModule.php',
-							'GdbcSeamlessDonationsPublicModule' => '/modules/seamless-donations/GdbcSeamlessDonationsPublicModule.php',
-					),
-			),
-
 			self::MODULE_WORDPRESS_TWEAKS => array(
 					'info'    => array(
 							'ModuleId'      => 23,
@@ -345,83 +181,6 @@ final class GdbcModulesController
 					)
 			),
 
-			self::MODULE_PLANSO_FORMS => array(
-					'info'    => array(
-							'ModuleId' => 25,
-							'IsLicensed' => false,
-					),
-					'classes' => array(
-							'GdbcPlanSoFormsAdminModule'  => '/modules/planso-forms/GdbcPlanSoFormsAdminModule.php',
-							'GdbcPlanSoFormsPublicModule' => '/modules/planso-forms/GdbcPlanSoFormsPublicModule.php',
-					)
-			),
-
-			self::MODULE_MEMBER_PRESS => array(
-					'info'    => array(
-							'ModuleId' => 27,
-							'IsLicensed' => true,
-					),
-					'classes' => array(
-							'GdbcMemberPressAdminModule'  => '/modules/member-press/GdbcMemberPressAdminModule.php',
-							'GdbcMemberPressPublicModule' => '/modules/member-press/GdbcMemberPressPublicModule.php',
-					)
-			),
-
-			self::MODULE_EASY_FORMS_FOR_MAILCHIMP => array(
-					'info'    => array(
-							'ModuleId' => 28,
-							'IsLicensed' => true,
-					),
-					'classes' => array(
-							'GdbcEasyFormsForMailChimpAdminModule'  => '/modules/easy-forms-for-mailchimp/GdbcEasyFormsForMailChimpAdminModule.php',
-							'GdbcEasyFormsForMailChimpPublicModule' => '/modules/easy-forms-for-mailchimp/GdbcEasyFormsForMailChimpPublicModule.php',
-					)
-			),
-
-			self::MODULE_COUNTRY_BLOCKING => array(
-					'info'    => array(
-							'ModuleId' => 29,
-							'IsLicensed' => true,
-					),
-					'classes' => array(
-							'GdbcGeoIpCountryAdminModule'  => '/modules/geo-ip-country/GdbcGeoIpCountryAdminModule.php',
-							'GdbcGeoIpCountryPublicModule' => '/modules/geo-ip-country/GdbcGeoIpCountryPublicModule.php',
-					)
-			),
-
-			self::MODULE_EASY_DIGITAL_DOWNLOADS => array(
-				'info'    => array(
-					'ModuleId' => 30,
-					'IsLicensed' => true,
-				),
-				'classes' => array(
-					'GdbcEDDAdminModule'  => '/modules/easy-digital-downloads/GdbcEDDAdminModule.php',
-					'GdbcEDDPublicModule' => '/modules/easy-digital-downloads/GdbcEDDPublicModule.php',
-				)
-			),
-
-			self::MODULE_AFFILIATE_WP => array(
-				'info'    => array(
-					'ModuleId' => 31,
-					'IsLicensed' => true,
-				),
-				'classes' => array(
-					'GdbcAffiliateWPAdminModule'  => '/modules/affiliate-wp/GdbcAffiliateWPAdminModule.php',
-					'GdbcAffiliateWPPublicModule' => '/modules/affiliate-wp/GdbcAffiliateWPPublicModule.php',
-				)
-			),
-
-			self::MODULE_QUFORM => array(
-					'info'    => array(
-							'ModuleId' => 32,
-							'IsLicensed' => true,
-					),
-					'classes' => array(
-							'GdbcQuformAdminModule'  => '/modules/quform/GdbcQuformAdminModule.php',
-							'GdbcQuformPublicModule' => '/modules/quform/GdbcQuformPublicModule.php',
-					)
-			),
-
 			self::MODULE_PROXY_HEADERS => array(
 					'info'    => array(
 							'ModuleId' => 33,
@@ -441,17 +200,6 @@ final class GdbcModulesController
 					'classes' => array(
 							'GdbcWPMembersAdminModule'  => '/modules/wp-members/GdbcWPMembersAdminModule.php',
 							'GdbcWPMembersPublicModule' => '/modules/wp-members/GdbcWPMembersPublicModule.php',
-					)
-			),
-
-			self::MODULE_ULTRA_COMMUNITY => array(
-					'info'    => array(
-							'ModuleId' => 35,
-							'IsLicensed' => false,
-					),
-					'classes' => array(
-							'GdbcUltraCommunityAdminModule'  => '/modules/ultra-community/GdbcUltraCommunityAdminModule.php',
-							'GdbcUltraCommunityPublicModule' => '/modules/ultra-community/GdbcUltraCommunityPublicModule.php',
 					)
 			),
 			
@@ -485,24 +233,9 @@ final class GdbcModulesController
 		switch ($moduleName)
 		{
 			case self::MODULE_BRUTE_FORCE              : return 'Brute Force';
-			case self::MODULE_BUDDY_PRESS              : return 'BuddyPress';
-			case self::MODULE_CONTACT_FORM_7           : return 'Contact Form 7';
-			case self::MODULE_FAST_SECURE_FORM         : return !$isForLicensing ? 'Fast Secure Form' : 'Fast Secure Contact Form';
-			case self::MODULE_FORMIDABLE_FORMS         : return 'Formidable Forms';
-			case self::MODULE_GRAVITY_FORMS            : return 'Gravity Forms';
 			case self::MODULE_JETPACK_CONTACT_FORM     : return 'Jetpack Contact Form';
 			case self::MODULE_MAIL_CHIMP_FOR_WP        : return 'MailChimp for WP';
-			case self::MODULE_MAIL_POET                : return 'MailPoet';
-			case self::MODULE_NINJA_FORMS              : return 'Ninja Forms';
-			case self::MODULE_PLANSO_FORMS             : return 'Planso Forms';
-			case self::MODULE_SEAMLESS_DONATIONS       : return 'Seamless Donations';
 			case self::MODULE_ULTIMATE_MEMBER          : return 'Ultimate Member';
-			case self::MODULE_USER_PRO                 : return 'UserPro';
-			case self::MODULE_EASY_FORMS_FOR_MAILCHIMP : return 'Easy Forms for MailChimp';
-			case self::MODULE_MEMBER_PRESS             : return 'MemberPress';
-			case self::MODULE_UPME                     : return !$isForLicensing ? 'UPME' : 'User Profiles Made Easy';
-			case self::MODULE_EASY_DIGITAL_DOWNLOADS   : return 'Easy Digital Downloads';
-			case self::MODULE_COUNTRY_BLOCKING         : return 'Country Blocking';
 
 		}
 

@@ -49,15 +49,7 @@ final class GdbcAjaxController
 		foreach(array(
 
 			        GdbcModulesController::MODULE_MAIL_CHIMP_FOR_WP,
-					GdbcModulesController::MODULE_MAIL_POET,
-			        GdbcModulesController::MODULE_NINJA_FORMS,
-			        GdbcModulesController::MODULE_USER_PRO,
-					GdbcModulesController::MODULE_EASY_FORMS_FOR_MAILCHIMP,
 					GdbcModulesController::MODULE_ULTIMATE_MEMBER,
-			        GdbcModulesController::MODULE_WOOCOMMERCE,
-			        GdbcModulesController::MODULE_AFFILIATE_WP,
-			        GdbcModulesController::MODULE_EASY_DIGITAL_DOWNLOADS,
-			        GdbcModulesController::MODULE_QUFORM,
 					GdbcModulesController::MODULE_HTML_FORMS,
 					GdbcModulesController::MODULE_WP_FORMS,
 

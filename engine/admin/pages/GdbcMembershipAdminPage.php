@@ -32,18 +32,6 @@ class GdbcMembershipAdminPage extends GdbcBaseAdminPage
 			$arrModules[] =  GdbcWPMembersAdminModule::getInstance();
 
 
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_USER_PRO))
-			$arrModules[] = GdbcUserProAdminModule::getInstance();
-
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_UPME))
-			$arrModules[] = GdbcUPMEAdminModule::getInstance();
-
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_MEMBER_PRESS))
-			$arrModules[] = GdbcMemberPressAdminModule::getInstance();
-
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_BUDDY_PRESS))
-			$arrModules[] =  GdbcBuddyPressAdminModule::getInstance();
-
 		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_ULTIMATE_MEMBER))
 			$arrModules[] =  GdbcUltimateMemberAdminModule::getInstance();
 

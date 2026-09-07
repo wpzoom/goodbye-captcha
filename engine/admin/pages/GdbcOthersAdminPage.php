@@ -31,25 +31,11 @@ class GdbcOthersAdminPage  extends GdbcBaseAdminPage
 		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_MAIL_CHIMP_FOR_WP))
 			$modulesList[] = GdbcMailChimpForWpAdminModule::getInstance();
 
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_EASY_FORMS_FOR_MAILCHIMP))
-			$modulesList[] = GdbcEasyFormsForMailChimpAdminModule::getInstance();
-
-
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_MAIL_POET))
-			$modulesList[] = GdbcMailPoetAdminModule::getInstance();
-
-
 		$this->registerGroupedModules(array(
 				new MchGdbcGroupedModules(__('WPBruiser - Subscriptions Plugins Settings', 'goodbye-captcha'), $modulesList)
 			)
 		);
 
-		$modulesList = array();
-
-		$this->registerGroupedModules(array(
-				new MchGdbcGroupedModules(__('WPBruiser - Other Popular Plugins', 'goodbye-captcha'), $modulesList)
-			)
-		);
 
 
 

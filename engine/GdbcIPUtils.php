@@ -22,11 +22,6 @@ defined( 'ABSPATH' ) || exit;
 
 final class GdbcIPUtils
 {
-	public static function isClientIpBlockedByCountry()
-	{
-		return self::isIpBlockedByCountry(self::getClientIpAddress());
-	}
-
 	public static function getClientIpAddress()
 	{
 		return MchGdbcHttpRequest::getClientIp(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_PROXY_HEADERS) ? (array)GdbcProxyHeadersPublicModule::getInstance()->getOption(GdbcProxyHeadersAdminModule::PROXY_HEADERS_IP) : array());
@@ -67,21 +62,9 @@ final class GdbcIPUtils
 		return isset($arrBlackVerifiedIPs[$ipAddress]);
 	}
 
-	public static function isIpBlockedByCountry($ipAddress)
-	{
-		if(!GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_COUNTRY_BLOCKING))
-			return false;
-
-		return GdbcGeoIpCountryPublicModule::getInstance()->isCountryIdBlocked(self::getCountryIdByIpAddress($ipAddress));
-
-	}
-
 	public static function isIpAddressBlocked($ipAddress)
 	{
 		if(self::isIpBlackListed($ipAddress))
-			return true;
-
-		if(self::isIpBlockedByCountry($ipAddress))
 			return true;
 
 		if(null === ($bruteForceModuleInstance = GdbcModulesController::getAdminModuleInstance(GdbcModulesController::MODULE_BRUTE_FORCE)))

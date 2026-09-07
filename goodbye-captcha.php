@@ -56,7 +56,6 @@ if(!class_exists('GoodByeCaptcha', false))
 			'GdbcContactFormsAdminPage'   => '/engine/admin/pages/GdbcContactFormsAdminPage.php',
 			'GdbcSettingsAdminPage'       => '/engine/admin/pages/GdbcSettingsAdminPage.php',
 			'GdbcWordpressAdminPage'      => '/engine/admin/pages/GdbcWordpressAdminPage.php',
-			'GdbcECommerceAdminPage'      => '/engine/admin/pages/GdbcECommerceAdminPage.php',
 			'GdbcNotificationsAdminPage'  => '/engine/admin/pages/GdbcNotificationsAdminPage.php',
 			'GdbcMembershipAdminPage'     => '/engine/admin/pages/GdbcMembershipAdminPage.php',
 			'GdbcSecurityAdminPage'       => '/engine/admin/pages/GdbcSecurityAdminPage.php',
