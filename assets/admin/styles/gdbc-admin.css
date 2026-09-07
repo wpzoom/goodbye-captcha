@@ -777,16 +777,28 @@ div.gdbcwidget ul.pagination a:hover
 #gdbc-help-metabox  .inside
 {
     margin:0;
+    padding: 12px;
     background-color: #f9f9f9 !important;
 }
 
-#gdbc-help-metabox .inside div, #gdbc-available-extension-metabox .inside div
+#gdbc-help-metabox .inside p
+{
+    margin: 0 0 10px;
+}
+
+#gdbc-available-extension-metabox .inside div
 {
     padding:10px;
     text-align: center;
 }
 
-#gdbc-help-metabox .contact-help , #gdbc-available-extension-metabox .contact-help
+#gdbc-help-metabox .contact-help
+{
+    display:block;
+    margin: 0;
+}
+
+#gdbc-available-extension-metabox .contact-help
 {
     display:block;
     text-align: center;
