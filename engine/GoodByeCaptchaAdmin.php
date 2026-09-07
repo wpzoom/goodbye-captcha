@@ -181,14 +181,19 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 
 		if(! is_a($activeAdminPage, 'GdbcWelcomeAdminPage') )
 		{
-			$adminPageHtmlCode .= '<h2 class="nav-tab-wrapper">';
+			// Every admin screen needs exactly one <h1>: it is what screen readers
+			// announce as the page title, and what WordPress anchors admin notices to.
+			// The tab strip used to stand in for it as an <h2>.
+			$adminPageHtmlCode .= '<h1>' . esc_html($activeAdminPage->getPageBrowserTitle()) . '</h1>';
+
+			$adminPageHtmlCode .= '<nav class="nav-tab-wrapper wp-clearfix" aria-label="' . esc_attr__('Secondary menu', 'goodbye-captcha') . '">';
 
 			foreach ($this->getRegisteredAdminPages() as $adminPage) {
 				$adminPageHtmlCode .= '<a class="nav-tab' . (($adminPage->isActive()) ? ' nav-tab-active' : '') . '" href="?page=' . esc_attr($adminPage->getPageMenuSlug()) . '">';
 				$adminPageHtmlCode .= esc_html($adminPage->getPageMenuTitle()) . '</a>';
 			}
 
-			$adminPageHtmlCode .= '</h2>';
+			$adminPageHtmlCode .= '</nav>';
 		}
 
 		// Deliberately not filtered: this is an intentionally unbalanced fragment
