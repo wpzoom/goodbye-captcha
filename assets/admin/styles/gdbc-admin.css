@@ -628,19 +628,6 @@ input[type="checkbox"], input[type="radio"] {
     }
 }
 
-.gdbc-settings form > h3
-{
-    margin: 0 -12px !important;
-    padding: 12px;
-    background: #f6f7f7;
-    border-top: 1px solid #dcdcde;
-    border-bottom: 1px solid #dcdcde;
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 1.4;
-    color: #1d2327;
-}
-
 /* Modules print their section title as `<h3>...</h3><hr />`. The heading now
    carries its own bottom border, so the rule right after it would double up. */
 .gdbc-settings form > h3 + hr
