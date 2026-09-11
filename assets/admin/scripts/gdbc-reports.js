@@ -1,5 +1,15 @@
 // Country data is localized by PHP (wp_localize_script); previously an inline <script>.
 var attemptsCountryArray = (window.GdbcReportsData && window.GdbcReportsData.attemptsByCountry) || {};
+
+// Accent of the current admin colour scheme, also localized by PHP. Flot, Morris
+// and jVectorMap draw into canvas/SVG and cannot read the CSS custom properties
+// the stylesheet uses, so they are handed the same four colours here. The
+// fallbacks are the default "Fresh" scheme.
+var gdbcAccentColors = (window.GdbcReportsData && window.GdbcReportsData.accentColors) || {};
+var gdbcAccent      = gdbcAccentColors.accent      || '#2271b1';
+var gdbcAccentDark  = gdbcAccentColors.accentDark  || '#1b588a';
+var gdbcAccentLight = gdbcAccentColors.accentLight || '#76a7cf';
+var gdbcAccentPale  = gdbcAccentColors.accentPale  || '#cee0ee';
 jQuery( document ).ready(function($) {
 	
 	
@@ -75,6 +85,7 @@ jQuery( document ).ready(function($) {
                     },
                 xkey: 'y',
                     ykeys: ['attempts'],
+                    barColors: [gdbcAccent],
                     grid:true,
                     hideHover:'auto',
                     labels: ['Series A', 'Series B']
@@ -407,7 +418,7 @@ jQuery( document ).ready(function($) {
                         });
                     } else if (prop === 'ModulesAttemptsArray' && $("#flot-container").length) {
 
-                        var colorArray = ['#931313', '#638167', '#65596B', '#60747C', '#B09B5B', '#3276B1', '#C0C0C0', '#FDDC9A', '#575FB5', '#57B599', '#46CC41', '#C93A24'];
+                        var colorArray = ['#931313', '#638167', '#65596B', '#60747C', '#B09B5B', gdbcAccent, '#C0C0C0', '#FDDC9A', '#575FB5', '#57B599', '#46CC41', '#C93A24'];
                         var i = 0;
                         $.each(modulesData, function(key, value){
                             var $graphObj = {
@@ -490,8 +501,6 @@ jQuery( document ).ready(function($) {
 
     function displayAttemptsChart(placeHolderId, data) {
 
-        console.log(data);
-
        // var data = [[1304301600*1000, 20], [1304388000*1000, 30], [1304474400*1000, 40], [1304553600*1000, 10], [1304640000*1000, 23], [1304726400*1000, 16] ];
 
 
@@ -546,7 +555,7 @@ jQuery( document ).ready(function($) {
             //    dateFormat : "%b %0d, %y",
             //    defaultTheme : false
             //},
-            colors : ["#6595b4"]
+            colors : [gdbcAccent]
         };
 
         $.plot($(placeHolderId), [data], options);
@@ -635,7 +644,7 @@ jQuery( document ).ready(function($) {
             series : {
                 regions : [{
                     values : attemptsCountryArray,
-                    scale : ['#85a8b6', '#4d7686'],
+                    scale : [gdbcAccentLight, gdbcAccentDark],
                     normalizeFunction : 'polynomial'
                 }]
             },
@@ -691,6 +700,7 @@ jQuery( document ).ready(function($) {
                             Morris.Donut({
                                 element: 'gdbc-stats',
                                 data: moduleData,
+                                colors: [gdbcAccent, gdbcAccentLight, gdbcAccentDark, gdbcAccentPale],
                                 formatter: function (x, data) {
                                     return data.percent + "%"
                                 }

@@ -190,7 +190,7 @@ div.gdbc-settings  .clearfix:after
 
 .nav-tabs > li.active > a {
     border-top-width: 0 !important;
-    box-shadow: 0 -2px 0 #2271b1;
+    box-shadow: 0 -2px 0 var(--gdbc-accent, #2271b1);
     font-weight: 700;
     margin-top: 1px !important;
 }
@@ -372,7 +372,7 @@ div.gdbc-settings  .clearfix:after
 }
 
 .icon-primary{
-    color: #2271b1
+    color: var(--gdbc-accent, #2271b1)
 }
 
 a.badge:hover{
@@ -509,7 +509,7 @@ input[type="checkbox"], input[type="radio"] {
     text-align: center;
     top: -1px;
     width: 15px;
-    color: #2271b1;
+    color: var(--gdbc-accent, #2271b1);
     margin-right: 10px;
 }
 
@@ -531,7 +531,7 @@ input[type="checkbox"], input[type="radio"] {
     text-align: center;
     top: -1px;
     width: 15px;
-    color: #2271b1;
+    color: var(--gdbc-accent, #2271b1);
     margin-right: 10px;
 }
 
@@ -540,14 +540,14 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 #modules-chart .checkbox input:checked + i, #modules-chart .radio input:checked + i, #modules-chart .toggle input:checked + i {
-    border-bottom-color: #2271b1;
+    border-bottom-color: var(--gdbc-accent, #2271b1);
     border-left-color-ltr-source: physical;
     border-left-color-rtl-source: physical;
-    border-left-color-value: #2271b1;
+    border-left-color-value: var(--gdbc-accent, #2271b1);
     border-right-color-ltr-source: physical;
     border-right-color-rtl-source: physical;
-    border-right-color-value: #2271b1;
-    border-top-color: #2271b1
+    border-right-color-value: var(--gdbc-accent, #2271b1);
+    border-top-color: var(--gdbc-accent, #2271b1)
 }
 
 #flot-container {
@@ -723,7 +723,7 @@ div.gdbcwidget ul.pagination a:hover
 }
 #gdbc-barchart-holder div.morris-hover.morris-default-style p span
 {
-    color: #972d2c;
+    color: var(--gdbc-accent-dark, #1b588a);
 }
 
 .gdbc-settings .mch-right-side-holder h3.hndle span, .gdbc-settings .mch-right-side-holder h2.hndle span
@@ -831,10 +831,8 @@ div.mch-meta-notice-warning
     -moz-animation: rotation .6s infinite linear;
     -o-animation: rotation .6s infinite linear;
     animation: rotation .6s infinite linear;
-    border-left:6px solid rgba(0,174,239,.15);
-    border-right:6px solid rgba(0,174,239,.15);
-    border-bottom:6px solid rgba(0,174,239,.15);
-    border-top:6px solid rgba(0,174,239,.8);
+    border:6px solid var(--gdbc-accent-pale, #cee0ee);
+    border-top-color: var(--gdbc-accent, #2271b1);
     border-radius:100%;
 }
 
@@ -967,3 +965,94 @@ table.gdbc-proxy-headers-holder { width: 70% !important; }
 .gdbc-settings .tablenav-pages span.current { font-size: 18px; font-weight: bold; line-height: 30px; padding: 4px 6px; text-decoration: none; }
 
 .table-striped-column > tbody > tr td:nth-of-type(odd) { background-color: #f9f9f9; }
+
+
+/* ------------------------------------------------------------------------
+ * Reports screen accent
+ *
+ * Bootstrap paints links, primary buttons and pagination in its own #428bca
+ * blue, which has nothing to do with wp-admin and ignores the colour scheme
+ * the user picked under Profile. The --gdbc-accent custom properties are
+ * printed by GoodByeCaptchaAdmin::enqueueAdminScriptsAndStyles() from that
+ * scheme; the fallbacks below are the default "Fresh" values, so the rules
+ * still make sense if the inline style ever fails to load.
+ *
+ * Everything here is scoped to the Reports wrapper, because bootstrap.css is
+ * only enqueued on that screen and these overrides must not leak elsewhere.
+ * ------------------------------------------------------------------------ */
+#gdbc-reports-holder a
+{
+    color: var(--gdbc-accent, #2271b1);
+}
+
+#gdbc-reports-holder a:hover,
+#gdbc-reports-holder a:focus
+{
+    color: var(--gdbc-accent-dark, #1b588a);
+}
+
+#gdbc-reports-holder .btn-primary
+{
+    color: #fff;
+    background-color: var(--gdbc-accent, #2271b1);
+    border-color: var(--gdbc-accent, #2271b1);
+}
+
+#gdbc-reports-holder .btn-primary:hover,
+#gdbc-reports-holder .btn-primary:focus,
+#gdbc-reports-holder .btn-primary:active,
+#gdbc-reports-holder .btn-primary.active,
+#gdbc-reports-holder .open > .dropdown-toggle.btn-primary
+{
+    color: #fff;
+    background-color: var(--gdbc-accent-dark, #1b588a);
+    border-color: var(--gdbc-accent-dark, #1b588a);
+}
+
+/* Same focus ring core uses on its own buttons. */
+#gdbc-reports-holder .btn-primary:focus,
+#gdbc-reports-holder .btn-default:focus
+{
+    outline: 2px solid transparent;
+    box-shadow: 0 0 0 1px #fff, 0 0 0 3px var(--gdbc-accent, #2271b1);
+}
+
+#gdbc-reports-holder .btn-primary .badge
+{
+    color: var(--gdbc-accent, #2271b1);
+    background-color: #fff;
+}
+
+#gdbc-reports-holder .label-primary,
+#gdbc-reports-holder .progress-bar
+{
+    background-color: var(--gdbc-accent, #2271b1);
+}
+
+#gdbc-reports-holder .pagination > li > a,
+#gdbc-reports-holder .pagination > li > span
+{
+    color: var(--gdbc-accent, #2271b1);
+}
+
+#gdbc-reports-holder .pagination > li > a:hover,
+#gdbc-reports-holder .pagination > li > span:hover,
+#gdbc-reports-holder .pagination > li > a:focus,
+#gdbc-reports-holder .pagination > li > span:focus
+{
+    color: var(--gdbc-accent-dark, #1b588a);
+    background-color: var(--gdbc-accent-pale, #cee0ee);
+    border-color: var(--gdbc-accent-light, #76a7cf);
+}
+
+#gdbc-reports-holder .pagination > .active > a,
+#gdbc-reports-holder .pagination > .active > span,
+#gdbc-reports-holder .pagination > .active > a:hover,
+#gdbc-reports-holder .pagination > .active > span:hover,
+#gdbc-reports-holder .pagination > .active > a:focus,
+#gdbc-reports-holder .pagination > .active > span:focus
+{
+    color: #fff;
+    background-color: var(--gdbc-accent, #2271b1);
+    border-color: var(--gdbc-accent, #2271b1);
+}

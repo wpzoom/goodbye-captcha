@@ -272,6 +272,119 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 
 	}
 
+	/**
+	 * Accent colour of the admin colour scheme the current user has picked.
+	 *
+	 * WordPress stores every scheme's palette in $_wp_admin_css_colors, but the
+	 * order of that array is not the same from one scheme to the next, so the
+	 * accent (the colour core paints primary buttons with) cannot be read from a
+	 * fixed index. The table below mirrors $highlight-color in each of
+	 * wp-admin/css/colors/<scheme>/colors.scss.
+	 *
+	 * @return string Six digit hex colour, lowercase.
+	 */
+	public static function getAdminSchemeAccentColor()
+	{
+		$arrSchemeAccents = array(
+			'fresh'     => '#2271b1',
+			'light'     => '#04a4cc',
+			'modern'    => '#3858e9',
+			'blue'      => '#096484',
+			'coffee'    => '#c7a589',
+			'ectoplasm' => '#a3b745',
+			'midnight'  => '#e14d43',
+			'ocean'     => '#9ebaa0',
+			'sunrise'   => '#dd823b',
+		);
+
+		$adminColorScheme = get_user_option('admin_color');
+		if(empty($adminColorScheme))
+			$adminColorScheme = 'fresh';
+
+		if(isset($arrSchemeAccents[$adminColorScheme]))
+		{
+			$accentColor = $arrSchemeAccents[$adminColorScheme];
+		}
+		else
+		{
+			// Scheme registered by a theme or another plugin. Most of them list
+			// their accent third, so that is the best guess available.
+			global $_wp_admin_css_colors;
+			$accentColor = isset($_wp_admin_css_colors[$adminColorScheme]->colors[2]) ? $_wp_admin_css_colors[$adminColorScheme]->colors[2] : '';
+		}
+
+		$accentColor = apply_filters('gdbc_admin_accent_color', $accentColor, $adminColorScheme);
+
+		$accentColor = self::normalizeHexColor($accentColor);
+
+		return '' === $accentColor ? $arrSchemeAccents['fresh'] : $accentColor;
+	}
+
+	/**
+	 * The accent plus the three shades the Reports screen derives from it.
+	 *
+	 * Shared by the stylesheet (as custom properties) and by the charts, which
+	 * paint themselves from JavaScript and cannot read CSS variables.
+	 *
+	 * @return array
+	 */
+	public static function getAdminAccentPalette()
+	{
+		$accentColor = self::getAdminSchemeAccentColor();
+
+		return array(
+			'accent'      => $accentColor,
+			'accentDark'  => self::shadeHexColor($accentColor, -0.22),
+			'accentLight' => self::shadeHexColor($accentColor, 0.38),
+			'accentPale'  => self::shadeHexColor($accentColor, 0.78),
+		);
+	}
+
+	/**
+	 * Expands #abc to #aabbcc and rejects anything that is not a hex colour.
+	 *
+	 * @param string $hexColor
+	 * @return string Lowercase #rrggbb, or an empty string when invalid.
+	 */
+	private static function normalizeHexColor($hexColor)
+	{
+		if(!is_string($hexColor))
+			return '';
+
+		$hexColor = strtolower(trim($hexColor));
+
+		if(preg_match('/^#([0-9a-f]{3})$/', $hexColor, $arrMatches))
+			return '#' . preg_replace('/(.)/', '$1$1', $arrMatches[1]);
+
+		return preg_match('/^#[0-9a-f]{6}$/', $hexColor) ? $hexColor : '';
+	}
+
+	/**
+	 * Mixes a colour towards black or white.
+	 *
+	 * @param string $hexColor  Normalized #rrggbb colour.
+	 * @param float  $mixRatio  Negative darkens, positive lightens, -1 to 1.
+	 * @return string
+	 */
+	private static function shadeHexColor($hexColor, $mixRatio)
+	{
+		$mixTarget = $mixRatio < 0 ? 0 : 255;
+		$mixRatio  = min(1, abs((float) $mixRatio));
+
+		$arrChannels = array(
+			hexdec(substr($hexColor, 1, 2)),
+			hexdec(substr($hexColor, 3, 2)),
+			hexdec(substr($hexColor, 5, 2)),
+		);
+
+		foreach($arrChannels as &$channelValue){
+			$channelValue = (int) round($channelValue + ($mixTarget - $channelValue) * $mixRatio);
+		}
+		unset($channelValue);
+
+		return vsprintf('#%02x%02x%02x', $arrChannels);
+	}
+
 	public function enqueueAdminScriptsAndStyles()
 	{
 
@@ -285,6 +398,8 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 		if(null === ($activeAdminPage = $this->getActivePage())){
 			return;
 		}
+
+		$arrAccentPalette = self::getAdminAccentPalette();
 
 		if($this->getActivePage() instanceof GdbcReportsAdminPage)
 		{
@@ -302,6 +417,7 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 			wp_enqueue_script(self::$PLUGIN_SLUG . '-reports-script', plugins_url('/assets/admin/scripts/gdbc-reports.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION, false);
 			wp_localize_script(self::$PLUGIN_SLUG . '-reports-script', 'GdbcReportsData', array(
 				'attemptsByCountry' => GdbcReportsAdminModule::getInstance()->getAttemptsByCountry(),
+				'accentColors'      => $arrAccentPalette,
 			));
 
 			wp_enqueue_script(self::$PLUGIN_SLUG . '-bootstrap', plugins_url('/assets/admin/scripts/bootstrap.min.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION, false);
@@ -323,6 +439,14 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 
 
 		wp_enqueue_style (self::$PLUGIN_SLUG . '-admin-style', plugins_url('/assets/admin/styles/gdbc-admin.css', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION);
+
+		wp_add_inline_style(self::$PLUGIN_SLUG . '-admin-style', sprintf(
+			':root{--gdbc-accent:%1$s;--gdbc-accent-dark:%2$s;--gdbc-accent-light:%3$s;--gdbc-accent-pale:%4$s}',
+			$arrAccentPalette['accent'],
+			$arrAccentPalette['accentDark'],
+			$arrAccentPalette['accentLight'],
+			$arrAccentPalette['accentPale']
+		));
 
 	}
 
