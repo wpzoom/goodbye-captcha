@@ -3,10 +3,10 @@
 /**
  *
  * @package   WPBruiser
- * @author    Mihai Chelaru
+ * @author    Mihai Chelaru, WPZOOM
  * @license   GPL-2.0+
  * @link      https://wordpress.org/plugins/goodbye-captcha/
- * @copyright 2014 WPBruiser
+ * @copyright 2014 Mihai Chelaru, 2026 WPZOOM
  *
  */
 
