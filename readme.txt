@@ -1,5 +1,5 @@
 === WPBruiser ===
-Contributors: wpzoom, mihche
+Contributors: wpzoom
 Tags: antispam, spam protection, brute force, login security, comments
 Requires at least: 6.5
 Requires PHP: 7.4
@@ -12,15 +12,13 @@ Stop spam bots and brute-force logins on your WordPress forms with an invisible 
 
 == Description ==
 
+**Notice:** WPBruiser was created by [Mihai Chelaru](https://profiles.wordpress.org/mihche/). As of version 3.2.0, it is maintained by [WPZOOM](https://profiles.wordpress.org/wpzoom/).
+
 WPBruiser stops automated form submissions before WordPress ever processes them. Every protected form gets a hidden, short-lived token that is created in the visitor's browser. A real person never sees it or has to do anything. A bot that posts straight to your login, registration or comment endpoint arrives without a valid token and is turned away.
 
 Because bad submissions are rejected at the door, they never land in your moderation queue, never create junk user accounts and never cost you database writes. You also don't have to ask visitors to solve a puzzle, which is often the step where real people give up on a form.
 
 Everything runs on your own server. WPBruiser does not call remote APIs, does not load outside scripts or fonts and does not send your visitors' data anywhere.
-
-= History and credits =
-
-WPBruiser (originally released as "GoodBye Captcha") was created by [Mihai Chelaru](https://profiles.wordpress.org/mihche/), who developed and maintained it from 2014 to 2018. Mihai wrote the detection engine, the modules and the admin interface the plugin is still built on. In 2026 [WPZOOM](https://wpzoom.com/) adopted the plugin and took over its maintenance. Thank you, Mihai, for creating it.
 
 = Forms you can protect =
 
