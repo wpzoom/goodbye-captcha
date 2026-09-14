@@ -1,6 +1,6 @@
 === WPBruiser ===
 Contributors: wpzoom
-Tags: captcha, antispam, anti-spam, spam, brute force
+Tags: antispam, spam protection, brute force, login security, comments
 Requires at least: 6.5
 Requires PHP: 7.4
 Tested up to: 7.1
@@ -8,148 +8,171 @@ Stable tag: 3.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-An extremely powerful antispam plugin that blocks spam-bots without annoying captcha images.
+Stop spam bots and brute-force logins on your WordPress forms with an invisible check. No puzzles, no image challenges, no third-party service.
 
 == Description ==
-**WPBruiser (formerly GoodBye Captcha) is an anti-spam and security plugin based on algorithms that identify spam bots without any annoying and hard to read captcha images.**
 
-WPBruiser completely eliminates spam-bot signups, spam comments, even brute force attacks, the second you install it on your Wordpress website.  It is completely invisible to the end-user - no need to ever fill out a Captcha or other "human-detection" field ever again - and it just works!
+WPBruiser stops automated form submissions before WordPress ever processes them. Every protected form gets a hidden, short-lived token that is created in the visitor's browser. A real person never sees it or has to do anything. A bot that posts straight to your login, registration or comment endpoint arrives without a valid token and is turned away.
 
-Unlike other anti-spam plugins, which detect spam comments and signups after the fact and move them to your spam folder, which you then have to delete - using up not only your website's resources, but your time as well, WPBruiser prevents the bots from leaving spam in the first place. The result is that your site is not only spam free, it's faster and more secure.
+Because bad submissions are rejected at the door, they never land in your moderation queue, never create junk user accounts and never cost you database writes. You also don't have to ask visitors to solve a puzzle, which is often the step where real people give up on a form.
 
-In addition, WPBruiser is completely self-contained and does not need to connect to any outside service.  Your logins remain yours, 100%.
+Everything runs on your own server. WPBruiser does not call remote APIs, does not load outside scripts or fonts and does not send your visitors' data anywhere.
 
-WPBruiser fights Brute Force attacks and eliminates spam-bots on comments, signup pages as well as login and password reset pages. At the click of a button, you can decide which forms to protect.
+= This plugin is a fork =
 
-= Maintainer =
-WPBruiser was originally created by Mihai Chelaru. It is now maintained by [WPZOOM](https://wpzoom.com/).
+WPBruiser is a fork of the plugin of the same name (originally released as "GoodBye Captcha"), created by [Mihai Chelaru](https://profiles.wordpress.org/mihche/) and developed by him from 2014 to 2018.
 
-= Summary of WPBruiser features =
-* Standard WordPress Login form integration
-* Standard WordPress Register form integration
-* Standard WordPress Forgot Password form integration
-* Standard WordPress Comments form integration
-* Ability to set the maximum number of characters for each comment field
-* Logging with the ability to enable/disable it
-* Automatically Block IP Addresses
-* Automatically purge logs older than a certain number of days
-* Manually white-list trusted IP Address (IPV4 and IPV6)
-* Manually block/unblock IP Addresses (IPV4 and IPV6)
-* Properly detects client IP Address when using CloudFlare, Incapsula, Cloudfront, RackSpace, Sucuri CloudProxy, AWS ELB
-* Provides statistics, reports, maps and charts with all blocked spam attempts
-* No requests to external APIs
-* Can be switched to "Test Mode" - for testing
-* Compatible with WordPress Multisite - network admin interface ready
-* Compatible with cache plugins (WP Super Cache, W3 Total Cache, ZenCache, WP Fastest Cache and others)
-* Invisible for end users (works in the background)
-* Does not affect page loading times
+= Forms you can protect =
 
-= Brute Force Protection =
-* Automatically detects Brute Force attacks
-* Ability to automatically block IP Addresses
-* Prevents User Enumeration
-* Ability to block most dangerous IP addresses involved in brute force attacks
-* Ability to block most dangerous Anonymous Proxy IP addresses including TOR Networks, TOR Nodes and TOR Exit Points
-* Ability to Completely Disable XML-RPC service - **it seamlessly works with Jetpack plugin activated**
-* Ability to Disable XML-RPC Pingbacks
-* Email notifications when a Brute Force Attack is detected
+Turn protection on or off for each form on the plugin's settings screens:
 
+* WordPress login
+* WordPress registration
+* WordPress lost password
+* WordPress comments, with an optional character limit for the comment, name, email and website fields
 
+= Supported third-party plugins =
 
-**WPBruiser is also integrated with the following plugins:**
+* **Ultimate Member**: login, registration and password reset forms
+* **WP-Members**: login and registration forms
+* **Login With Ajax**: its AJAX login, registration and lost password forms
+* **Jetpack**: the Jetpack contact form
+* **MailChimp for WordPress**: every sign-up form you build with it
+* **HTML Forms**: every form you build with it
+* **wpDiscuz**: comments posted through its AJAX comment system
 
-* **wpDiscuz** (https://wordpress.org/plugins/wpdiscuz/)
-	WPBruiser offers protection for the entire commenting system
+= Brute-force and hardening tools =
 
-* **MailChimp for WordPress** (https://wordpress.org/plugins/mailchimp-for-wp)
-	WPBruiser offers protection for all forms the user will create with MailChimp
+* Detects a login brute-force attack in progress and can email you when one starts
+* Automatically blocks IP addresses that keep hammering your login
+* Optionally rejects login attempts from IP addresses on the bundled lists of known web attackers and anonymous proxies, including Tor exit nodes
+* Stops user enumeration through `/?author=N` scans, the oEmbed endpoint and the REST API
+* Turns off XML-RPC completely (Jetpack's own XML-RPC requests are still allowed), or removes only the pingback methods
+* Sends an email whenever an account with administrator rights signs in
+* Hides the WordPress version and removes the RSD and Windows Live Writer header links
+* Hides the website field and the notes text on the comment form
 
-* **Ultimate Member** (https://wordpress.org/plugins/ultimate-member)
-	WPBruiser offers protection for Login, Registration and Reset Password forms
+= IP address management =
 
-* **Jetpack by WordPress** (https://wordpress.org/plugins/jetpack)
-	WPBruiser offers protection for JetPack Contact Form
+* Allow list and block list for single addresses and ranges, IPv4 and IPv6
+* Finds the visitor's real IP address behind CloudFlare, Incapsula, Amazon CloudFront, AWS ELB, Rackspace and Sucuri, and lets you register other trusted proxy headers
 
-* **Login With Ajax** (https://wordpress.org/plugins/login-with-ajax)
-    WPBruiser offers protection for Login, Registration and Lost Password forms
+= Reports =
 
-* **Theme My Login** (https://wordpress.org/plugins/theme-my-login)
-	WPBruiser offers protection for Login, Registration and Lost Password forms
+* Every blocked attempt is logged to a database table of its own
+* Charts show which forms are attacked most, and a world map shows where attempts come from (the country lookup is done locally)
+* Block or unblock an address straight from the reports screen
+* Old log entries are deleted automatically after the number of days you choose, or you can turn logging off
 
-* **HTML Forms** (https://wordpress.org/plugins/html-forms)
-	WPBruiser offers protection for all forms
+= Everyday details =
 
-* **WP-Members** (https://wordpress.org/plugins/wp-members)
-	WPBruiser offers protection for Login and Registration forms
+* Test Mode, which emails you about every check so you can confirm protection works before you rely on it
+* Network admin screens for WordPress Multisite
+* Works with full-page caching: if a cached page carries an expired token, the script fetches a fresh one when needed
+* The front-end script is a single small file, loaded deferred so it doesn't hold up page rendering
 
 = External services =
-This plugin does not connect to any external service. It sends no data off your server: no requests to remote APIs, no telemetry, no update or licensing calls, and no third-party fonts or scripts. All spam detection runs locally, and the IP reputation lists it uses ship inside the plugin.
 
-= Technical support =
-If you notice any problems while using this plugin, please open a thread on the [support forum](https://wordpress.org/support/plugin/goodbye-captcha/) and we will investigate and fix the issue. Ideally your request should contain: URL of the website (if your site is public), Php version, WordPress version and all the steps in order to replicate the issue (if you are able to reproduce it somehow)
+WPBruiser does not connect to any external service. It makes no remote API requests, collects no telemetry, runs no license or update checks of its own and loads no third-party fonts or scripts. All detection happens on your server, and the IP reputation and country data it uses ship inside the plugin.
+
+= Support =
+
+Found a bug or have a question? Start a topic on the [WordPress.org support forum](https://wordpress.org/support/plugin/goodbye-captcha/). It helps us a lot if you include your WordPress and PHP versions, the form or plugin involved, and the steps that reproduce the problem.
 
 == Installation ==
-= Option 1 =
-1. Download the zip file from WordPress plugin directory,
-2. Unzip and upload all the files to the /wp-content/plugins/goodbye-captcha/ folder from your server,
-3. Activate the plugin from WordPress Dashboard
 
-= Option 2 =
-1. Download the zip file from WordPress plugin directory,
-2. Login into the administration panel,
-3. Go to Plugins --> Add New --> Upload,
-4. Click Choose File (Browse) and select the downloaded zip file,
-5. Activate WPBruiser plugin
+**From your dashboard**
 
-= Option 3 =
-1. Login into your WordPress site,
-2. Choose Plugins --> Add New,
-3. Search for WPBruiser,
-4. In the results page, click Install Now. (depending on your server, you might need to provide credentials for download),
-5. Activate WPBruiser
+1. In the WordPress admin, open **Plugins > Add Plugin**.
+2. Search for "WPBruiser", then click **Install Now** and **Activate**.
 
-After installation, a WPBruiser menu item will appear in the Settings section. Click on this in order to view plugin's administration page.
+**Manually**
+
+1. Download the plugin ZIP from WordPress.org.
+2. Either upload it under **Plugins > Add Plugin > Upload Plugin**, or extract it and copy the `goodbye-captcha` folder into `wp-content/plugins/` on your server.
+3. Activate WPBruiser on the **Plugins** screen.
+
+**First steps after activating**
+
+1. Open the new **WPBruiser** item in the admin menu.
+2. Choose which forms to protect, on the WordPress tab and on the tabs for any supported plugins you use.
+3. Optionally, turn on Test Mode, submit your forms yourself and check the notification emails. Turn Test Mode off when you're done.
+4. If your site is behind a reverse proxy or CDN that isn't detected automatically, add its header under trusted proxy headers so the correct visitor IP is logged.
+
+On a Multisite network, activate the plugin network-wide and manage it from the Network Admin.
 
 == Frequently Asked Questions ==
 
-= How do I know is working? =
-Just switch the plugin to Test Mode and start testing it yourself. The Administrator will receive email notifications.
-If something is not working as expected, a warning message will be shown.
+= Will my visitors notice anything? =
 
-= Is WPBruiser safe? =
-Yes. The algorithm behind the plugin was fully tested and there is no way a spider or robot can spam your sites.
+No. There is nothing to click, type or solve. The check runs quietly in the browser while the form is on screen.
 
-= What forms can be secured by using WPBruiser WordPress plugin? =
-All standard WordPress forms(Login, Register, Comment and Forgot Password) can be secured by using WPBruiser plugin.
+= Does it need JavaScript? =
 
-= Are there any php extensions that need to be activated so this plugin could work? =
-No. The plugin runs 100% without activating any additional php extensions.
+Yes. The token that proves a submission came from a real browser is generated by a small script. Visitors who have JavaScript turned off will not be able to submit the forms you protect.
 
-= Does WPBruiser help me to block ip of the spammers? =
-Yes. Starting with WPBruiser version 1.1.0, this feature is available.
+= How can I check that it is working? =
 
-= Does WPBruiser recognize IPV6 addresses and is it possible to block them? =
-Yes. Starting with WPBruiser version 1.1.0, IPV6 is recognized and the administrator can block it with a single click.
+Turn on Test Mode in the plugin settings. While it is on, nothing is blocked. Instead, the notification address receives an email for each checked submission, so you can try your own forms and see the result. Turn Test Mode off afterwards. From then on, the Reports screen lists every attempt that was blocked.
 
-= Why captcha is not user friendly? =
-Studies shown that visual CAPTCHAs take around 5-10 seconds to complete and audio CAPTCHAs take much longer (around 20-30 seconds) to hear and solve.
+= I use a page caching plugin. Is that a problem? =
 
+No. Cached pages can hold on to an expired token, so the script asks the server for a new one when it needs to. You don't have to exclude any pages from your cache.
+
+= My site is behind Cloudflare or another proxy. Will the right IP be blocked? =
+
+The common proxies and CDNs are recognised automatically. For anything else, add the proxy's HTTP header on the proxy headers settings screen. Otherwise every visitor may appear to have the proxy's IP address.
+
+= I locked myself out. What now? =
+
+Add your own IP address to the allow list. Allowed addresses skip all checks, including the block list. If you can't reach the dashboard, rename the `wp-content/plugins/goodbye-captcha` folder over FTP or with your host's file manager to deactivate the plugin. Then sign in, rename it back and add your address to the allow list.
+
+= Does it send data to any server? =
+
+No. See "External services" in the description.
+
+= Does it replace a full security plugin? =
+
+No. WPBruiser handles spam bots, brute-force logins and a few hardening options. It doesn't scan files, run a firewall or check your site's integrity, so you can run it alongside a plugin that does.
+
+= I'm upgrading from the original WPBruiser. Will I lose my settings? =
+
+No. Your settings, allow and block lists and logs are kept, and the upgrade routines run by themselves the first time the new version loads.
 
 == Screenshots ==
-1. WPBruiser - Settings
-2. WPBruiser - Security
-3. WPBruiser - Security - WhiteList IP Address
-4. WPBruiser - Security - BlackList IP Address
-5. WPBruiser - WordPress
-6. WPBruiser - Tweaking WordPress
-7. WPBruiser - Protect Jetpack Contact Form
-8. WPBruiser - UltimateMember protection
-9. WPBruiser - Other plugins integrations
-10. WPBruiser - Report - Blocked Comment
-11. WPBruiser - Report - Block IP Address
-12. WPBruiser - Report - By Location - Distribution
-13. WPBruiser - Detailed Report
 
+1. General settings, including Test Mode and log retention
+2. Security screen with the brute-force options
+3. Adding trusted addresses to the allow list
+4. Adding addresses and ranges to the block list
+5. Choosing which core WordPress forms to protect
+6. WordPress hardening options
+7. Jetpack contact form protection
+8. Ultimate Member form protection
+9. Protection settings for other supported plugins
+10. Inspecting a blocked comment in the reports
+11. Blocking an IP address from the reports
+12. Blocked attempts by country
+13. Detailed report of blocked attempts
+
+== Copyright ==
+
+WPBruiser, Copyright (C) 2014-2018 Mihai Chelaru.
+Modifications and continued development, Copyright (C) 2026 WPZOOM.
+
+This plugin is a fork of WPBruiser (formerly GoodBye Captcha) by Mihai Chelaru and is distributed under the terms of the GNU General Public License, version 2 or (at your option) any later version. The original author's copyright notices are kept in the source files.
+
+WPBruiser bundles the following third-party resources, each under its own license:
+
+* phpCrypt, Copyright (C) 2005 Ryan Gilfether (GPLv3 or later)
+* Bootstrap 3.2.0 and Glyphicons Halflings, Copyright Twitter, Inc. (MIT)
+* Flot 0.8.3, Copyright IOLA and Ole Laursen (MIT)
+* flot.tooltip 0.8.5, Krzysztof Urbas and Evan Steinkerchner (MIT)
+* jVectorMap 1.2.2, Copyright Kirill Lebedev (MIT)
+* Raphaël 2.3.0, Copyright Dmitry Baranovskiy (MIT)
+* morris.js 0.5.1, Copyright Olly Smith (BSD-2-Clause)
+* easyPieChart 2.1.5, Robert Fleischmann (MIT)
+* Multiselect 2.2.6, Copyright Adrian Crisan (MIT)
 
 == Changelog ==
 
@@ -210,6 +233,8 @@ Studies shown that visual CAPTCHAs take around 5-10 seconds to complete and audi
 - Raised the minimum supported PHP version to 7.0.
 - Updated `Tested up to` for current WordPress.
 - Support links now point to the WordPress.org support forum.
+
+The releases below, 3.1.43 and earlier, were published by the original author, Mihai Chelaru, before this fork.
 
 = 3.1.43 =
 - Fixed PHP 7.4 warnings
