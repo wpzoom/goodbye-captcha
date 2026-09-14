@@ -1,5 +1,5 @@
 === WPBruiser ===
-Contributors: wpzoom
+Contributors: wpzoom, mihche
 Tags: antispam, spam protection, brute force, login security, comments
 Requires at least: 6.5
 Requires PHP: 7.4
@@ -18,9 +18,9 @@ Because bad submissions are rejected at the door, they never land in your modera
 
 Everything runs on your own server. WPBruiser does not call remote APIs, does not load outside scripts or fonts and does not send your visitors' data anywhere.
 
-= This plugin is a fork =
+= History and credits =
 
-WPBruiser is a fork of the plugin of the same name (originally released as "GoodBye Captcha"), created by [Mihai Chelaru](https://profiles.wordpress.org/mihche/) and developed by him from 2014 to 2018.
+WPBruiser (originally released as "GoodBye Captcha") was created by [Mihai Chelaru](https://profiles.wordpress.org/mihche/), who developed and maintained it from 2014 to 2018. Mihai wrote the detection engine, the modules and the admin interface the plugin is still built on. In 2026 [WPZOOM](https://wpzoom.com/) adopted the plugin and took over its maintenance. Thank you, Mihai, for creating it.
 
 = Forms you can protect =
 
@@ -160,7 +160,7 @@ No. Your settings, allow and block lists and logs are kept, and the upgrade rout
 WPBruiser, Copyright (C) 2014-2018 Mihai Chelaru.
 Modifications and continued development, Copyright (C) 2026 WPZOOM.
 
-This plugin is a fork of WPBruiser (formerly GoodBye Captcha) by Mihai Chelaru and is distributed under the terms of the GNU General Public License, version 2 or (at your option) any later version. The original author's copyright notices are kept in the source files.
+WPBruiser (formerly GoodBye Captcha) was originally created by Mihai Chelaru and is distributed under the terms of the GNU General Public License, version 2 or (at your option) any later version. The original author's copyright notices are kept in the source files.
 
 WPBruiser bundles the following third-party resources, each under its own license:
 
@@ -234,7 +234,7 @@ WPBruiser bundles the following third-party resources, each under its own licens
 - Updated `Tested up to` for current WordPress.
 - Support links now point to the WordPress.org support forum.
 
-The releases below, 3.1.43 and earlier, were published by the original author, Mihai Chelaru, before this fork.
+The releases below, 3.1.43 and earlier, were published by the plugin's original author, Mihai Chelaru.
 
 = 3.1.43 =
 - Fixed PHP 7.4 warnings
