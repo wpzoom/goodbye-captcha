@@ -41,11 +41,11 @@ foreach($detectedIpProxyHeaders as $index => $header)
 
 		<td  colspan="2">
 			<form method="post" action="<?php echo esc_url($formAction) ?>">
-				<div class="clearfix" style="margin:0 auto; width: 99%">
+				<div class="clearfix">
 					<table style="width: 100%">
 
 						<tr>
-							<td width="47%" style="text-align: center; ">
+							<td width="50%" style="text-align: center">
 								<select name = "<?php echo esc_attr(GdbcProxyHeadersAdminModule::getInstance()->getFormElementName(GdbcProxyHeadersAdminModule::PROXY_HEADERS_IP)); ?>">
 
 									<?php
@@ -75,7 +75,7 @@ foreach($detectedIpProxyHeaders as $index => $header)
 							</td>
 
 							<td  style="text-align: center">
-								<input style = "margin-left: 50px" type="submit" value="<?php esc_attr_e('Register Header', 'goodbye-captcha'); ?>" class="button button-primary" />
+								<input type="submit" value="<?php esc_attr_e('Register Header', 'goodbye-captcha'); ?>" class="button button-primary" />
 							</td>
 						</tr>
 

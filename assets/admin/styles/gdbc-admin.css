@@ -923,8 +923,6 @@ div.wp-bruiser-extensions p.authors
  * ------------------------------------------------------------------------ */
 .gdbc-settings tr.even { background-color: #f5f5f5; }
 
-table.gdbc-proxy-headers-holder { width: 70% !important; }
-
 .gdbc-proxy-headers-holder input[type="text"],
 .gdbc-blacklisted-ips-holder input[type="text"] { width: 99%; padding: 3px 5px; }
 
