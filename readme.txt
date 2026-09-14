@@ -163,7 +163,7 @@ WPBruiser (formerly GoodBye Captcha) was originally created by Mihai Chelaru and
 WPBruiser bundles the following third-party resources, each under its own license:
 
 * phpCrypt, Copyright (C) 2005 Ryan Gilfether (GPLv3 or later)
-* Bootstrap 3.2.0 and Glyphicons Halflings, Copyright Twitter, Inc. (MIT)
+* Bootstrap 3.4.1 and Glyphicons Halflings, Copyright Twitter, Inc. (MIT)
 * Flot 0.8.3, Copyright IOLA and Ole Laursen (MIT)
 * flot.tooltip 0.8.5, Krzysztof Urbas and Evan Steinkerchner (MIT)
 * jVectorMap 1.2.2, Copyright Kirill Lebedev (MIT)
@@ -176,6 +176,7 @@ WPBruiser bundles the following third-party resources, each under its own licens
 
 = 3.2.1 =
 - Audited every third-party integration against the plugin directory and removed those whose plugin is gone: ZM Ajax Login & Register (closed 2023), PlanSo Forms (closed 2021), UltraCommunity (30 installs, last updated 2020) and Seamless Donations (last updated 2024, tested only to 6.4). Support for the Epoch comments iframe was removed as well; that plugin has not been updated since 2015. The readme no longer lists Postmatic and WP User Control, both closed, and now lists HTML Forms and WP-Members, which are supported but were never mentioned.
+- Bootstrap updated from 3.2.0 to 3.4.1
 - Raphaël updated from 2.1.2 to 2.3.0 (minified build). The bundled morris.js was already the project's final 0.5.1 release under an upstream banner that still read 0.5.0; the banner now states the real version and the file's provenance.
 - The client script is now a static file loaded with `wp_enqueue_script()` (deferred) and configured with `wp_localize_script()`. Previous versions printed an inline loader that fetched a PHP-generated script through a `?gdbc-client=` parameter handled before WordPress had finished loading, which also required including `pluggable.php` by hand. The token endpoint is now a registered `wp_ajax_nopriv_` action, and a nonce that has expired in a page-cached copy of a page is refreshed by the script through a second registered action, so page caches need no special handling.
 - Forms injected by AJAX (Ultimate Member, ZM Ajax Login & Register) are detected with a `MutationObserver`; the inline "refresh tokens" scripts that used to travel with their markup are gone.
