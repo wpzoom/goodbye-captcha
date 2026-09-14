@@ -41,9 +41,9 @@ defined( 'ABSPATH' ) || exit;
 	<tr class = "even">
 		<td  colspan="4" style=" text-align: right">
 			<form method="post" action="<?php echo esc_url($formAction) ?>">
-				<div class="clearfix" style="margin:0 auto; width: 700px;">
-					<input style = "float: left;clear: left; width: 80%;" type="text" name="<?php echo esc_attr($this->getBlackListedIpsInputName());?>" placeholder="<?php esc_attr_e('IP/RANGE/CIDR', 'goodbye-captcha'); ?>" required />
-					<input style = "float: right;" type="submit" value="<?php esc_attr_e('Add to BlackList', 'goodbye-captcha'); ?>" class="button button-primary" />
+				<div class="gdbc-ip-add-row">
+					<input type="text" name="<?php echo esc_attr($this->getBlackListedIpsInputName());?>" placeholder="<?php esc_attr_e('IP/RANGE/CIDR', 'goodbye-captcha'); ?>" required />
+					<input type="submit" value="<?php esc_attr_e('Add to BlackList', 'goodbye-captcha'); ?>" class="button button-primary" />
 				</div>
 
 				<?php settings_fields( $this->getSettingGroupId($this->blackListedIpsGroupIndex) );?>

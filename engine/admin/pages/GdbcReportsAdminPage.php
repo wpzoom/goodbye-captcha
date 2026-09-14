@@ -52,8 +52,9 @@ class GdbcReportsAdminPage extends GdbcBaseAdminPage
 		$arrQueryString['gdbc-detailed-report'] = 1;
 		$arrReportsNavigationTabUrl[] = esc_url(add_query_arg($arrQueryString, $pageAdminUrl));
 
+		// No heading here: renderPluginActiveAdminPage() prints the page title as
+		// the <h1>, and this page's browser title is already the same string.
 		echo '<div id = "gdbc-reports-holder" class = "clearfix">';
-		echo '<h3>' . esc_html__('WPBruiser - Blocked Attempts', 'goodbye-captcha') . '</h3>';
 
 		GdbcReportsAdminModule::getInstance()->renderReportsMainPageContent($arrReportsNavigationTabUrl);
 

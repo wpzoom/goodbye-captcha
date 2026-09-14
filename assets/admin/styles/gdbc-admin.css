@@ -35,14 +35,8 @@ div.gdbc-settings  .clearfix:after
     zoom: 1
 }
 
-#gdbc-reports-holder
-{
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-}
-#gdbc-reports-holder h3
-{
-    font-size: 1.5em;
-}
+/* No font-family override here: Reports must inherit the admin typography like
+   every other screen (see the note at the top of this file). */
 
 #adminmenuwrap{
     height: 100%
@@ -63,11 +57,10 @@ div.gdbc-settings  .clearfix:after
 }
 
 .gdbcwidget header {
-    border-radius: 0;
-    box-shadow: 0 -2px 0 rgba(0, 0, 0, 0.05) inset;
-    background: none repeat scroll 0 0 #fafafa;
-    border: 1px solid #c2c2c2;
-    color: #333;
+    border-radius: 4px 4px 0 0;
+    background: #f6f7f7;
+    border: 1px solid #c3c4c7;
+    color: #1d2327;
     height: 34px;
     line-height: 40px;
     padding: 0;
@@ -75,9 +68,9 @@ div.gdbc-settings  .clearfix:after
 }
 
 .gdbcwidget > header {
-    background: none repeat scroll 0 0 #fafafa;
-    border: 1px solid #c2c2c2;
-    color: #333;
+    background: #f6f7f7;
+    border: 1px solid #c3c4c7;
+    color: #1d2327;
 }
 
 .gdbcwidget header h2 {
@@ -95,13 +88,13 @@ div.gdbc-settings  .clearfix:after
 }
 
 .gdbcwidget > div {
-    border-bottom-color: #ccc !important;
-    border-left-color: #ccc !important;
-    border-radius: 0;
-    border-right-color: #ccc !important;
+    border-bottom-color: #c3c4c7 !important;
+    border-left-color: #c3c4c7 !important;
+    border-radius: 0 0 4px 4px;
+    border-right-color: #c3c4c7 !important;
     border-style: none solid solid;
     border-top: medium none;
-    border-width: medium 1px 2px;
+    border-width: medium 1px 1px;
     float: left;
     font-size: 13px;
     margin: 0;
@@ -175,18 +168,11 @@ div.gdbc-settings  .clearfix:after
 }
 
 .gdbcwidget header .nav-tabs > li.active > a, .gdbcwidget header .nav-tabs > li.active > a:focus, .gdbcwidget header .nav-tabs > li.active > a:hover {
-    -moz-border-bottom-colors: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: none;
     background-color: #fff;
-    border-color: -moz-use-text-color #c2c2c2 transparent;
-    border-image: none;
-    border-left: 1px solid #c2c2c2;
-    border-right: 1px solid #c2c2c2;
+    border-color: transparent #c3c4c7 #c3c4c7;
     border-style: none solid solid;
     border-width: medium 1px 1px;
-    color: #555;
+    color: #1d2327;
     cursor: default;
 }
 
@@ -204,22 +190,17 @@ div.gdbc-settings  .clearfix:after
 
 .nav-tabs > li.active > a {
     border-top-width: 0 !important;
-    box-shadow: 0 -2px 0 #57889c;
+    box-shadow: 0 -2px 0 var(--gdbc-accent, #2271b1);
     font-weight: 700;
     margin-top: 1px !important;
 }
 
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
-    -moz-border-bottom-colors: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: none;
     background-color: #fff;
-    border-color: #ddd #ddd transparent;
-    border-image: none;
+    border-color: #c3c4c7 #c3c4c7 transparent;
     border-style: solid;
     border-width: 1px;
-    color: #555;
+    color: #1d2327;
     cursor: default;
 }
 
@@ -383,15 +364,15 @@ div.gdbc-settings  .clearfix:after
 }
 
 .icon-success{
-    color: #5cb85c
+    color: #00a32a
 }
 
 .icon-danger{
-    color: #d9534f
+    color: #d63638
 }
 
 .icon-primary{
-    color: #428bca
+    color: var(--gdbc-accent, #2271b1)
 }
 
 a.badge:hover{
@@ -427,7 +408,7 @@ a.easy-tool-tip:hover span:hover {
     background-position: 0 0;
     background-repeat: repeat;
     background-size: auto auto;
-    border-bottom-color: #ccc;
+    border-bottom-color: #dcdcde;
     border-bottom-style: solid;
     border-bottom-width: 1px;
     min-height: 42px;
@@ -441,6 +422,14 @@ a.easy-tool-tip:hover span:hover {
     outline-style: none;
     outline-width: 0;
     position: relative;
+}
+
+#gdbc-reports-holder #widget-grid{
+    margin-top: 10px;
+}
+
+#gdbc-reports-holder #widget-grid .col-sm-6{
+    padding-left: 0px;
 }
 
 #modules-chart .inline-group:after {
@@ -520,7 +509,7 @@ input[type="checkbox"], input[type="radio"] {
     text-align: center;
     top: -1px;
     width: 15px;
-    color: #3276b1;
+    color: var(--gdbc-accent, #2271b1);
     margin-right: 10px;
 }
 
@@ -542,7 +531,7 @@ input[type="checkbox"], input[type="radio"] {
     text-align: center;
     top: -1px;
     width: 15px;
-    color: #3276b1;
+    color: var(--gdbc-accent, #2271b1);
     margin-right: 10px;
 }
 
@@ -551,14 +540,14 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 #modules-chart .checkbox input:checked + i, #modules-chart .radio input:checked + i, #modules-chart .toggle input:checked + i {
-    border-bottom-color: #3276b1;
+    border-bottom-color: var(--gdbc-accent, #2271b1);
     border-left-color-ltr-source: physical;
     border-left-color-rtl-source: physical;
-    border-left-color-value: #3276b1;
+    border-left-color-value: var(--gdbc-accent, #2271b1);
     border-right-color-ltr-source: physical;
     border-right-color-rtl-source: physical;
-    border-right-color-value: #3276b1;
-    border-top-color: #3276b1
+    border-right-color-value: var(--gdbc-accent, #2271b1);
+    border-top-color: var(--gdbc-accent, #2271b1)
 }
 
 #flot-container {
@@ -599,56 +588,60 @@ input[type="checkbox"], input[type="radio"] {
     margin-bottom: 0
 }
 
-.gdbc-settings h3.hndle
-{
-    padding: 10px 12px 8px !important;
-}
-
+/* Field descriptions used to be absolutely positioned at a fixed 850px width.
+   That forced the table to `width: auto` + `position: relative` and made every
+   row reserve 30px of bottom padding to leave room for them. They flow normally
+   now, so none of those workarounds are needed and the table stays responsive. */
 .gdbc-settings form table.form-table
 {
-    width:auto !important;
-    position: relative !important;
-}
-
-.gdbc-settings form table.form-table tr
-{
-    position:relative !important;
-
+    width: 100%;
 }
 
 .gdbc-settings form table.form-table th
 {
-    width: 300px !important;
-    padding: 18px 10px 12px 0 !important;
+    width: 280px;
+    padding: 15px 10px 15px 0;
 }
 
 .gdbc-settings form table.form-table td
 {
-    padding:10px 0;
+    padding: 15px 10px 15px 0;
 }
 
-.gdbc-settings form table.form-table td p
+.gdbc-settings form table.form-table td p.description
 {
-    left: 0;
-    position: absolute;
-    width: 850px;
-    margin:0 !important;
+    max-width: 60em;
+    margin: 6px 0 0;
+    color: #646970;
 }
 
-.gdbc-settings form > h3
+/* Our selectors out-specify core's own stacking rules, so the small-screen
+   layout has to be repeated here or the table stays two-column on mobile. */
+@media screen and (max-width: 782px)
 {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-    background: #EFEFEF;
-    margin: 0 -12px !important;
-    padding: 8px 12px;
-    border-bottom: 1px solid #cccccc;
-    border-top: 1px solid #cccccc;
-
+    .gdbc-settings form table.form-table th,
+    .gdbc-settings form table.form-table td
+    {
+        display: block;
+        width: auto;
+        padding: 10px 0;
+    }
 }
+
+/* Modules print their section title as `<h3>...</h3><hr />`. The heading now
+   carries its own bottom border, so the rule right after it would double up. */
+.gdbc-settings form > h3 + hr
+{
+    display: none;
+}
+
+/* Replaces the <hr /> that used to be printed either side of the save button. */
 .gdbc-settings p.submit
 {
-    padding-top:0 !important;
+    margin: 15px -12px -12px !important;
+    padding: 15px 12px !important;
+    background: #f6f7f7;
+    border-top: 1px solid #dcdcde;
 }
 .gdbc-settings form hr
 {
@@ -659,18 +652,20 @@ input[type="checkbox"], input[type="radio"] {
     margin: 15px 0 5px !important;
 }
 
-/*.toplevel_page_goodbye-captcha-settings form table.form-table th,*/
-/*.toplevel_page_goodbye-captcha-settings form table.form-table td,*/
-/*.goodbye-captcha-new_page_goodbye-captcha-security form table.form-table th,*/
-/*.goodbye-captcha-new_page_goodbye-captcha-security form table.form-table td*/
-/*{*/
-/*padding-bottom: 30px !important;*/
-/*}*/
-
-.gdbc-settings form table.form-table td, .gdbc-settings form table.form-table th
+/* Success/error/warning banner a module prints above its own settings form */
+.gdbc-settings .mch-settings-message
 {
-    padding-bottom: 30px !important;
+    padding: 8px 12px;
+    margin: 0 0 15px;
 }
+
+.gdbc-settings .mch-settings-message h3
+{
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 13px;
+}
+
 .gdbc-settings #normal-sortables:empty, .gdbc-settings #advanced-sortables:empty, .gdbc-settings #bottom-sortables:empty
 {
     display:none;
@@ -728,14 +723,8 @@ div.gdbcwidget ul.pagination a:hover
 }
 #gdbc-barchart-holder div.morris-hover.morris-default-style p span
 {
-    color: #972d2c;
+    color: var(--gdbc-accent-dark, #1b588a);
 }
-
-.gdbc-settings .mch-right-side-holder h3.hndle
-{
-    padding: 0 0 0 10px !important;
-}
-
 
 .gdbc-settings .mch-right-side-holder h3.hndle span, .gdbc-settings .mch-right-side-holder h2.hndle span
 {
@@ -746,13 +735,6 @@ div.gdbcwidget ul.pagination a:hover
 .gdbc-settings .mch-right-side-holder h2.hndle span
 {
     padding:0 0 0 22px !important;
-}
-
-.gdbc-settings .metabox-holder h3 {
-    font-size: 14px;
-    line-height: 1.4;
-    margin: 0;
-    padding: 8px 12px;
 }
 
 /*#gdbc-help-metabox h3.hndle span*/
@@ -771,16 +753,28 @@ div.gdbcwidget ul.pagination a:hover
 #gdbc-help-metabox  .inside
 {
     margin:0;
+    padding: 12px;
     background-color: #f9f9f9 !important;
 }
 
-#gdbc-help-metabox .inside div, #gdbc-available-extension-metabox .inside div
+#gdbc-help-metabox .inside p
+{
+    margin: 0 0 10px;
+}
+
+#gdbc-available-extension-metabox .inside div
 {
     padding:10px;
     text-align: center;
 }
 
-#gdbc-help-metabox .contact-help , #gdbc-available-extension-metabox .contact-help
+#gdbc-help-metabox .contact-help
+{
+    display:block;
+    margin: 0;
+}
+
+#gdbc-available-extension-metabox .contact-help
 {
     display:block;
     text-align: center;
@@ -812,7 +806,7 @@ div.mch-meta-notice-info
 
 div.mch-meta-notice-warning
 {
-    border-left:4px solid #ffba00; background:#fcf8e3; padding:3px 8px; text-align: center
+    border-left:4px solid #ffba00; background:#fcf8e3; padding:3px 8px; padding: 12px;
 }
 
 
@@ -837,10 +831,8 @@ div.mch-meta-notice-warning
     -moz-animation: rotation .6s infinite linear;
     -o-animation: rotation .6s infinite linear;
     animation: rotation .6s infinite linear;
-    border-left:6px solid rgba(0,174,239,.15);
-    border-right:6px solid rgba(0,174,239,.15);
-    border-bottom:6px solid rgba(0,174,239,.15);
-    border-top:6px solid rgba(0,174,239,.8);
+    border:6px solid var(--gdbc-accent-pale, #cee0ee);
+    border-top-color: var(--gdbc-accent, #2271b1);
     border-radius:100%;
 }
 
@@ -936,6 +928,31 @@ table.gdbc-proxy-headers-holder { width: 70% !important; }
 .gdbc-proxy-headers-holder input[type="text"],
 .gdbc-blacklisted-ips-holder input[type="text"] { width: 99%; padding: 3px 5px; }
 
+/* The "add an IP" row above each list. The field and its button used to be
+   floated inside a fixed 700px box with the field at 80%, which left too little
+   room for the button and dropped it onto its own line. A flex row sizes the two
+   against each other instead, so the button always sits beside the field. */
+.gdbc-blacklisted-ips-holder .gdbc-ip-add-row
+{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.gdbc-blacklisted-ips-holder .gdbc-ip-add-row input[type="text"]
+{
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+}
+
+.gdbc-blacklisted-ips-holder .gdbc-ip-add-row input[type="submit"]
+{
+    flex: 0 0 auto;
+}
+
 .gdbc-proxy-headers-holder thead tbody > tr form > td:first-child,
 .gdbc-blacklisted-ips-holder thead tbody > tr form > td:first-child { padding: 0 30px !important; }
 
@@ -948,3 +965,94 @@ table.gdbc-proxy-headers-holder { width: 70% !important; }
 .gdbc-settings .tablenav-pages span.current { font-size: 18px; font-weight: bold; line-height: 30px; padding: 4px 6px; text-decoration: none; }
 
 .table-striped-column > tbody > tr td:nth-of-type(odd) { background-color: #f9f9f9; }
+
+
+/* ------------------------------------------------------------------------
+ * Reports screen accent
+ *
+ * Bootstrap paints links, primary buttons and pagination in its own #428bca
+ * blue, which has nothing to do with wp-admin and ignores the colour scheme
+ * the user picked under Profile. The --gdbc-accent custom properties are
+ * printed by GoodByeCaptchaAdmin::enqueueAdminScriptsAndStyles() from that
+ * scheme; the fallbacks below are the default "Fresh" values, so the rules
+ * still make sense if the inline style ever fails to load.
+ *
+ * Everything here is scoped to the Reports wrapper, because bootstrap.css is
+ * only enqueued on that screen and these overrides must not leak elsewhere.
+ * ------------------------------------------------------------------------ */
+#gdbc-reports-holder a
+{
+    color: var(--gdbc-accent, #2271b1);
+}
+
+#gdbc-reports-holder a:hover,
+#gdbc-reports-holder a:focus
+{
+    color: var(--gdbc-accent-dark, #1b588a);
+}
+
+#gdbc-reports-holder .btn-primary
+{
+    color: #fff;
+    background-color: var(--gdbc-accent, #2271b1);
+    border-color: var(--gdbc-accent, #2271b1);
+}
+
+#gdbc-reports-holder .btn-primary:hover,
+#gdbc-reports-holder .btn-primary:focus,
+#gdbc-reports-holder .btn-primary:active,
+#gdbc-reports-holder .btn-primary.active,
+#gdbc-reports-holder .open > .dropdown-toggle.btn-primary
+{
+    color: #fff;
+    background-color: var(--gdbc-accent-dark, #1b588a);
+    border-color: var(--gdbc-accent-dark, #1b588a);
+}
+
+/* Same focus ring core uses on its own buttons. */
+#gdbc-reports-holder .btn-primary:focus,
+#gdbc-reports-holder .btn-default:focus
+{
+    outline: 2px solid transparent;
+    box-shadow: 0 0 0 1px #fff, 0 0 0 3px var(--gdbc-accent, #2271b1);
+}
+
+#gdbc-reports-holder .btn-primary .badge
+{
+    color: var(--gdbc-accent, #2271b1);
+    background-color: #fff;
+}
+
+#gdbc-reports-holder .label-primary,
+#gdbc-reports-holder .progress-bar
+{
+    background-color: var(--gdbc-accent, #2271b1);
+}
+
+#gdbc-reports-holder .pagination > li > a,
+#gdbc-reports-holder .pagination > li > span
+{
+    color: var(--gdbc-accent, #2271b1);
+}
+
+#gdbc-reports-holder .pagination > li > a:hover,
+#gdbc-reports-holder .pagination > li > span:hover,
+#gdbc-reports-holder .pagination > li > a:focus,
+#gdbc-reports-holder .pagination > li > span:focus
+{
+    color: var(--gdbc-accent-dark, #1b588a);
+    background-color: var(--gdbc-accent-pale, #cee0ee);
+    border-color: var(--gdbc-accent-light, #76a7cf);
+}
+
+#gdbc-reports-holder .pagination > .active > a,
+#gdbc-reports-holder .pagination > .active > span,
+#gdbc-reports-holder .pagination > .active > a:hover,
+#gdbc-reports-holder .pagination > .active > span:hover,
+#gdbc-reports-holder .pagination > .active > a:focus,
+#gdbc-reports-holder .pagination > .active > span:focus
+{
+    color: #fff;
+    background-color: var(--gdbc-accent, #2271b1);
+    border-color: var(--gdbc-accent, #2271b1);
+}

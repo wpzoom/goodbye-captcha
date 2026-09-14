@@ -244,9 +244,9 @@ abstract class MchGdbcBaseAdminPage
 
 			settings_fields( $this->getSettingGroupId($groupIndex) );
 			do_settings_sections( $this->getSettingGroupId($groupIndex) );
-			echo '<hr />';
+			// The rules that used to bracket the save button are drawn in CSS now,
+			// as a border on p.submit -- see gdbc-admin.css.
 			submit_button();
-			echo '<hr />';
 
 		echo  '</form>';
 

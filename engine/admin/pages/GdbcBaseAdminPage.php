@@ -40,7 +40,7 @@ abstract class GdbcBaseAdminPage extends MchGdbcBaseAdminPage
 
 		add_meta_box(
 			"gdbc-help-metabox",
-			__('Need help? Have questions...?', 'goodbye-captcha'),
+			__('Support', 'goodbye-captcha'),
 			array( $this, 'renderNeedHelpMetaBox' ),
 			$this->getAdminScreenId(),
 			'side',
@@ -63,11 +63,9 @@ abstract class GdbcBaseAdminPage extends MchGdbcBaseAdminPage
 
 	public function renderNeedHelpMetaBox()
 	{
-		$img = plugins_url('/assets/admin/images/wpbr-logo.png', GoodByeCaptcha::getMainFilePath());
+		$display_div  = '<p>' . esc_html__('Got a question or ran into an issue? Our support forum is the fastest way to reach us.', 'goodbye-captcha') . '</p>';
 
-		$display_div = '<div><img class="logo-help" src="' . esc_attr($img) . '" /></div>';
-
-		$display_div .= '<p class="contact-help"> <a class = "button-primary" href="' . esc_url(GoodByeCaptcha::PLUGIN_SUPPORT_URL) . '" target="_blank" rel="noopener noreferrer">' . esc_html__('Support Forum', 'goodbye-captcha') . '</a></p>';
+		$display_div .= '<p class="contact-help"><a class="button button-primary" href="' . esc_url(GoodByeCaptcha::PLUGIN_SUPPORT_URL) . '" target="_blank" rel="noopener noreferrer">' . esc_html__('Support Forum', 'goodbye-captcha') . '</a></p>';
 
 		echo wp_kses_post($display_div);
 	}
