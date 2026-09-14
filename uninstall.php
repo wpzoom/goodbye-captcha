@@ -23,10 +23,6 @@ class GoodByeCaptchaUninstaller
 			exit;
 		}
 
-		if(is_callable(array('GoodByeCaptcha', 'isProVersion')) && GoodByeCaptcha::isProVersion() && is_plugin_active(plugin_basename(GoodByeCaptcha::getMainFilePath()))) {
-			return;
-		}
-
 		GdbcTaskScheduler::unScheduleGdbcTasks();
 		GdbcBruteGuardian::deleteSiteFlags();
 

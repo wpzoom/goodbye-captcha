@@ -219,7 +219,7 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 
 		$pageAdminScreenId = add_menu_page(
 				$adminFirstPage->getPageBrowserTitle(),
-				GoodByeCaptcha::PLUGIN_NAME . (GoodByeCaptcha::isProVersion() ? 'Pro ': ''),
+				GoodByeCaptcha::PLUGIN_NAME,
 				'manage_options',
 				$adminFirstPage->getPageMenuSlug(),
 				array($this, 'renderPluginActiveAdminPage'),
@@ -361,35 +361,6 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 	{
 		GdbcDbAccessController::deleteAttemptsOlderThan(GdbcSettingsAdminModule::getInstance()->getOption(GdbcSettingsAdminModule::OPTION_MAX_LOGS_DAYS));
 		GdbcDbAccessController::clearAttemptsNotesOlderThan(GdbcSettingsAdminModule::getInstance()->getOption(GdbcSettingsAdminModule::OPTION_BLOCKED_CONTENT_LOG_DAYS));
-
-		if(GoodByeCaptcha::isProVersion() && is_plugin_active($litePlugin = 'goodbye-captcha/goodbye-captcha.php')){
-			deactivate_plugins($litePlugin, true, null);
-		}
-
-		if(isset(self::$PLUGIN_MAIN_FILE) && !GoodByeCaptcha::isNetworkActivated() && !MchGdbcWpUtils::isAjaxRequest())
-		{
-			$pluginBaseName = plugin_basename(self::$PLUGIN_MAIN_FILE);
-			$arrBlogActivePlugins = (array)get_option('active_plugins', array());
-			$firstActivatedPlugin = reset($arrBlogActivePlugins);
-			if (false === $pluginBaseName || $firstActivatedPlugin === $pluginBaseName || (!($pluginKey = array_search($pluginBaseName, $arrBlogActivePlugins))))
-				return;
-
-			unset($arrBlogActivePlugins[$pluginKey]);
-			array_unshift($arrBlogActivePlugins, $pluginBaseName);
-
-			$w3tcFlagValue = null;
-			if(function_exists('w3_instance') && is_callable(array($w3tcConfigInstance =  w3_instance('W3_Config'), 'set'))  && is_callable(array($w3tcConfigInstance, 'set')) && is_callable(array($w3tcConfigInstance, 'save')) && is_callable(array($w3tcConfigInstance, 'get_boolean'))){
-				$w3tcFlagValue = (bool)$w3tcConfigInstance->get_boolean('notes.plugins_updated');
-			}
-
-			update_option('active_plugins', array_keys(array_flip($arrBlogActivePlugins)));
-
-			if(false === $w3tcFlagValue){
-				$w3tcConfigInstance->set('notes.plugins_updated', false);
-				$w3tcConfigInstance->save();
-			}
-
-		}
 
 	}
 

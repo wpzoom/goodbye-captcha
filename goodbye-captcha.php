@@ -115,16 +115,9 @@ if(!class_exists('GoodByeCaptcha', false))
 			return null !== $isNetworkActivated ? $isNetworkActivated : $isNetworkActivated = MchGdbcWpUtils::isPluginNetworkActivated(self::getMainFilePath());
 		}
 
-		public static function isProVersion()
-		{
-			return class_exists('WPBruiserPro', false);
-		}
-
 		public static function getMainFilePath()
 		{
-			static $mainFilePath = null;
-
-			return null !== $mainFilePath ? $mainFilePath : ($mainFilePath = self::isProVersion() ? dirname(__FILE__) . DIRECTORY_SEPARATOR . '__wpbruiser.php' : __FILE__);
+			return __FILE__;
 		}
 
 		public static function activate()
