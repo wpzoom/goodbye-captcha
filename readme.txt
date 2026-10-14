@@ -12,9 +12,9 @@ Stop spam bots and brute-force logins on your WordPress forms with an invisible 
 
 == Description ==
 
-WPBruiser stops automated form submissions before WordPress ever processes them. Every protected form gets a hidden, short-lived token that is created in the visitor's browser. A real person never sees it or has to do anything. A bot that posts straight to your login, registration or comment endpoint arrives without a valid token and is turned away.
+WPBruiser stops automated form submissions before WordPress ever processes them. Every protected form gets a hidden token, which the visitor's browser requests in the background. A real person never sees it or has to do anything. A bot that posts straight to your login, registration or comment endpoint arrives without a valid token and is turned away.
 
-Because bad submissions are rejected at the door, they never land in your moderation queue, never create junk user accounts and never cost you database writes. You also don't have to ask visitors to solve a puzzle, which is often the step where real people give up on a form.
+Because bad submissions are rejected at the door, they never land in your moderation queue and never create junk user accounts. You also don't have to ask visitors to solve a puzzle, which is often the step where real people give up on a form.
 
 Everything runs on your own server. WPBruiser does not call remote APIs, does not load outside scripts or fonts and does not send your visitors' data anywhere.
 
@@ -66,7 +66,7 @@ Turn protection on or off for each form on the plugin's settings screens:
 
 * Test Mode, which emails you about every check so you can confirm protection works before you rely on it
 * Network admin screens for WordPress Multisite
-* Works with full-page caching: if a cached page carries an expired token, the script fetches a fresh one when needed
+* Works with full-page caching: the token is requested fresh on every page view
 * The front-end script is a single small file, loaded deferred so it doesn't hold up page rendering
 
 = External services =
@@ -115,7 +115,7 @@ Turn on Test Mode in the plugin settings. While it is on, nothing is blocked. In
 
 = I use a page caching plugin. Is that a problem? =
 
-No. Cached pages can hold on to an expired token, so the script asks the server for a new one when it needs to. You don't have to exclude any pages from your cache.
+No. The script requests a fresh token on every page view. If a cached copy of a page carries an expired security key, the script gets a new one first, so you don't have to exclude any pages from your cache.
 
 = My site is behind Cloudflare or another proxy. Will the right IP be blocked? =
 
@@ -135,7 +135,7 @@ No. WPBruiser handles spam bots, brute-force logins and a few hardening options.
 
 = I'm upgrading from the original WPBruiser. Will I lose my settings? =
 
-No. Your settings, allow and block lists and logs are kept, and the upgrade routines run by themselves the first time the new version loads.
+No. Your settings, allow and block lists and logs are kept, and the upgrade routines run by themselves the first time the new version loads. Two things no longer load: the old paid add-ons, and the integrations for plugins that are closed or no longer maintained (ZM Ajax Login & Register, PlanSo Forms, UltraCommunity, Seamless Donations and Epoch).
 
 == Screenshots ==
 
@@ -163,13 +163,13 @@ WPBruiser (formerly GoodBye Captcha) was originally created by Mihai Chelaru and
 WPBruiser bundles the following third-party resources, each under its own license:
 
 * phpCrypt, Copyright (C) 2005 Ryan Gilfether (GPLv3 or later)
+* phpseclib 0.3.10 (BigInteger), Copyright Jim Wigginton (MIT)
 * Bootstrap 3.4.1 and Glyphicons Halflings, Copyright Twitter, Inc. (MIT)
 * Flot 0.8.3, Copyright IOLA and Ole Laursen (MIT)
 * flot.tooltip 0.8.5, Krzysztof Urbas and Evan Steinkerchner (MIT)
 * jVectorMap 1.2.2, Copyright Kirill Lebedev (MIT)
 * Raphaël 2.3.0, Copyright Dmitry Baranovskiy (MIT)
 * morris.js 0.5.1, Copyright Olly Smith (BSD-2-Clause)
-* easyPieChart 2.1.5, Robert Fleischmann (MIT)
 * Multiselect 2.2.6, Copyright Adrian Crisan (MIT)
 
 == Changelog ==

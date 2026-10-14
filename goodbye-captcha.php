@@ -9,7 +9,7 @@
  * @wordpress-plugin
  * Plugin Name: WPBruiser
  * Plugin URI: https://wordpress.org/plugins/goodbye-captcha/
- * Description: An extremely powerful anti-spam plugin that blocks spambots without annoying captcha images.
+ * Description: Stops spam bots and brute-force logins on your WordPress forms with an invisible check. No puzzles, no image challenges, no third-party service.
  * Version: 3.2.1
  * Requires at least: 6.5
  * Requires PHP: 7.4
