@@ -172,9 +172,13 @@ WPBruiser bundles the following third-party resources, each under its own licens
 * morris.js 0.5.1, Copyright Olly Smith (BSD-2-Clause)
 * Multiselect 2.2.6, Copyright Adrian Crisan (MIT)
 
+The Integrations screen shows the icons the integrated plugins publish on WordPress.org (Gravity Forms: the icon of its official Gravity Forms CLI add-on). Plugin names and logos are trademarks of their owners and are used only to identify the integrations.
+
 == Changelog ==
 
 = 3.3.0 =
+- Fix: about one genuine visitor in ten could be rejected on any protected form. On sites without the old mcrypt extension (every PHP 7.2+ site), the bundled cipher library added no padding when the compressed token filled its last block exactly, and then removed real data from the end while decrypting. Tokens now always decrypt; 10,000 test round trips had no failures.
+- New: an Integrations screen. Every integration, free and Pro, is a card that shows whether its plugin is active, with a switch to turn protection on or off (and a switch per form where there are several), plus filters and search. It replaces the separate Contact Forms, Membership, eCommerce and Others screens.
 - New: an extension API for add-ons such as WPBruiser Pro. An add-on registers its own protection modules through the `wpbruiser_register_modules` filter and protects a form with `wpbruiser_get_token_field_html()`, `wpbruiser_is_option_enabled()` and `wpbruiser_verify_submission()`. Each add-on loads its own code; WPBruiser still only loads files from its own folder.
 - New: the `wpbruiser_loaded` action, and the `wpbruiser_country_id_for_ip` filter for supplying your own IP-to-country data.
 - New: `wpbruiser_get_token_field_names()`, so integrations can keep the token fields out of stored submissions, and a `wpbruiser:token` browser event fired when a form receives its token, for forms that submit as JSON.

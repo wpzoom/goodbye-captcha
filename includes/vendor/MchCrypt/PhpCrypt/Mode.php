@@ -298,6 +298,12 @@ abstract class PhpCrypt_Mode
 		$num = ceil($len / $bytes) * $bytes;
 		$num = $num - $len;
 
+		// WPBruiser fix: PKCS7 always adds padding, a whole block when the text
+		// already fills its last block. Adding none made the strip step remove
+		// real trailing bytes, so about one token in ten failed to decrypt.
+		if (0 == $num && PhpCrypt::PAD_PKCS7 == $this->padding)
+			$num = $bytes;
+
 		PhpCrypt_Padding::pad($str, $num, $this->padding);
 		return true;
 	}

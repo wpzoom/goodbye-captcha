@@ -1054,3 +1054,421 @@ div.wp-bruiser-extensions p.authors
     background-color: var(--gdbc-accent, #2271b1);
     border-color: var(--gdbc-accent, #2271b1);
 }
+
+/* ------------------------------------------------------------------------
+ * Integrations screen
+ * Sections per integration type, each a grid of compact cards: the plugin's own
+ * icon, its name with a Free or Pro tag, a short description, and a footer with
+ * the status and the switch. Built on WordPress admin colours and type so it
+ * reads like the rest of wp-admin; the accent follows the admin colour scheme
+ * through --gdbc-accent, set inline by GoodByeCaptchaAdmin.
+ * ---------------------------------------------------------------------- */
+
+.gdbc-int
+{
+    max-width: 1280px;
+    margin-top: 12px;
+}
+
+.gdbc-int__intro
+{
+    margin: 0 0 16px;
+    color: #50575e;
+}
+
+.gdbc-int-promo
+{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 20px;
+    margin: 0 0 16px;
+    padding: 10px 12px 10px 16px;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+}
+
+.gdbc-int-promo__text
+{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    margin: 0;
+    color: #2c3338;
+}
+
+.gdbc-int-toolbar
+{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    margin: 0 0 8px;
+}
+
+.gdbc-int .gdbc-int-filters
+{
+    float: none;
+    margin: 0;
+}
+
+.gdbc-int .gdbc-int-search
+{
+    float: none;
+    margin: 0;
+}
+
+.gdbc-int-search input[type="search"]
+{
+    width: 240px;
+    max-width: 100%;
+}
+
+.gdbc-int-section
+{
+    margin: 24px 0 0;
+}
+
+.gdbc-int-section[hidden]
+{
+    display: none;
+}
+
+.gdbc-int .gdbc-int-section__title
+{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+    padding: 0 0 8px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #1d2327;
+    border-bottom: 1px solid #dcdcde;
+}
+
+.gdbc-int-section__count
+{
+    font-weight: 400;
+    color: #787c82;
+}
+
+.gdbc-int-grid
+{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 12px;
+}
+
+.gdbc-int-card
+{
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+}
+
+.gdbc-int-card[hidden]
+{
+    display: none;
+}
+
+.gdbc-int-card__main
+{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px 12px;
+    min-height: 74px;
+}
+
+.gdbc-int-card__icon
+{
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    object-fit: contain;
+    background: #fff;
+}
+
+.gdbc-int-card__icon--initials
+{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f1;
+    color: #50575e;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.gdbc-int-card.is-not-detected .gdbc-int-card__icon
+{
+    filter: grayscale(1);
+    opacity: 0.45;
+}
+
+.gdbc-int-card__text
+{
+    min-width: 0;
+}
+
+.gdbc-int .gdbc-int-card__title
+{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 3px;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #1d2327;
+}
+
+.gdbc-int-card__desc
+{
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #646970;
+}
+
+.gdbc-int-tag
+{
+    display: inline-block;
+    padding: 0 5px;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 16px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border: 1px solid currentColor;
+    border-radius: 3px;
+}
+
+.gdbc-int-tag--free
+{
+    color: #787c82;
+}
+
+.gdbc-int-tag--pro
+{
+    color: var(--gdbc-accent, #2271b1);
+}
+
+.gdbc-int-forms
+{
+    margin: 0 16px 10px 72px;
+}
+
+.gdbc-int-forms summary
+{
+    font-size: 13px;
+    color: var(--gdbc-accent, #2271b1);
+    cursor: pointer;
+}
+
+.gdbc-int-forms ul
+{
+    margin: 6px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.gdbc-int-forms li
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0;
+    padding: 5px 0;
+    font-size: 13px;
+    color: #2c3338;
+    border-top: 1px solid #f0f0f1;
+}
+
+.gdbc-int-card__foot
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: auto;
+    padding: 8px 16px;
+    min-height: 32px;
+    background: #f6f7f7;
+    border-top: 1px solid #f0f0f1;
+    border-radius: 0 0 4px 4px;
+}
+
+.gdbc-int-status
+{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #50575e;
+}
+
+.gdbc-int-status::before
+{
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #c3c4c7;
+}
+
+.gdbc-int-card.is-on .gdbc-int-status
+{
+    color: #1d2327;
+}
+
+.gdbc-int-card.is-on .gdbc-int-status::before
+{
+    background: #00a32a;
+}
+
+.gdbc-int-status--muted
+{
+    color: #787c82;
+}
+
+.gdbc-int-status--muted::before
+{
+    display: none;
+}
+
+.gdbc-int-install
+{
+    font-size: 13px;
+}
+
+.gdbc-int-error
+{
+    margin: 0 16px 10px 72px;
+    font-size: 12px;
+    color: #b32d2e;
+}
+
+.gdbc-int-empty
+{
+    margin: 24px 0;
+    color: #50575e;
+}
+
+.gdbc-int-footnote
+{
+    margin: 28px 0 0;
+    font-size: 12px;
+    color: #787c82;
+}
+
+.gdbc-int-card.is-saving
+{
+    cursor: progress;
+}
+
+/* Switch: a button with role="switch"; aria-checked carries the state. */
+.gdbc-switch
+{
+    position: relative;
+    flex: 0 0 auto;
+    width: 36px;
+    height: 20px;
+    padding: 0;
+    background: #fff;
+    border: 1px solid #8c8f94;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.gdbc-switch__knob
+{
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 12px;
+    height: 12px;
+    background: #8c8f94;
+    border-radius: 50%;
+    transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.gdbc-switch[aria-checked="true"]
+{
+    background: var(--gdbc-accent, #2271b1);
+    border-color: var(--gdbc-accent, #2271b1);
+}
+
+.gdbc-switch[aria-checked="true"] .gdbc-switch__knob
+{
+    background: #fff;
+    transform: translateX(16px);
+}
+
+.gdbc-switch--small
+{
+    width: 30px;
+    height: 16px;
+}
+
+.gdbc-switch--small .gdbc-switch__knob
+{
+    top: 2px;
+    left: 2px;
+    width: 10px;
+    height: 10px;
+}
+
+.gdbc-switch--small[aria-checked="true"] .gdbc-switch__knob
+{
+    transform: translateX(14px);
+}
+
+.gdbc-switch:focus-visible
+{
+    outline: 2px solid var(--gdbc-accent, #2271b1);
+    outline-offset: 2px;
+}
+
+.gdbc-switch[aria-busy="true"]
+{
+    opacity: 0.6;
+}
+
+@media (prefers-reduced-motion: reduce)
+{
+    .gdbc-switch,
+    .gdbc-switch__knob
+    {
+        transition: none;
+    }
+}
+
+@media screen and (max-width: 600px)
+{
+    .gdbc-int-search,
+    .gdbc-int-search input[type="search"]
+    {
+        width: 100%;
+    }
+
+    .gdbc-int-forms,
+    .gdbc-int-error
+    {
+        margin-left: 16px;
+    }
+}

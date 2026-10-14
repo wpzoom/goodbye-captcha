@@ -62,6 +62,9 @@ final class GdbcAjaxController
 			$publicModuleInstance->registerAttachedHooks();
 		}
 
+		// Switches on the Integrations screen. The handler checks the nonce and capability.
+		add_action('wp_ajax_' . GdbcIntegrations::AJAX_ACTION, array('GdbcIntegrations', 'handleToggleRequest'));
+
 		// Add-on modules attach on admin-ajax.php unless they opted out.
 		foreach(GdbcModulesController::getExtensionModules() as $moduleName => $arrModule)
 		{

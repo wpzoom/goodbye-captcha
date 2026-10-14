@@ -281,13 +281,19 @@ class PhpCrypt_Padding
 	 */
 	private static function pkcs7Strip(&$text)
 	{
-		$pos = strlen($text) - 1;
-		$c = ord($text[$pos]);
-
-		if($c == 0)
+		// WPBruiser fix: strip only well-formed padding (the last byte gives the
+		// count, and that many bytes all hold it). The old regular expression also
+		// matched before a trailing newline and never checked the count.
+		$len = strlen($text);
+		if($len === 0)
 			return true;
 
-		$text = preg_replace('/'.preg_quote(chr($c)).'{'.$c.'}$/', "", $text);
+		$c = ord($text[$len - 1]);
+
+		if($c < 1 || $c > $len || substr($text, -$c) !== str_repeat(chr($c), $c))
+			return true;
+
+		$text = substr($text, 0, $len - $c);
 		return true;
 	}
 

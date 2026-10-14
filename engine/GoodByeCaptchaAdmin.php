@@ -58,10 +58,9 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 				new GdbcSettingsAdminPage(__('Settings', 'goodbye-captcha'), __('General Settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
 				new GdbcSecurityAdminPage(__('Security', 'goodbye-captcha'), __('Security Settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
 				new GdbcWordpressAdminPage(__('WordPress', 'goodbye-captcha'), __('WordPress Settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
-				new GdbcContactFormsAdminPage(__('Contact Forms', 'goodbye-captcha'), __('Contact Forms Plugins', 'goodbye-captcha'), self::$PLUGIN_SLUG),
-				new GdbcMembershipAdminPage(__('Membership', 'goodbye-captcha'), __('Membership Page Settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
-				new GdbcECommerceAdminPage(__('eCommerce', 'goodbye-captcha'), __('eCommerce Page Settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
-				new GdbcOthersAdminPage(__('Others', 'goodbye-captcha'), __('All other popular plugins settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
+				// One screen for every integration, free and Pro. It replaced the separate
+				// Contact Forms, Membership, eCommerce and Others screens in 3.3.0.
+				new GdbcIntegrationsAdminPage(__('Integrations', 'goodbye-captcha'), __('Integrations', 'goodbye-captcha'), self::$PLUGIN_SLUG),
 				new GdbcNotificationsAdminPage(__('Notifications', 'goodbye-captcha'), __('Notifications Settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
 				new GdbcReportsAdminPage(__('Reports', 'goodbye-captcha'), __('WPBruiser - Blocked Attempts', 'goodbye-captcha'), self::$PLUGIN_SLUG),
 
@@ -427,6 +426,27 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 
 			wp_enqueue_style(self::$PLUGIN_SLUG . '-bootstrap', plugins_url('/assets/admin/styles/bootstrap.css', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION);
 			wp_enqueue_style(self::$PLUGIN_SLUG . '-morris', plugins_url('/assets/admin/styles/morris.css', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION);
+		}
+
+		if($this->getActivePage() instanceof GdbcIntegrationsAdminPage)
+		{
+			wp_enqueue_script(self::$PLUGIN_SLUG . '-integrations', plugins_url('/assets/admin/scripts/gdbc-integrations.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION, true);
+			wp_localize_script(self::$PLUGIN_SLUG . '-integrations', 'GdbcIntegrationsConfig', array(
+				'ajaxUrl' => admin_url('admin-ajax.php'),
+				'action'  => GdbcIntegrations::AJAX_ACTION,
+				'nonce'   => wp_create_nonce(GdbcIntegrations::NONCE_ACTION),
+				'i18n'    => array(
+					'on'        => __('On', 'goodbye-captcha'),
+					'off'       => __('Off', 'goodbye-captcha'),
+					/* translators: 1: forms switched on, 2: forms available. */
+					'partial'   => __('On for %1$d of %2$d forms', 'goodbye-captcha'),
+					/* translators: %s: integration name. */
+					'turnedOn'  => __('%s protection turned on.', 'goodbye-captcha'),
+					/* translators: %s: integration name. */
+					'turnedOff' => __('%s protection turned off.', 'goodbye-captcha'),
+					'error'     => __('The change could not be saved. Please try again.', 'goodbye-captcha'),
+				),
+			));
 		}
 
 		if($this->getActivePage() instanceof GdbcSecurityAdminPage)
