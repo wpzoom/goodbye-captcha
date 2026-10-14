@@ -189,6 +189,8 @@ The Integrations screen shows the icons the integrated plugins publish on WordPr
 - Fix: a lost password request that fails the check now shows an error on the form. It used to redirect to the login page, which also broke WooCommerce's lost password form.
 - The Contact Forms, Membership, eCommerce and Others screens now list modules added by add-ons. The eCommerce screen stays hidden until an add-on adds a module to it.
 - Removed leftover references to the old paid extensions from the settings screens, the AJAX setup and brute-force login detection.
+- New: the WPBruiser ninja, redrawn as a vector icon, on every WPBruiser screen, in the admin menu (tinted to match your admin colour scheme) and in the Dashboard widget.
+- New: Settings and Get Pro links on the Plugins screen, and a WPBruiser Pro box in the settings sidebar that lists the Pro integrations and points out which of those plugins are active on your site. Both disappear once WPBruiser Pro is active.
 
 = 3.2.1 =
 - Audited every third-party integration against the plugin directory and removed those whose plugin is gone: ZM Ajax Login & Register (closed 2023), PlanSo Forms (closed 2021), UltraCommunity (30 installs, last updated 2020) and Seamless Donations (last updated 2024, tested only to 6.4). Support for the Epoch comments iframe was removed as well; that plugin has not been updated since 2015. The readme no longer lists Postmatic and WP User Control, both closed, and now lists HTML Forms and WP-Members, which are supported but were never mentioned.

@@ -149,7 +149,10 @@ final class GdbcDashboardWidget
 	 */
 	private static function getStyles()
 	{
-		return '#' . self::WIDGET_ID . ' .gdbc-dash__stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 12px;padding:0;list-style:none}'
+		$iconUrl = plugins_url('/assets/admin/images/wpbruiser-icon.svg', GoodByeCaptcha::getMainFilePath());
+
+		return '#' . self::WIDGET_ID . ' .hndle::before{content:"";display:inline-block;flex:0 0 auto;width:20px;height:20px;margin-right:8px;vertical-align:-4px;border-radius:4px;background:url("' . esc_url_raw($iconUrl) . '") center/cover no-repeat}'
+			. '#' . self::WIDGET_ID . ' .gdbc-dash__stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 12px;padding:0;list-style:none}'
 			. '#' . self::WIDGET_ID . ' .gdbc-dash__stats li{margin:0;padding:10px 12px;background:#f6f7f7;border:1px solid #f0f0f1;border-radius:4px}'
 			. '#' . self::WIDGET_ID . ' .gdbc-dash__number{display:block;font-size:22px;font-weight:600;line-height:1.2;color:#1d2327}'
 			. '#' . self::WIDGET_ID . ' .gdbc-dash__label{display:block;margin-top:2px;font-size:12px;color:#646970}'

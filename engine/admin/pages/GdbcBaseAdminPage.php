@@ -38,6 +38,19 @@ abstract class GdbcBaseAdminPage extends MchGdbcBaseAdminPage
 		if($this->getPageLayoutColumns() <= 1)
 			return;
 
+		if(null === GdbcIntegrations::getProVersion())
+		{
+			add_meta_box(
+				"gdbc-pro-metabox",
+				__('WPBruiser Pro', 'goodbye-captcha'),
+				array( $this, 'renderProMetaBox' ),
+				$this->getAdminScreenId(),
+				'side',
+				'high',
+				null
+			);
+		}
+
 		add_meta_box(
 			"gdbc-help-metabox",
 			__('Support', 'goodbye-captcha'),
@@ -59,6 +72,71 @@ abstract class GdbcBaseAdminPage extends MchGdbcBaseAdminPage
 			null
 		);
 
+	}
+
+	/**
+	 * Sidebar box introducing WPBruiser Pro. Only registered while Pro is not active.
+	 *
+	 * When a plugin that only Pro protects is active here, the box says so by name,
+	 * because those forms are the ones bots can still reach.
+	 */
+	public function renderProMetaBox()
+	{
+		$arrDetected = GdbcIntegrations::getDetectedProIntegrations();
+		$arrProNames = array();
+		foreach(GdbcIntegrations::getCatalog() as $arrEntry)
+		{
+			if(GdbcIntegrations::TIER_PRO === $arrEntry['Tier'])
+				$arrProNames[] = $arrEntry['Name'];
+		}
+		?>
+		<div class="gdbc-pro">
+			<p class="gdbc-pro__head">
+				<img src="<?php echo esc_url(plugins_url('/assets/admin/images/wpbruiser-icon.svg', GoodByeCaptcha::getMainFilePath())); ?>" width="40" height="40" alt="" />
+				<strong><?php esc_html_e('Protect every form on your site', 'goodbye-captcha'); ?></strong>
+			</p>
+
+			<?php if(!empty($arrDetected)) : ?>
+				<p class="gdbc-pro__found">
+					<?php
+					echo esc_html(
+						sprintf(
+							/* translators: %s: list of plugin names, e.g. "WooCommerce and Contact Form 7". */
+							_n(
+								'%s is active on this site, and its forms are not protected yet.',
+								'%s are active on this site, and their forms are not protected yet.',
+								count($arrDetected),
+								'goodbye-captcha'
+							),
+							wp_sprintf('%l', $arrDetected)
+						)
+					);
+					?>
+				</p>
+			<?php else : ?>
+				<p><?php esc_html_e('Pro adds the same invisible, CAPTCHA-free protection to the form and shop plugins your visitors use most.', 'goodbye-captcha'); ?></p>
+			<?php endif; ?>
+
+			<ul class="gdbc-pro__list">
+				<?php foreach($arrProNames as $proName) : ?>
+					<li<?php echo in_array($proName, $arrDetected, true) ? ' class="is-detected"' : ''; ?>>
+						<?php echo esc_html($proName); ?>
+						<?php if(in_array($proName, $arrDetected, true)) : ?>
+							<span class="gdbc-pro__badge"><?php esc_html_e('On this site', 'goodbye-captcha'); ?></span>
+						<?php endif; ?>
+					</li>
+				<?php endforeach; ?>
+				<li><?php esc_html_e('Premium support from the WPZOOM team', 'goodbye-captcha'); ?></li>
+			</ul>
+
+			<p class="gdbc-pro__cta">
+				<a class="button button-primary" href="<?php echo esc_url(GdbcIntegrations::getProUrl('sidebar')); ?>" target="_blank" rel="noopener noreferrer">
+					<?php esc_html_e('Get WPBruiser Pro', 'goodbye-captcha'); ?><span class="screen-reader-text"> <?php esc_html_e('(opens in a new tab)', 'goodbye-captcha'); ?></span>
+				</a>
+			</p>
+			<p class="gdbc-pro__note"><?php esc_html_e('14-day money-back guarantee.', 'goodbye-captcha'); ?></p>
+		</div>
+		<?php
 	}
 
 	public function renderNeedHelpMetaBox()

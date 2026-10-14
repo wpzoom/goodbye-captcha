@@ -67,7 +67,7 @@ class GdbcIntegrationsAdminPage extends GdbcBaseAdminPage
 						<span class="gdbc-int-tag gdbc-int-tag--pro"><?php esc_html_e('Pro', 'goodbye-captcha'); ?></span>
 						<?php esc_html_e('WPBruiser Pro adds WooCommerce, Contact Form 7, WPForms, Elementor Pro and Gravity Forms, with the same invisible protection.', 'goodbye-captcha'); ?>
 					</p>
-					<a class="button" href="<?php echo esc_url(GdbcIntegrations::PRO_URL); ?>" target="_blank" rel="noopener noreferrer">
+					<a class="button" href="<?php echo esc_url(GdbcIntegrations::getProUrl('integrations-banner')); ?>" target="_blank" rel="noopener noreferrer">
 						<?php esc_html_e('Get WPBruiser Pro', 'goodbye-captcha'); ?><span class="screen-reader-text"> <?php esc_html_e('(opens in a new tab)', 'goodbye-captcha'); ?></span>
 					</a>
 				</div>
@@ -182,7 +182,7 @@ class GdbcIntegrationsAdminPage extends GdbcBaseAdminPage
 					<span class="gdbc-int-status gdbc-int-status--muted">
 						<?php echo $arrCard['IsDetected'] ? esc_html__('Installed on this site', 'goodbye-captcha') : esc_html__('Requires WPBruiser Pro', 'goodbye-captcha'); ?>
 					</span>
-					<a class="button button-small" href="<?php echo esc_url(GdbcIntegrations::PRO_URL); ?>" target="_blank" rel="noopener noreferrer">
+					<a class="button button-small" href="<?php echo esc_url(GdbcIntegrations::getProUrl('integrations-card')); ?>" target="_blank" rel="noopener noreferrer">
 						<?php esc_html_e('Upgrade', 'goodbye-captcha'); ?><span class="screen-reader-text"> <?php /* translators: %s: integration name. */ echo esc_html(sprintf(__('to protect %s (opens in a new tab)', 'goodbye-captcha'), $arrCard['Name'])); ?></span>
 					</a>
 

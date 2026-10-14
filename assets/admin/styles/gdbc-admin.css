@@ -1472,3 +1472,126 @@ div.wp-bruiser-extensions p.authors
         margin-left: 16px;
     }
 }
+
+/*
+ * Brand: page title with the WPBruiser icon, Welcome page badge, and the
+ * WPBruiser Pro box at the top of the settings sidebar.
+ */
+.gdbc-settings h1.gdbc-page-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.gdbc-settings h1.gdbc-page-title img {
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+}
+
+.about-wrap .wp-badge.wpbr-badge {
+    background: url(../images/wpbruiser-icon.svg) center / cover no-repeat;
+    border-radius: 24px;
+    color: transparent;
+}
+
+#gdbc-pro-metabox {
+    border-color: #c9b3ea;
+}
+
+#gdbc-pro-metabox .postbox-header {
+    border-bottom-color: #e6dcf5;
+}
+
+#gdbc-pro-metabox .inside {
+    margin: 0;
+    padding: 14px 14px 12px;
+}
+
+.gdbc-pro p {
+    margin: 0 0 12px;
+}
+
+.gdbc-pro__head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    line-height: 1.35;
+}
+
+.gdbc-pro__head img {
+    flex: 0 0 auto;
+    border-radius: 9px;
+}
+
+.gdbc-pro__found {
+    padding: 8px 10px;
+    color: #1d2327;
+    background: #f4effc;
+    border-left: 3px solid #6a26c6;
+}
+
+.gdbc-pro__list {
+    margin: 0 0 14px;
+    padding: 0;
+    list-style: none;
+}
+
+.gdbc-pro__list li {
+    position: relative;
+    margin: 0;
+    padding: 4px 0 4px 24px;
+}
+
+.gdbc-pro__list li::before {
+    content: "";
+    position: absolute;
+    top: 7px;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%2322BB66'/%3E%3Cpath d='m7.5 12.5 3 3 6-6.5' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.gdbc-pro__list li.is-detected {
+    font-weight: 600;
+}
+
+.gdbc-pro__badge {
+    display: inline-block;
+    margin-left: 4px;
+    padding: 0 6px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 18px;
+    color: #6a26c6;
+    background: #f4effc;
+    border-radius: 9px;
+}
+
+.gdbc-pro__cta {
+    margin-bottom: 6px !important;
+}
+
+.gdbc-pro__cta .button-primary {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: #6a26c6;
+    border-color: #6a26c6;
+}
+
+.gdbc-pro__cta .button-primary:hover,
+.gdbc-pro__cta .button-primary:focus {
+    background: #5a1fae;
+    border-color: #5a1fae;
+}
+
+.gdbc-pro__note {
+    margin: 0 !important;
+    font-size: 12px;
+    text-align: center;
+    color: #646970;
+}

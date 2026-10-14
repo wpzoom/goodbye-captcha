@@ -180,6 +180,41 @@ final class GdbcIntegrations
 	}
 
 	/**
+	 * Link to WPBruiser Pro, tagged with where in the admin it was clicked.
+	 *
+	 * @param string $placement Where the link is shown, e.g. "sidebar".
+	 * @return string
+	 */
+	public static function getProUrl($placement)
+	{
+		return add_query_arg(
+			array(
+				'utm_source'   => 'wpadmin',
+				'utm_medium'   => 'wpbruiser-free',
+				'utm_campaign' => sanitize_key($placement),
+			),
+			self::PRO_URL
+		);
+	}
+
+	/**
+	 * Pro integrations whose plugin is active on this site, by display name.
+	 *
+	 * @return string[]
+	 */
+	public static function getDetectedProIntegrations()
+	{
+		$arrNames = array();
+		foreach(self::getCatalog() as $arrEntry)
+		{
+			if(self::TIER_PRO === $arrEntry['Tier'] && call_user_func($arrEntry['IsDetected']))
+				$arrNames[] = $arrEntry['Name'];
+		}
+
+		return $arrNames;
+	}
+
+	/**
 	 * Version of WPBruiser Pro, or null when it is not active.
 	 *
 	 * @return string|null
