@@ -43,5 +43,6 @@ CLAUDE.md
 tests
 webpack.config.js
 .wordpress-org
+brand
 wp-cli.local.yml
 yarn.lock
