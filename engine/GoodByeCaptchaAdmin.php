@@ -37,6 +37,8 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 		// admin_enqueue_scripts) runs after init, so this is safe.
 		add_action( 'init', array( $this, 'buildAdminPagesList' ), 20 );
 
+		add_action( GoodByeCaptcha::isNetworkActivated() ? 'wp_network_dashboard_setup' : 'wp_dashboard_setup', array( 'GdbcDashboardWidget', 'register' ) );
+
 		if(GoodByeCaptcha::isNetworkActivated())
 		{
 			add_action( 'network_admin_menu', array( $this, 'buildPluginMenu' ), 10 );

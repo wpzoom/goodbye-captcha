@@ -36,6 +36,7 @@ class GdbcSettingsAdminModule extends GdbcBaseAdminModule
 	CONST OPTION_TEST_MODE_ACTIVATED       = 'IsTestModeActivated';
 	CONST OPTION_CACHE_DIR_PATH            = 'CacheDirPath';
 	CONST OPTION_HIDE_SUBSCRIBE_FORM       = 'HideSubscribeForm';
+	CONST OPTION_HIDE_ADMIN_FORM_NOTE      = 'HideAdminFormNote';
 
 	protected function __construct()
 	{
@@ -81,6 +82,12 @@ class GdbcSettingsAdminModule extends GdbcBaseAdminModule
 				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
 			),
 
+			self::OPTION_HIDE_ADMIN_FORM_NOTE => array(
+				'Value'       => NULL,
+				'LabelText'   => __('Hide the Protected Note on Forms', 'goodbye-captcha'),
+				'Description' => __('Administrators see a small note under each form WPBruiser protects. Visitors never see it.', 'goodbye-captcha'),
+				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
+			),
 			self::OPTION_TEST_MODE_ACTIVATED => array(
 				'Value'       => NULL,
 				'LabelText'   => __('Switch WPBruiser to Test Mode', 'goodbye-captcha'),

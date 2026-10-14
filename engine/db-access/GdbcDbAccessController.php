@@ -263,6 +263,42 @@ final class GdbcDbAccessController
 
 	}
 
+	/**
+	 * Number of blocked attempts since a point in time.
+	 *
+	 * @param int $sinceTimestamp Unix timestamp.
+	 * @return int
+	 */
+	public static function countAttemptsSince($sinceTimestamp)
+	{
+		global $wpdb;
+
+		$sqlQuery  = 'SELECT COUNT(1) AS Total FROM ' . self::getAttemptsTableName() . ' WHERE CreatedDate >= %d';
+		$sqlQuery .= GoodByeCaptcha::isNetworkActivated() ? ' AND Id > %d' : ' AND SiteId = %d';
+
+		$arrResult = self::executePreparedQuery($wpdb->prepare($sqlQuery, array((int)$sinceTimestamp, GoodByeCaptcha::isNetworkActivated() ? 0 : get_current_blog_id())));
+
+		return isset($arrResult[0]->Total) ? (int)$arrResult[0]->Total : 0;
+	}
+
+	/**
+	 * The forms with the most blocked attempts since a point in time.
+	 *
+	 * @param int $sinceTimestamp Unix timestamp.
+	 * @param int $limit          Maximum number of rows.
+	 * @return object[] Rows with ModuleId, SectionId and Total.
+	 */
+	public static function getTopTargetedForms($sinceTimestamp, $limit = 5)
+	{
+		global $wpdb;
+
+		$sqlQuery  = 'SELECT ModuleId, SectionId, COUNT(1) AS Total FROM ' . self::getAttemptsTableName() . ' WHERE CreatedDate >= %d';
+		$sqlQuery .= GoodByeCaptcha::isNetworkActivated() ? ' AND Id > %d' : ' AND SiteId = %d';
+		$sqlQuery .= ' GROUP BY ModuleId, SectionId ORDER BY Total DESC LIMIT %d';
+
+		return self::executePreparedQuery($wpdb->prepare($sqlQuery, array((int)$sinceTimestamp, GoodByeCaptcha::isNetworkActivated() ? 0 : get_current_blog_id(), max(1, (int)$limit))));
+	}
+
 	private static function getDaysAgoTimeStamp($numberOfDays)
 	{
 		return MchGdbcHttpRequest::getServerRequestTime() - ( absint($numberOfDays) * 3600 * 24 );

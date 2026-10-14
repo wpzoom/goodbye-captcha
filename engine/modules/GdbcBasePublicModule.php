@@ -89,6 +89,11 @@ abstract class GdbcBasePublicModule extends MchGdbcBasePublicModule
 			'nonceAction' => GdbcAjaxController::ACTION_RETRIEVE_NONCE,
 			'inputName'   => $hiddenInputName,
 			'nonce'       => GdbcAjaxController::getAjaxNonce(),
+			// Shown under protected forms to administrators only, so they can see at a
+			// glance what is covered. Page caches do not serve logged-in views.
+			'adminNote'   => (current_user_can('manage_options') && !$settingsModuleInstance->getOption(GdbcSettingsAdminModule::OPTION_HIDE_ADMIN_FORM_NOTE))
+				? __('WPBruiser protects this form. Only administrators see this note.', 'goodbye-captcha')
+				: '',
 		));
 
 		return true;

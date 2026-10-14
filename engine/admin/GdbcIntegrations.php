@@ -408,6 +408,72 @@ final class GdbcIntegrations
 	}
 
 	/**
+	 * Protection a new install starts with: WordPress login, registration, lost
+	 * password and comments, plus every free integration whose plugin is active.
+	 */
+	public static function enableDefaultProtection()
+	{
+		$wordPressModule = GdbcModulesController::getAdminModuleInstance(GdbcModulesController::MODULE_WORDPRESS);
+		if(null !== $wordPressModule)
+		{
+			foreach(array(
+				GdbcWordPressAdminModule::WORDPRESS_LOGIN_FORM,
+				GdbcWordPressAdminModule::WORDPRESS_REGISTRATION_FORM,
+				GdbcWordPressAdminModule::WORDPRESS_LOST_PASSWORD_FORM,
+				GdbcWordPressAdminModule::WORDPRESS_COMMENTS_FORM,
+			) as $optionName)
+			{
+				$wordPressModule->saveOption($optionName, 1);
+			}
+		}
+
+		foreach(self::getCatalog() as $moduleName => $arrEntry)
+		{
+			if(self::TIER_FREE === $arrEntry['Tier'] && call_user_func($arrEntry['IsDetected']))
+				self::enableIntegration($moduleName, true);
+		}
+	}
+
+	/**
+	 * Switches on every form of an integration.
+	 *
+	 * WPBruiser Pro calls this on its first activation for the integrations whose
+	 * plugin is active, so a new Pro site is protected without any setup.
+	 *
+	 * @param string $moduleName       Module name.
+	 * @param bool   $onlyIfUnconfigured Leave the module alone if it already has saved
+	 *                                 settings (for example from the original WPBruiser Pro).
+	 * @return bool Whether anything was switched on.
+	 */
+	public static function enableIntegration($moduleName, $onlyIfUnconfigured = true)
+	{
+		$adminModuleInstance = GdbcModulesController::getAdminModuleInstance($moduleName);
+		if(null === $adminModuleInstance)
+			return false;
+
+		$arrForms = self::getForms($moduleName);
+		if(empty($arrForms))
+			return false;
+
+		if($onlyIfUnconfigured)
+		{
+			// Any saved record, even an empty one, means someone has set this up
+			// (switching a form off removes its key but keeps the record).
+			$savedSettings = GoodByeCaptcha::isNetworkActivated()
+				? get_site_option($adminModuleInstance->getSettingKey(), null)
+				: get_option($adminModuleInstance->getSettingKey(), null);
+
+			if(null !== $savedSettings)
+				return false;
+		}
+
+		foreach($arrForms as $arrForm)
+			$adminModuleInstance->saveOption($arrForm['Option'], 1);
+
+		return true;
+	}
+
+	/**
 	 * Capability needed to change integrations.
 	 *
 	 * @return string

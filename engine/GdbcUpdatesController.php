@@ -68,6 +68,10 @@ final class GdbcUpdatesController
 			{
 				$savedPluginVersion = GoodByeCaptcha::PLUGIN_VERSION;
 				$settingsModuleInstance->saveOption(GdbcSettingsAdminModule::OPTION_PLUGIN_VERSION, GoodByeCaptcha::PLUGIN_VERSION);
+
+				// A new site is protected from the start: WordPress' own forms and every
+				// free integration whose plugin is already active. Upgrades keep their settings.
+				GdbcIntegrations::enableDefaultProtection();
 			}
 		}
 

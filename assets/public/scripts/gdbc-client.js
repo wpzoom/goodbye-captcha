@@ -193,6 +193,20 @@
             tokenEvent.initCustomEvent('wpbruiser:token', true, false, { fields: fields });
         }
         formElement.dispatchEvent(tokenEvent);
+
+        addAdminNote(formElement);
+    }
+
+    // Administrators see a small note under every form that received a token.
+    function addAdminNote(formElement) {
+        if (!config.adminNote || formElement.hidden || formElement.querySelector('.wpbruiser-admin-note')) {
+            return;
+        }
+        var note = document.createElement('p');
+        note.className = 'wpbruiser-admin-note';
+        note.textContent = '\u2713 ' + config.adminNote;
+        note.style.cssText = 'margin:8px 0 0;font-size:12px;line-height:1.4;color:#50575e;';
+        formElement.appendChild(note);
     }
 
     function retrieveToken(formElement, isRetry) {
