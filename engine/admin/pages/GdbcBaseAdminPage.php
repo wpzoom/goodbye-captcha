@@ -89,6 +89,12 @@ abstract class GdbcBaseAdminPage extends MchGdbcBaseAdminPage
 			if(GdbcIntegrations::TIER_PRO === $arrEntry['Tier'])
 				$arrProNames[] = $arrEntry['Name'];
 		}
+
+		// The plugins this site uses first, then the rest, up to six in all.
+		$arrProNames = array_values(array_unique(array_merge($arrDetected, $arrProNames)));
+		$totalCount  = count($arrProNames);
+		$arrProNames = array_slice($arrProNames, 0, max(6, count($arrDetected)));
+		$moreCount   = $totalCount - count($arrProNames);
 		?>
 		<div class="gdbc-pro">
 			<p class="gdbc-pro__head">
@@ -126,6 +132,20 @@ abstract class GdbcBaseAdminPage extends MchGdbcBaseAdminPage
 						<?php endif; ?>
 					</li>
 				<?php endforeach; ?>
+				<?php if($moreCount > 0) : ?>
+					<li>
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: %d: number of further integrations. */
+								_n('and %d more integration', 'and %d more integrations', $moreCount, 'goodbye-captcha'),
+								$moreCount
+							)
+						);
+						?>
+					</li>
+				<?php endif; ?>
+				<li><?php esc_html_e('Country blocking and submission rate limits', 'goodbye-captcha'); ?></li>
 				<li><?php esc_html_e('Premium support from the WPZOOM team', 'goodbye-captcha'); ?></li>
 			</ul>
 

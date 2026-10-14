@@ -30,6 +30,12 @@
  *  - action `wpbruiser_loaded` (int $apiVersion): WPBruiser is running.
  *  - filter `wpbruiser_country_id_for_ip` (int|null $countryId, string $ipAddress):
  *    replace the bundled IP-to-country lookup.
+ *  - filter `wpbruiser_reject_reason` (int|null $reasonId, GdbcAttemptEntity $attempt):
+ *    reject a submission that passed every check, e.g. for rate limiting.
+ *
+ * Forms whose plugin posts its own data instead of the form's inputs (fields packed
+ * into one value, or sent as JSON) can copy the token fields into $_POST before
+ * calling wpbruiser_verify_submission(); wpbruiser_get_token_field_names() lists them.
  *
  * @package WPBruiser
  * @since   3.3.0

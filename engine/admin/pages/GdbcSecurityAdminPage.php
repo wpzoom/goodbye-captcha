@@ -59,11 +59,27 @@ class GdbcSecurityAdminPage  extends GdbcBaseAdminPage
 		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_COUNTRY_BLOCKING))
 		{
 			$this->geoIpCountryGroupIndex = $this->registerGroupedModules(array(
-				new MchGdbcGroupedModules(__('Geo IP Country Blocking', 'goodbye-captcha'), array(
+				new MchGdbcGroupedModules(__('Country Blocking', 'goodbye-captcha'), array(
 						GdbcGeoIpCountryAdminModule::getInstance())
 				)
 			));
 
+		}
+
+		// Other add-on modules that belong here (WPBruiser Pro's rate limits, for
+		// example) get a settings box each, rendered from their option definitions.
+		foreach(GdbcModulesController::getExtensionModules() as $moduleName => $arrModule)
+		{
+			if(GdbcModulesController::EXTENSION_PAGE_SECURITY !== $arrModule['Page'] || GdbcModulesController::MODULE_COUNTRY_BLOCKING === $moduleName)
+				continue;
+
+			$adminModuleInstance = GdbcModulesController::getAdminModuleInstance($moduleName);
+			if(null === $adminModuleInstance)
+				continue;
+
+			$this->registerGroupedModules(array(
+				new MchGdbcGroupedModules($arrModule['DisplayName'], array($adminModuleInstance))
+			));
 		}
 
 	}

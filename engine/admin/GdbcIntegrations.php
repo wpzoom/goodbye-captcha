@@ -158,6 +158,61 @@ final class GdbcIntegrations
 				'PluginFiles' => array('gravityforms/gravityforms.php'),
 				'IsDetected'  => array(__CLASS__, 'isGravityFormsActive'),
 			),
+
+			GdbcModulesController::MODULE_FLUENT_FORMS => array(
+				'Name'        => 'Fluent Forms',
+				'Description' => __('Every Fluent Forms form, including multi-step forms.', 'goodbye-captcha'),
+				'Category'    => 'forms',
+				'Tier'        => self::TIER_PRO,
+				'Logo'        => array('FF', '#1a7efb', '#ffffff'),
+				'WpOrgSlug'   => 'fluentform',
+				'PluginFiles' => array('fluentform/fluentform.php'),
+				'IsDetected'  => array(__CLASS__, 'isFluentFormsActive'),
+			),
+
+			GdbcModulesController::MODULE_FORMINATOR => array(
+				'Name'        => 'Forminator',
+				'Description' => __('Every Forminator form, whether it submits with or without reloading the page.', 'goodbye-captcha'),
+				'Category'    => 'forms',
+				'Tier'        => self::TIER_PRO,
+				'Logo'        => array('Fm', '#1f2a44', '#ffffff'),
+				'WpOrgSlug'   => 'forminator',
+				'PluginFiles' => array('forminator/forminator.php'),
+				'IsDetected'  => array(__CLASS__, 'isForminatorActive'),
+			),
+
+			GdbcModulesController::MODULE_NINJA_FORMS => array(
+				'Name'        => 'Ninja Forms',
+				'Description' => __('Every Ninja Forms form.', 'goodbye-captcha'),
+				'Category'    => 'forms',
+				'Tier'        => self::TIER_PRO,
+				'Logo'        => array('NF', '#ef4748', '#ffffff'),
+				'WpOrgSlug'   => 'ninja-forms',
+				'PluginFiles' => array('ninja-forms/ninja-forms.php'),
+				'IsDetected'  => array(__CLASS__, 'isNinjaFormsActive'),
+			),
+
+			GdbcModulesController::MODULE_FORMIDABLE_FORMS => array(
+				'Name'        => 'Formidable Forms',
+				'Description' => __('Every Formidable form, with or without AJAX submission.', 'goodbye-captcha'),
+				'Category'    => 'forms',
+				'Tier'        => self::TIER_PRO,
+				'Logo'        => array('Fr', '#4d4d4d', '#ffffff'),
+				'WpOrgSlug'   => 'formidable',
+				'PluginFiles' => array('formidable/formidable.php'),
+				'IsDetected'  => array(__CLASS__, 'isFormidableFormsActive'),
+			),
+
+			GdbcModulesController::MODULE_MAIL_POET => array(
+				'Name'        => 'MailPoet',
+				'Description' => __('MailPoet subscription forms, wherever they appear: widgets, blocks, pop-ups and below posts.', 'goodbye-captcha'),
+				'Category'    => 'newsletter',
+				'Tier'        => self::TIER_PRO,
+				'Logo'        => array('MP', '#fe5301', '#ffffff'),
+				'WpOrgSlug'   => 'mailpoet',
+				'PluginFiles' => array('mailpoet/mailpoet.php'),
+				'IsDetected'  => array(__CLASS__, 'isMailPoetActive'),
+			),
 		);
 
 		return $arrCatalog;
@@ -590,6 +645,16 @@ final class GdbcIntegrations
 	public static function isElementorProActive()  { return defined('ELEMENTOR_PRO_VERSION'); }
 	/** @return bool */
 	public static function isGravityFormsActive()  { return class_exists('GFForms', false); }
+
+	public static function isFluentFormsActive()     { return defined('FLUENTFORM_VERSION'); }
+
+	public static function isForminatorActive()      { return defined('FORMINATOR_VERSION'); }
+
+	public static function isNinjaFormsActive()      { return function_exists('Ninja_Forms'); }
+
+	public static function isFormidableFormsActive() { return class_exists('FrmAppHelper', false); }
+
+	public static function isMailPoetActive()        { return defined('MAILPOET_VERSION'); }
 
 	private function __construct() {}
 }

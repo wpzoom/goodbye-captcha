@@ -77,6 +77,11 @@ final class GdbcModulesController
 
 	CONST MODULE_EASY_FORMS_FOR_MAILCHIMP = 'EasyFormsForMailChimp';
 
+	// Modules first added by WPBruiser Pro 1.1; they have no reserved ID.
+	CONST MODULE_FLUENT_FORMS = 'FluentForms';
+	CONST MODULE_FORMINATOR   = 'Forminator';
+	CONST MODULE_RATE_LIMITS  = 'RateLimits';
+
 	/**
 	 * Version of the extension API (see registerExtensionModules()). Bumped only when
 	 * the contract changes in a way an add-on has to know about.
@@ -571,7 +576,8 @@ final class GdbcModulesController
 	 *                 {Prefix}PublicModule, with the same prefix as AdminClass.
 	 *  - DisplayName  (string) Name shown in Reports. Defaults to the module name.
 	 *  - Page         (string) One of the EXTENSION_PAGE_* constants. Defaults to Others.
-	 *                 Security is only honoured for the CountryBlocking module.
+	 *                 Modules on the Security page get their own settings box on the
+	 *                 Security screen instead of a card on the Integrations screen.
 	 *  - LoginOptions (string[]) Option names of the module's login forms, so failed
 	 *                 logins through them count towards brute-force detection.
 	 *  - LoadOnAjax   (bool) Set the module up on admin-ajax.php requests too, for
@@ -690,9 +696,6 @@ final class GdbcModulesController
 		$pageName = isset($arrDefinition['Page']) ? $arrDefinition['Page'] : self::EXTENSION_PAGE_OTHERS;
 		if(!in_array($pageName, $arrPages, true))
 			return 'Page must be one of: ' . implode(', ', $arrPages);
-
-		if(self::EXTENSION_PAGE_SECURITY === $pageName && self::MODULE_COUNTRY_BLOCKING !== $moduleName)
-			return 'only the CountryBlocking module can use the Security page';
 
 		// The Security screen renders Country Blocking with its own settings layout.
 		if(self::MODULE_COUNTRY_BLOCKING === $moduleName)
