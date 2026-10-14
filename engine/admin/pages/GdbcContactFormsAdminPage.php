@@ -34,6 +34,7 @@ class GdbcContactFormsAdminPage extends GdbcBaseAdminPage
 			$modulesList[] = GdbcJetPackContactFormAdminModule::getInstance();
 
 		// Contact Form 7, WPForms, Gravity Forms and other form builders come from add-ons.
+		$modulesList = array_merge($modulesList, GdbcModulesController::getExtensionAdminModulesForPage(GdbcModulesController::EXTENSION_PAGE_CONTACT_FORMS));
 
 		$this->registerGroupedModules(array(
 				new MchGdbcGroupedModules(__('WPBruiser - Popular Contact Forms Settings', 'goodbye-captcha'), $modulesList)

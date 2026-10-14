@@ -178,6 +178,7 @@ WPBruiser bundles the following third-party resources, each under its own licens
 - New: an extension API for add-ons such as WPBruiser Pro. An add-on registers its own protection modules through the `wpbruiser_register_modules` filter and protects a form with `wpbruiser_get_token_field_html()`, `wpbruiser_is_option_enabled()` and `wpbruiser_verify_submission()`. Each add-on loads its own code; WPBruiser still only loads files from its own folder.
 - New: the `wpbruiser_loaded` action, and the `wpbruiser_country_id_for_ip` filter for supplying your own IP-to-country data.
 - New: `wpbruiser_get_token_field_names()`, so integrations can keep the token fields out of stored submissions, and a `wpbruiser:token` browser event fired when a form receives its token, for forms that submit as JSON.
+- Fix: Jetpack contact forms. Blocked submissions kept no fields in Reports, current Jetpack versions (which renamed the form class) were not recognised, and older ones could hit a PHP error on a blocked submission.
 - Fix: a lost password request that fails the check now shows an error on the form. It used to redirect to the login page, which also broke WooCommerce's lost password form.
 - The Contact Forms, Membership, eCommerce and Others screens now list modules added by add-ons. The eCommerce screen stays hidden until an add-on adds a module to it.
 - Removed leftover references to the old paid extensions from the settings screens, the AJAX setup and brute-force login detection.

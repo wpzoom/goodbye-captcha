@@ -77,9 +77,7 @@ final class GdbcJetPackContactFormPublicModule extends GdbcBasePublicModule
 	public function validateContactFormEncryptedToken($isSpam, $arrPostedData)
 	{
 
-		$arrClassProperties = get_class_vars('Grunion_Contact_Form');
-
-		$grunionForm = isset($arrClassProperties['last']) ? Grunion_Contact_Form::$last : null;
+		$grunionForm = self::getSubmittedJetpackForm();
 		$arrGrunionFormFieldIds = (null !== $grunionForm && is_callable(array($grunionForm, 'get_field_ids'))) ? $grunionForm->get_field_ids() : array();
 
 		$arrSubmittedData = array();
@@ -102,7 +100,6 @@ final class GdbcJetPackContactFormPublicModule extends GdbcBasePublicModule
 			}
 		}
 
-		$arrSubmittedData = array();
 		if(empty($arrSubmittedData))
 		{
 			$arrPostedMappedKeys = array(
@@ -134,14 +131,34 @@ final class GdbcJetPackContactFormPublicModule extends GdbcBasePublicModule
 		if(GdbcRequestController::isValid($this->getAttemptEntity()))
 			return false;
 
-		if(null !== $grunionForm && in_array('errors', (array)get_class_vars($grunionForm)))
+		if(null !== $grunionForm && property_exists($grunionForm, 'errors'))
 		{
 			is_wp_error($grunionForm->errors)
-				? $grunionForm->errors->add($this->PLUGIN_SLUG,           __('Your entry appears to be spam!', 'goodbye-captcha'))
-				: $grunionForm->errors = new WP_Error($this->PLUGIN_SLUG, __('Your entry appears to be spam!', 'goodbye-captcha'));
+				? $grunionForm->errors->add('gdbc-invalid-token',           __('Your entry appears to be spam!', 'goodbye-captcha'))
+				: $grunionForm->errors = new WP_Error('gdbc-invalid-token', __('Your entry appears to be spam!', 'goodbye-captcha'));
 		}
 
 		return new WP_Error();
+	}
+
+	/**
+	 * The Jetpack form being submitted.
+	 *
+	 * Jetpack Forms moved the class from Grunion_Contact_Form to
+	 * Automattic\Jetpack\Forms\ContactForm\Contact_Form (Jetpack 12, 2023) and later
+	 * dropped the old one. Both keep the current form in a static $last property.
+	 *
+	 * @return object|null
+	 */
+	private static function getSubmittedJetpackForm()
+	{
+		foreach(array('Automattic\Jetpack\Forms\ContactForm\Contact_Form', 'Grunion_Contact_Form') as $formClassName)
+		{
+			if(class_exists($formClassName, false) && property_exists($formClassName, 'last') && is_object($formClassName::$last))
+				return $formClassName::$last;
+		}
+
+		return null;
 	}
 
 	public function insertGoodByeCaptchaToken($fieldBlock, $fieldLabel, $postId)
