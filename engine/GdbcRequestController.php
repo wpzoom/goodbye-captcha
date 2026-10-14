@@ -335,6 +335,45 @@ final class GdbcRequestController
 		return self::$browserInfoInputName;
 	}
 
+	/**
+	 * Names of the POST fields the plugin's token uses in the current request.
+	 *
+	 * Always includes the hidden token field. When a token was submitted, also the
+	 * per-token browser field, read from the token itself. Nothing is validated or
+	 * logged here, so integrations can call this before the request is checked, for
+	 * example to keep these fields out of a form plugin's stored submission.
+	 *
+	 * @return string[]
+	 */
+	public static function getSubmittedTokenFieldNames()
+	{
+		$settingsModuleInstance = GdbcModulesController::getPublicModuleInstance(GdbcModulesController::MODULE_SETTINGS);
+		if(null === $settingsModuleInstance)
+			return array();
+
+		$hiddenInputName = (string)$settingsModuleInstance->getOption(GdbcSettingsAdminModule::OPTION_HIDDEN_INPUT_NAME);
+		if('' === $hiddenInputName)
+			return array();
+
+		$arrFieldNames = array($hiddenInputName);
+
+		if(null !== self::$browserInfoInputName)
+		{
+			$arrFieldNames[] = self::$browserInfoInputName;
+			return $arrFieldNames;
+		}
+
+		$receivedToken = (isset($_POST[$hiddenInputName]) && is_string($_POST[$hiddenInputName])) ? wp_unslash($_POST[$hiddenInputName]) : null;
+		if(null === $receivedToken || !isset($receivedToken[10]))
+			return $arrFieldNames;
+
+		$arrDecryptedToken = json_decode(MchCrypt::decryptToken($settingsModuleInstance->getOption(GdbcSettingsAdminModule::OPTION_TOKEN_SECRET_KEY), $receivedToken), true);
+		if(isset($arrDecryptedToken[0]) && is_string($arrDecryptedToken[0]) && false !== ($tokenIndex = strpos($arrDecryptedToken[0], self::TOKEN_SEPARATOR)))
+			$arrFieldNames[] = substr($arrDecryptedToken[0], 0, $tokenIndex);
+
+		return $arrFieldNames;
+	}
+
 	public static function redirectToHomePage()
 	{
 		wp_safe_redirect( home_url() ); exit;

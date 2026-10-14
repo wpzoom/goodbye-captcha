@@ -23,22 +23,13 @@ class GdbcECommerceAdminPage  extends GdbcBaseAdminPage
 	public function __construct($pageMenuTitle, $pageBrowserTitle, $pluginSlug)
 	{
 		parent::__construct($pageMenuTitle, $pageBrowserTitle, $pluginSlug);
-		
-		$modulesList = array();
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_WOOCOMMERCE))
-			$modulesList[] = GdbcWooCommerceAdminModule::getInstance();
-		
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_EASY_DIGITAL_DOWNLOADS))
-			$modulesList[] = GdbcEDDAdminModule::getInstance();
 
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_AFFILIATE_WP))
-			$modulesList[] = GdbcAffiliateWPAdminModule::getInstance();
-
+		// Every eCommerce integration comes from an add-on. With none active the screen
+		// has no modules and is left out of the menu.
 		$this->registerGroupedModules(array(
-				new MchGdbcGroupedModules(__('WPBruiser - eCommerce Plugins Settings', 'goodbye-captcha'), $modulesList)
+				new MchGdbcGroupedModules(__('WPBruiser - eCommerce Plugins Settings', 'goodbye-captcha'), GdbcModulesController::getExtensionAdminModulesForPage(GdbcModulesController::EXTENSION_PAGE_ECOMMERCE))
 			)
 		);
-		
 	}
-	
+
 }

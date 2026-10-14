@@ -425,7 +425,21 @@ final class GdbcIPUtils
 
 	public static function getCountryIdByIpAddress($ipAddress)
 	{
-		return MchGdbcIpCountryLocator::getCountryIdByIpAddress($ipAddress);
+		$countryId = MchGdbcIpCountryLocator::getCountryIdByIpAddress($ipAddress);
+
+		/**
+		 * Filters the country an IP address is attributed to.
+		 *
+		 * Lets an add-on use fresher data than the bundled country table, or a
+		 * country header set by a proxy such as Cloudflare.
+		 *
+		 * @since 3.3.0
+		 * @param int|null $countryId WPBruiser country ID, or null. GoodByeCaptchaUtils::getCountryIdByCode() maps a two-letter code to it.
+		 * @param string   $ipAddress The IP address being looked up.
+		 */
+		$filteredCountryId = apply_filters('wpbruiser_country_id_for_ip', $countryId, $ipAddress);
+
+		return (null === $filteredCountryId || is_numeric($filteredCountryId)) ? $filteredCountryId : $countryId;
 	}
 
 

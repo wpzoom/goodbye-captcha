@@ -172,6 +172,27 @@
                 options.data = window.jQuery.param(window.jQuery.extend(originalOptions.data || {}, tokens));
             });
         }
+
+        // Tell add-ons the form now carries a token. Forms that are not submitted as
+        // HTML forms (the WooCommerce Checkout block posts JSON) forward these fields.
+        var fields = {};
+        for (var name in tokens) {
+            if (!tokens.hasOwnProperty(name)) {
+                continue;
+            }
+            var input = formElement.querySelector('input[name="' + name + '"]');
+            if (input) {
+                fields[name] = input.value;
+            }
+        }
+        var tokenEvent;
+        try {
+            tokenEvent = new CustomEvent('wpbruiser:token', { bubbles: true, detail: { fields: fields } });
+        } catch (e) {
+            tokenEvent = document.createEvent('CustomEvent');
+            tokenEvent.initCustomEvent('wpbruiser:token', true, false, { fields: fields });
+        }
+        formElement.dispatchEvent(tokenEvent);
     }
 
     function retrieveToken(formElement, isRetry) {
@@ -262,7 +283,7 @@
     }, false);
 
     window.WPBruiserClient = {
-        requestTokens: function () { requestTokens(document); }
+        requestTokens: function (root) { requestTokens(root || document); }
     };
 
 })(window, document);

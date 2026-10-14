@@ -290,11 +290,11 @@ class GdbcWordPressPublicModule extends GdbcBasePublicModule
 	public function activateLostPasswordHooks()
 	{
 		$this->addActionHook('lostpassword_form', array($this, 'renderTokenFieldIntoForm'), 10);
-		$this->addActionHook('lostpassword_post', array($this, 'validateLostPasswordFormEncryptedToken'), 10);
+		$this->addActionHook('lostpassword_post', array($this, 'validateLostPasswordFormEncryptedToken'), 10, 1);
 	}
 
 
-	public function validateLostPasswordFormEncryptedToken()
+	public function validateLostPasswordFormEncryptedToken($wpErrors = null)
 	{
 
 		$this->getAttemptEntity()->SectionId = $this->getOptionIdByOptionName(GdbcWordpressAdminModule::WORDPRESS_LOST_PASSWORD_FORM);
@@ -310,6 +310,14 @@ class GdbcWordPressPublicModule extends GdbcBasePublicModule
 
 		if(GdbcRequestController::isValid($this->getAttemptEntity()))
 			return;
+
+		// WordPress core (since 4.4) and WooCommerce pass a WP_Error and stop when it
+		// holds an error, showing the message on their own form.
+		if($wpErrors instanceof WP_Error)
+		{
+			$wpErrors->add('gdbc-invalid-token', __('Your request could not be verified. Please reload the page and try again.', 'goodbye-captcha'));
+			return;
+		}
 
 		wp_safe_redirect(wp_login_url());
 

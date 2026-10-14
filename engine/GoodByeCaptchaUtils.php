@@ -546,45 +546,39 @@ final class GoodByeCaptchaUtils
 					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName), GdbcUltimateMemberAdminModule::OPTION_ULTIMATE_MEMBER_LOGIN_FORM);
 					break;
 
-
 				case GdbcModulesController::MODULE_WP_MEMBERS :
 					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName), GdbcWPMembersAdminModule::OPTION_LOGIN_FORM_PROTECTION_ACTIVATED);
 					break;
-
-				case GdbcModulesController::MODULE_WOOCOMMERCE :
-					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName),  GdbcWooCommerceAdminModule::WOOCOMMERCE_LOGIN_FORM);
-					break;
-
-				case GdbcModulesController::MODULE_USER_PRO :
-					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName),  GdbcUserProAdminModule::OPTION_LOGIN_FORM_PROTECTION_ACTIVATED);
-					break;
-
-				case GdbcModulesController::MODULE_UPME :
-					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName),  GdbcUPMEAdminModule::UPME_LOGIN_FORM);
-					break;
-
-
-
-				case GdbcModulesController::MODULE_MEMBER_PRESS :
-					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName), GdbcMemberPressAdminModule::OPTION_MEMBER_PRESS_LOGIN_FORM);
-					break;
-
-				case GdbcModulesController::MODULE_EASY_DIGITAL_DOWNLOADS :
-					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName), GdbcEDDAdminModule::EDD_LOGIN_FORM);
-					break;
-
-				case GdbcModulesController::MODULE_AFFILIATE_WP :
-					$loginEntitiesList[] = new GdbcAttemptEntity(GdbcModulesController::getModuleIdByName($moduleName), GdbcAffiliateWPAdminModule::AFFILIATE_WP_LOGIN_FORM);
-					break;
-
 			}
 		}
 
-		foreach($loginEntitiesList as $index => &$attemptEntity)
+		// Login forms of add-on modules (WooCommerce, MemberPress, EDD and others) are
+		// declared in their registration through LoginOptions.
+		foreach(GdbcModulesController::getExtensionModules() as $arrModule)
 		{
-			$attemptEntity->SectionId = GdbcModulesController::getAdminModuleInstance(GdbcModulesController::getModuleNameById($attemptEntity->ModuleId))->getOptionIdByOptionName($attemptEntity->SectionId);
+			foreach($arrModule['LoginOptions'] as $loginOptionName)
+			{
+				$loginEntitiesList[] = new GdbcAttemptEntity($arrModule['ModuleId'], $loginOptionName);
+			}
+		}
+
+		foreach($loginEntitiesList as $index => $attemptEntity)
+		{
+			$adminModuleInstance = GdbcModulesController::getAdminModuleInstance(GdbcModulesController::getModuleNameById($attemptEntity->ModuleId));
+			$sectionId = (null !== $adminModuleInstance) ? (int)$adminModuleInstance->getOptionIdByOptionName($attemptEntity->SectionId) : 0;
+
+			// An option name the module does not define cannot match any attempt.
+			if($sectionId < 1)
+			{
+				unset($loginEntitiesList[$index]);
+				continue;
+			}
+
+			$attemptEntity->SectionId = $sectionId;
 			unset($attemptEntity->Id, $attemptEntity->ClientIp, $attemptEntity->CreatedDate, $attemptEntity->Notes, $attemptEntity->ReasonId, $attemptEntity->SiteId);
 		}
+
+		$loginEntitiesList = array_values($loginEntitiesList);
 
 		return $loginEntitiesList;
 	}

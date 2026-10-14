@@ -33,26 +33,7 @@ class GdbcContactFormsAdminPage extends GdbcBaseAdminPage
 		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_JETPACK_CONTACT_FORM))
 			$modulesList[] = GdbcJetPackContactFormAdminModule::getInstance();
 
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_CONTACT_FORM_7))
-			$modulesList[] = GdbcContactForm7AdminModule::getInstance();
-		
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_WP_FORMS))
-			$modulesList[] = GdbcWpFormsAdminModule::getInstance();
-		
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_FAST_SECURE_FORM))
-			$modulesList[] = GdbcFastSecureFormAdminModule::getInstance();
-
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_FORMIDABLE_FORMS))
-			$modulesList[] = GdbcFormidableFormsAdminModule::getInstance();
-
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_GRAVITY_FORMS))
-			$modulesList[] = GdbcGravityFormsAdminModule::getInstance();
-
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_NINJA_FORMS))
-			$modulesList[] = GdbcNinjaFormsAdminModule::getInstance();
-
-		if(GdbcModulesController::isModuleRegistered(GdbcModulesController::MODULE_QUFORM))
-			$modulesList[] = GdbcQuformAdminModule::getInstance();
+		// Contact Form 7, WPForms, Gravity Forms and other form builders come from add-ons.
 
 		$this->registerGroupedModules(array(
 				new MchGdbcGroupedModules(__('WPBruiser - Popular Contact Forms Settings', 'goodbye-captcha'), $modulesList)

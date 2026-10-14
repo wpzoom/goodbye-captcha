@@ -77,7 +77,36 @@ final class GdbcModulesController
 
 	CONST MODULE_EASY_FORMS_FOR_MAILCHIMP = 'EasyFormsForMailChimp';
 
+	/**
+	 * Version of the extension API (see registerExtensionModules()). Bumped only when
+	 * the contract changes in a way an add-on has to know about.
+	 */
+	CONST EXTENSION_API_VERSION = 1;
+
+	/**
+	 * Module IDs below this value belong to modules this plugin defines or reserves
+	 * (see $arrAllModules). New modules supplied by add-ons start here.
+	 */
+	CONST FIRST_EXTENSION_MODULE_ID = 38;
+
+	/**
+	 * Admin screens an add-on module can place its settings on.
+	 */
+	CONST EXTENSION_PAGE_CONTACT_FORMS = 'ContactForms';
+	CONST EXTENSION_PAGE_MEMBERSHIP    = 'Membership';
+	CONST EXTENSION_PAGE_ECOMMERCE     = 'ECommerce';
+	CONST EXTENSION_PAGE_SUBSCRIPTIONS = 'Subscriptions';
+	CONST EXTENSION_PAGE_OTHERS        = 'Others';
+	CONST EXTENSION_PAGE_SECURITY      = 'Security';
+
 	private static $arrRegisteredModules = null;
+
+	/**
+	 * Modules supplied by add-ons, keyed by module name. Each entry is the normalised
+	 * definition built by normalizeExtensionModule().
+	 */
+	private static $arrExtensionModules = array();
+	private static $areExtensionModulesLoaded = false;
 	private static $arrAllModules = array(
 
 			self::MODULE_SETTINGS => array(
@@ -506,7 +535,235 @@ final class GdbcModulesController
 
 		}
 
+		if(isset(self::$arrExtensionModules[$moduleName]['DisplayName']))
+			return self::$arrExtensionModules[$moduleName]['DisplayName'];
+
 		return $moduleName;
+	}
+
+	/**
+	 * Register the modules supplied by add-ons such as WPBruiser Pro.
+	 *
+	 * Called once, from GoodByeCaptcha::startRunning() on `plugins_loaded`, before the
+	 * admin or public side is set up. Every plugin's main file has loaded by then, so
+	 * an add-on adds its filter while its own file loads:
+	 *
+	 *     add_filter('wpbruiser_register_modules', function ($arrModules) {
+	 *         $arrModules['ContactForm7'] = array(
+	 *             'ModuleId'     => 5,
+	 *             'AdminClass'   => 'GdbcContactForm7AdminModule',
+	 *             'PublicClass'  => 'GdbcContactForm7PublicModule',
+	 *             'DisplayName'  => 'Contact Form 7',
+	 *             'Page'         => GdbcModulesController::EXTENSION_PAGE_CONTACT_FORMS,
+	 *         );
+	 *         return $arrModules;
+	 *     });
+	 *
+	 * Definition keys:
+	 *  - ModuleId     (int, required) Stored with every blocked attempt. A module this
+	 *                 plugin reserves (ContactForm7, WooCommerce, ...) must use its
+	 *                 reserved ID so earlier settings and reports keep working. A new
+	 *                 module uses FIRST_EXTENSION_MODULE_ID or higher, and the ID must
+	 *                 never change once released.
+	 *  - AdminClass   (string, required) Subclass of GdbcBaseAdminModule named
+	 *                 {Prefix}AdminModule.
+	 *  - PublicClass  (string, required) Subclass of GdbcBasePublicModule named
+	 *                 {Prefix}PublicModule, with the same prefix as AdminClass.
+	 *  - DisplayName  (string) Name shown in Reports. Defaults to the module name.
+	 *  - Page         (string) One of the EXTENSION_PAGE_* constants. Defaults to Others.
+	 *                 Security is only honoured for the CountryBlocking module.
+	 *  - LoginOptions (string[]) Option names of the module's login forms, so failed
+	 *                 logins through them count towards brute-force detection.
+	 *  - LoadOnAjax   (bool) Set the module up on admin-ajax.php requests too, for
+	 *                 forms that submit there. Defaults to true.
+	 *
+	 * The add-on loads its classes itself (its own autoloader or require). This plugin
+	 * never includes files from another plugin's directory. Each module's settings are
+	 * stored under a key derived from its admin class name, so a module that replaces
+	 * an original WPBruiser Pro module keeps the original class names.
+	 *
+	 * Invalid definitions are skipped; with WP_DEBUG on, the reason is reported
+	 * through _doing_it_wrong().
+	 */
+	public static function registerExtensionModules()
+	{
+		if(self::$areExtensionModulesLoaded)
+			return;
+
+		self::$areExtensionModulesLoaded = true;
+
+		if(null === self::$arrRegisteredModules)
+			self::setRegisteredModules();
+
+		$arrDefinitions = apply_filters('wpbruiser_register_modules', array());
+		if(!is_array($arrDefinitions) || empty($arrDefinitions))
+			return;
+
+		foreach($arrDefinitions as $moduleName => $arrDefinition)
+		{
+			$arrModule = self::normalizeExtensionModule($moduleName, $arrDefinition);
+			if(is_string($arrModule))
+			{
+				_doing_it_wrong(__METHOD__, esc_html(sprintf('WPBruiser module "%s" was not registered: %s', is_scalar($moduleName) ? $moduleName : '?', $arrModule)), '3.3.0');
+				continue;
+			}
+
+			self::$arrExtensionModules[$moduleName] = $arrModule;
+
+			// Classes are loaded by the add-on, so no file path is recorded.
+			self::$arrRegisteredModules[$moduleName] = array(
+				$arrModule['AdminClass']  => null,
+				$arrModule['PublicClass'] => null,
+			);
+		}
+	}
+
+	/**
+	 * Validate one add-on module definition.
+	 *
+	 * @return array|string The normalised definition, or the reason it was rejected.
+	 */
+	private static function normalizeExtensionModule($moduleName, $arrDefinition)
+	{
+		if(!is_string($moduleName) || !preg_match('/^[A-Za-z][A-Za-z0-9\-]{1,39}$/', $moduleName))
+			return 'the module name must be 2 to 40 letters, digits or hyphens';
+
+		if(!is_array($arrDefinition))
+			return 'the definition must be an array';
+
+		if(isset(self::$arrExtensionModules[$moduleName]))
+			return 'a module with this name is already registered';
+
+		if(isset(self::$arrRegisteredModules[$moduleName]))
+			return 'this module ships with WPBruiser and cannot be replaced';
+
+		$moduleId = isset($arrDefinition['ModuleId']) ? $arrDefinition['ModuleId'] : null;
+		if(!is_int($moduleId) || $moduleId < 1)
+			return 'ModuleId must be a positive integer';
+
+		if(isset(self::$arrAllModules[$moduleName]))
+		{
+			if(self::$arrAllModules[$moduleName]['info']['ModuleId'] !== $moduleId)
+				return 'ModuleId must be ' . self::$arrAllModules[$moduleName]['info']['ModuleId'] . ', the ID reserved for this module';
+		}
+		else
+		{
+			if($moduleId < self::FIRST_EXTENSION_MODULE_ID)
+				return 'ModuleId must be ' . self::FIRST_EXTENSION_MODULE_ID . ' or higher';
+
+			if(null !== self::getModuleNameById($moduleId))
+				return 'ModuleId ' . $moduleId . ' is already used by another module';
+		}
+
+		$arrClassBases = array(
+			'AdminClass'  => 'GdbcBaseAdminModule',
+			'PublicClass' => 'GdbcBasePublicModule',
+		);
+
+		foreach($arrClassBases as $classKey => $baseClassName)
+		{
+			$className = isset($arrDefinition[$classKey]) ? $arrDefinition[$classKey] : null;
+
+			if(!is_string($className) || '' === $className || !class_exists($className))
+				return $classKey . ' must name a class that is loaded or autoloadable';
+
+			if(!is_subclass_of($className, $baseClassName))
+				return $classKey . ' must extend ' . $baseClassName;
+
+			if(!method_exists($className, 'getInstance'))
+				return $classKey . ' must provide a static getInstance() method';
+		}
+
+		// Both halves of a module read the same stored settings, whose key is the class
+		// name without its AdminModule / PublicModule suffix (see MchGdbcBaseModule).
+		$adminClassPrefix  = preg_replace('/AdminModule$/i', '', $arrDefinition['AdminClass'], 1, $adminSuffixCount);
+		$publicClassPrefix = preg_replace('/PublicModule$/i', '', $arrDefinition['PublicClass'], 1, $publicSuffixCount);
+
+		if(1 !== $adminSuffixCount || 1 !== $publicSuffixCount || 0 !== strcasecmp($adminClassPrefix, $publicClassPrefix))
+			return 'AdminClass and PublicClass must be named {Prefix}AdminModule and {Prefix}PublicModule with the same prefix';
+
+		$arrPages = array(
+			self::EXTENSION_PAGE_CONTACT_FORMS, self::EXTENSION_PAGE_MEMBERSHIP, self::EXTENSION_PAGE_ECOMMERCE,
+			self::EXTENSION_PAGE_SUBSCRIPTIONS, self::EXTENSION_PAGE_OTHERS, self::EXTENSION_PAGE_SECURITY,
+		);
+
+		$pageName = isset($arrDefinition['Page']) ? $arrDefinition['Page'] : self::EXTENSION_PAGE_OTHERS;
+		if(!in_array($pageName, $arrPages, true))
+			return 'Page must be one of: ' . implode(', ', $arrPages);
+
+		if(self::EXTENSION_PAGE_SECURITY === $pageName && self::MODULE_COUNTRY_BLOCKING !== $moduleName)
+			return 'only the CountryBlocking module can use the Security page';
+
+		// The Security screen renders Country Blocking with its own settings layout.
+		if(self::MODULE_COUNTRY_BLOCKING === $moduleName)
+			$pageName = self::EXTENSION_PAGE_SECURITY;
+
+		$arrLoginOptions = array();
+		if(isset($arrDefinition['LoginOptions']))
+		{
+			if(!is_array($arrDefinition['LoginOptions']))
+				return 'LoginOptions must be an array of option names';
+
+			foreach($arrDefinition['LoginOptions'] as $optionName)
+			{
+				if(!is_string($optionName) || '' === $optionName)
+					return 'LoginOptions must be an array of option names';
+
+				$arrLoginOptions[] = $optionName;
+			}
+		}
+
+		$displayName = isset($arrDefinition['DisplayName']) && is_string($arrDefinition['DisplayName']) && '' !== trim($arrDefinition['DisplayName'])
+			? trim($arrDefinition['DisplayName'])
+			: $moduleName;
+
+		return array(
+			'ModuleId'     => $moduleId,
+			'AdminClass'   => $arrDefinition['AdminClass'],
+			'PublicClass'  => $arrDefinition['PublicClass'],
+			'DisplayName'  => $displayName,
+			'Page'         => $pageName,
+			'LoginOptions' => $arrLoginOptions,
+			'LoadOnAjax'   => isset($arrDefinition['LoadOnAjax']) ? (bool)$arrDefinition['LoadOnAjax'] : true,
+		);
+	}
+
+	/**
+	 * Modules registered by add-ons, keyed by module name.
+	 *
+	 * @return array
+	 */
+	public static function getExtensionModules()
+	{
+		return self::$arrExtensionModules;
+	}
+
+	public static function isExtensionModule($moduleName)
+	{
+		return is_string($moduleName) && isset(self::$arrExtensionModules[$moduleName]);
+	}
+
+	/**
+	 * Admin module instances of the add-on modules that belong on an admin screen,
+	 * in the order they were registered.
+	 *
+	 * @param string $pageName One of the EXTENSION_PAGE_* constants.
+	 * @return GdbcBaseAdminModule[]
+	 */
+	public static function getExtensionAdminModulesForPage($pageName)
+	{
+		$arrInstances = array();
+
+		foreach(self::$arrExtensionModules as $moduleName => $arrModule)
+		{
+			if($arrModule['Page'] !== $pageName)
+				continue;
+
+			if(null !== ($adminModuleInstance = self::getAdminModuleInstance($moduleName)))
+				$arrInstances[] = $adminModuleInstance;
+		}
+
+		return $arrInstances;
 	}
 
 
@@ -554,7 +811,13 @@ final class GdbcModulesController
 
 	public static function getModuleIdByName($moduleName)
 	{
-		return isset(self::$arrAllModules[$moduleName]['info']['ModuleId']) ? self::$arrAllModules[$moduleName]['info']['ModuleId'] : null;
+		if(!is_string($moduleName))
+			return null;
+
+		if(isset(self::$arrAllModules[$moduleName]['info']['ModuleId']))
+			return self::$arrAllModules[$moduleName]['info']['ModuleId'];
+
+		return isset(self::$arrExtensionModules[$moduleName]['ModuleId']) ? self::$arrExtensionModules[$moduleName]['ModuleId'] : null;
 	}
 
 	public static function unRegisterModule($moduleName)
@@ -567,6 +830,12 @@ final class GdbcModulesController
 		foreach(self::$arrAllModules as $moduleKey => $moduleValue)
 		{
 			if (isset($moduleValue['info']['ModuleId']) && $moduleValue['info']['ModuleId'] == $moduleId)
+				return $moduleKey;
+		}
+
+		foreach(self::$arrExtensionModules as $moduleKey => $arrModule)
+		{
+			if($arrModule['ModuleId'] == $moduleId)
 				return $moduleKey;
 		}
 
@@ -597,7 +866,10 @@ final class GdbcModulesController
 		if(!isset(self::$arrRegisteredModules[$moduleName]) || !is_array(self::$arrRegisteredModules[$moduleName]))
 			return null;
 
-		return @dirname(reset(self::$arrRegisteredModules[$moduleName]));
+		// Add-on modules have no recorded path; their classes are loaded by the add-on.
+		$filePath = reset(self::$arrRegisteredModules[$moduleName]);
+
+		return is_string($filePath) ? dirname($filePath) : null;
 	}
 
 	/**
@@ -612,8 +884,17 @@ final class GdbcModulesController
 		if(null === self::$arrRegisteredModules)
 			self::setRegisteredModules();
 
-		if(!isset(self::$arrRegisteredModules[$moduleName]))
+		if(!is_string($moduleName) || !isset(self::$arrRegisteredModules[$moduleName]))
 			return null;
+
+		if(isset(self::$arrExtensionModules[$moduleName]))
+		{
+			// The class names were checked when the module was registered.
+			$moduleClassName = self::$arrExtensionModules[$moduleName][1 === $moduleType ? 'AdminClass' : 'PublicClass'];
+			$moduleInstance  = call_user_func(array($moduleClassName, 'getInstance'));
+
+			return ($moduleInstance instanceof MchGdbcBaseModule) ? $moduleInstance : null;
+		}
 
 		foreach (self::$arrRegisteredModules[$moduleName] as $moduleClassName => $filePath)
 		{
@@ -675,7 +956,8 @@ final class GdbcModulesController
 
 		foreach(self::$arrRegisteredModules as $arrModuleClasses)
 		{
-			if(!isset($arrModuleClasses[$moduleClassName]))
+			// Add-on module classes are recorded without a path: the add-on loads them.
+			if(empty($arrModuleClasses[$moduleClassName]))
 				continue;
 
 			return require_once($arrModuleClasses[$moduleClassName]);

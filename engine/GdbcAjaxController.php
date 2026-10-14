@@ -46,22 +46,27 @@ final class GdbcAjaxController
 
 
 
+		// Modules that ship with this plugin and handle forms submitted to admin-ajax.php.
+		// Add-on modules are handled below, according to their LoadOnAjax setting.
 		foreach(array(
 
 			        GdbcModulesController::MODULE_MAIL_CHIMP_FOR_WP,
-					GdbcModulesController::MODULE_MAIL_POET,
-			        GdbcModulesController::MODULE_NINJA_FORMS,
-			        GdbcModulesController::MODULE_USER_PRO,
-					GdbcModulesController::MODULE_EASY_FORMS_FOR_MAILCHIMP,
 					GdbcModulesController::MODULE_ULTIMATE_MEMBER,
-			        GdbcModulesController::MODULE_WOOCOMMERCE,
-			        GdbcModulesController::MODULE_AFFILIATE_WP,
-			        GdbcModulesController::MODULE_EASY_DIGITAL_DOWNLOADS,
-			        GdbcModulesController::MODULE_QUFORM,
 					GdbcModulesController::MODULE_HTML_FORMS,
-					GdbcModulesController::MODULE_WP_FORMS,
 
 		        ) as $moduleName){
+
+			if(null === ($publicModuleInstance = GdbcModulesController::getPublicModuleInstance($moduleName)))
+				continue;
+
+			$publicModuleInstance->registerAttachedHooks();
+		}
+
+		// Add-on modules attach on admin-ajax.php unless they opted out.
+		foreach(GdbcModulesController::getExtensionModules() as $moduleName => $arrModule)
+		{
+			if(empty($arrModule['LoadOnAjax']))
+				continue;
 
 			if(null === ($publicModuleInstance = GdbcModulesController::getPublicModuleInstance($moduleName)))
 				continue;
