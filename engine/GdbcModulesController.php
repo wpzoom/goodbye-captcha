@@ -82,6 +82,9 @@ final class GdbcModulesController
 	CONST MODULE_FORMINATOR   = 'Forminator';
 	CONST MODULE_RATE_LIMITS  = 'RateLimits';
 
+	// Added in 3.3.0, after the IDs above were taken.
+	CONST MODULE_WPZOOM_FORMS = 'WPZoomForms';
+
 	/**
 	 * Version of the extension API (see registerExtensionModules()). Bumped only when
 	 * the contract changes in a way an add-on has to know about.
@@ -91,6 +94,10 @@ final class GdbcModulesController
 	/**
 	 * Module IDs below this value belong to modules this plugin defines or reserves
 	 * (see $arrAllModules). New modules supplied by add-ons start here.
+	 *
+	 * Modules added to this plugin later share the same range and take the next
+	 * free ID: 38 to 41 are WPBruiser Pro's, 42 is WPZOOM Forms. An add-on module
+	 * that asks for an ID already in use is not registered.
 	 */
 	CONST FIRST_EXTENSION_MODULE_ID = 38;
 
@@ -510,6 +517,17 @@ final class GdbcModulesController
 					'GdbcWpFormsPublicModule' => '/modules/wp-forms/GdbcWpFormsPublicModule.php',
 				)
 			),
+
+			self::MODULE_WPZOOM_FORMS => array(
+				'info'    => array(
+					'ModuleId' => 42,
+					'IsLicensed' => false,
+				),
+				'classes' => array(
+					'GdbcWPZoomFormsAdminModule'  => '/modules/wpzoom-forms/GdbcWPZoomFormsAdminModule.php',
+					'GdbcWPZoomFormsPublicModule' => '/modules/wpzoom-forms/GdbcWPZoomFormsPublicModule.php',
+				)
+			),
 	
 	);
 
@@ -537,6 +555,7 @@ final class GdbcModulesController
 			case self::MODULE_UPME                     : return !$isForLicensing ? 'UPME' : 'User Profiles Made Easy';
 			case self::MODULE_EASY_DIGITAL_DOWNLOADS   : return 'Easy Digital Downloads';
 			case self::MODULE_COUNTRY_BLOCKING         : return 'Country Blocking';
+			case self::MODULE_WPZOOM_FORMS             : return 'WPZOOM Forms';
 
 		}
 

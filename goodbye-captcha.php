@@ -10,7 +10,7 @@
  * Plugin Name: WPBruiser - No CAPTCHA Anti-Spam & Login Protection
  * Plugin URI: https://www.wpzoom.com/plugins/wpbruiser/
  * Description: Stops spam bots and brute-force logins on your WordPress forms with an invisible check. No puzzles, no image challenges, no third-party service.
- * Version: 3.3.0
+ * Version: 3.3.1
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * Author: WPZOOM
@@ -29,14 +29,14 @@ if(!class_exists('GoodByeCaptcha', false))
 	class GoodByeCaptcha
 	{
 		
-		CONST PLUGIN_VERSION    = '3.3.0';
+		CONST PLUGIN_VERSION    = '3.3.1';
 		// PLUGIN_SLUG is also the prefix for option keys and admin menu slugs, so it
 		// must keep its historical value or existing installs lose their settings.
 		// The text domain is separate and must equal the WordPress.org slug.
 		CONST PLUGIN_SLUG        = 'wp-bruiser';
 		CONST PLUGIN_TEXT_DOMAIN = 'goodbye-captcha';
 		CONST PLUGIN_NAME       = 'WPBruiser';
-		CONST PLUGIN_SITE_URL   = 'https://wordpress.org/plugins/goodbye-captcha/';
+		CONST PLUGIN_SITE_URL   = 'https://www.wpzoom.com/plugins/wpbruiser';
 		CONST PLUGIN_SUPPORT_URL = 'https://wordpress.org/support/plugin/goodbye-captcha/';
 		CONST PLUGIN_SHORT_CODE = 'wpbr';
 
@@ -45,6 +45,7 @@ if(!class_exists('GoodByeCaptcha', false))
 			'GoodByeCaptchaPublic'        => '/engine/GoodByeCaptchaPublic.php',
 			'GoodByeCaptchaAdmin'         => '/engine/GoodByeCaptchaAdmin.php',
 			'GdbcAjaxController'          => '/engine/GdbcAjaxController.php',
+			'GdbcAdminPostController'     => '/engine/GdbcAdminPostController.php',
 			'GoodByeCaptchaUtils'         => '/engine/GoodByeCaptchaUtils.php',
 			'GdbcRequestController'       => '/engine/GdbcRequestController.php',
 			'GdbcIPUtils'                 => '/engine/GdbcIPUtils.php',
@@ -93,6 +94,10 @@ if(!class_exists('GoodByeCaptcha', false))
 
 			if (MchGdbcWpUtils::isAjaxRequest()) {
 				GdbcAjaxController::processRequest();
+			} elseif (GdbcAdminPostController::isProtectedRequest()) {
+				// A front-end form posting to admin-post.php, which WordPress serves with
+				// WP_ADMIN defined; the dashboard branch below would otherwise claim it.
+				GdbcAdminPostController::processRequest();
 			} elseif (MchGdbcWpUtils::isUserInDashboard()) {
 				GoodByeCaptchaAdmin::getInstance($arrPluginInfo);
 			} else {

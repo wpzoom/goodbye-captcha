@@ -4,7 +4,7 @@ Tags: anti-spam, spam protection, captcha, brute force, contact form
 Requires at least: 6.5
 Requires PHP: 7.4
 Tested up to: 7.1
-Stable tag: 3.3.0
+Stable tag: 3.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,6 +36,7 @@ Turn protection on or off for each form on the plugin's settings screens:
 * **Login With Ajax**: its AJAX login, registration and lost password forms
 * **Jetpack**: the Jetpack contact form
 * **MailChimp for WordPress**: every sign-up form you build with it
+* **WPZOOM Forms**: every form you build with it, placed as a block, a shortcode or an Elementor widget
 * **HTML Forms**: every form you build with it
 * **wpDiscuz**: comments posted through its AJAX comment system
 
@@ -137,6 +138,9 @@ No. WPBruiser handles spam bots, brute-force logins and a few hardening options.
 
 No. Your settings, allow and block lists and logs are kept, and the upgrade routines run by themselves the first time the new version loads. Two things no longer load: the old paid add-ons, and the integrations for plugins that are closed or no longer maintained (ZM Ajax Login & Register, PlanSo Forms, UltraCommunity, Seamless Donations and Epoch).
 
+= Where do I report security bugs found in this plugin? =
+Please report security bugs found in the source code of the plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/9e5fbdc6-fec3-4600-a6c2-5dc832c2bce4). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+
 == Screenshots ==
 
 1. General settings, including Test Mode and log retention
@@ -175,6 +179,9 @@ WPBruiser bundles the following third-party resources, each under its own licens
 The Integrations screen shows the icons the integrated plugins publish on WordPress.org (Gravity Forms: the icon of its official Gravity Forms CLI add-on). Plugin names and logos are trademarks of their owners and are used only to identify the integrations.
 
 == Changelog ==
+
+= 3.3.1 =
+- New: [WPZOOM Forms](https://wordpress.org/plugins/wpzoom-forms/) integration, free. Every form is protected whether it is placed as a block, with the `[wpzf_form]` shortcode or as an Elementor widget; a blocked submission is stopped before any email is sent or entry is stored, and Reports show its fields under their labels.
 
 = 3.3.0 =
 - New: protection is on from the start. A new install protects WordPress login, registration, lost password and comments, plus every supported plugin that is already active.

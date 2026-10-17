@@ -144,6 +144,11 @@ final class GoodByeCaptchaUtils
 		return class_exists('WpdiscuzCore');
 	}
 
+	public static function isWPZoomFormsPluginActivated()
+	{
+		return defined('WPZOOM_FORMS__FILE__') || class_exists('WPZOOM_Forms');
+	}
+
 //	public static function setCookie($cookieKey, $cookieValue, $cookieTime, $path = null, $httpOnly = true)
 //	{
 //		if(headers_sent()) return;

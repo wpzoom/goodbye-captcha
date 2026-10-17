@@ -71,6 +71,17 @@ final class GdbcIntegrations
 				'IsDetected'  => array(__CLASS__, 'isHtmlFormsActive'),
 			),
 
+			GdbcModulesController::MODULE_WPZOOM_FORMS => array(
+				'Name'        => 'WPZOOM Forms',
+				'Description' => __('Every WPZOOM Forms form, whether it is placed as a block, a shortcode or an Elementor widget.', 'goodbye-captcha'),
+				'Category'    => 'forms',
+				'Tier'        => self::TIER_FREE,
+				'Logo'        => array('WZ', '#0bb4aa', '#ffffff'),
+				'WpOrgSlug'   => 'wpzoom-forms',
+				'PluginFiles' => array('wpzoom-forms/wpzoom-forms.php'),
+				'IsDetected'  => array('GoodByeCaptchaUtils', 'isWPZoomFormsPluginActivated'),
+			),
+
 			GdbcModulesController::MODULE_MAIL_CHIMP_FOR_WP => array(
 				'Name'        => 'Mailchimp for WordPress',
 				'Description' => __('Sign-up forms made with MC4WP.', 'goodbye-captcha'),
