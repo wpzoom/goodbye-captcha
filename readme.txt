@@ -1,6 +1,6 @@
-=== WPBruiser ===
+=== WPBruiser - No CAPTCHA Anti-Spam & Login Protection ===
 Contributors: wpzoom
-Tags: antispam, spam protection, brute force, login security, comments
+Tags: anti-spam, spam protection, captcha, brute force, contact form
 Requires at least: 6.5
 Requires PHP: 7.4
 Tested up to: 7.1
@@ -8,7 +8,7 @@ Stable tag: 3.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Stop spam bots and brute-force logins on your WordPress forms with an invisible check. No puzzles, no image challenges, no third-party service.
+Stop spam on contact forms, comments, logins and registrations with an invisible check. No CAPTCHA, no puzzles, no third-party service.
 
 == Description ==
 

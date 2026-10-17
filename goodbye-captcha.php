@@ -7,14 +7,14 @@
  * @copyright 2014-2018 Mihai Chelaru, 2026 WPZOOM
  *
  * @wordpress-plugin
- * Plugin Name: WPBruiser
- * Plugin URI: https://wordpress.org/plugins/goodbye-captcha/
+ * Plugin Name: WPBruiser - No CAPTCHA Anti-Spam & Login Protection
+ * Plugin URI: https://www.wpzoom.com/plugins/wpbruiser/
  * Description: Stops spam bots and brute-force logins on your WordPress forms with an invisible check. No puzzles, no image challenges, no third-party service.
  * Version: 3.3.0
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * Author: WPZOOM
- * Author URI: https://wpzoom.com/
+ * Author URI: https://www.wpzoom.com/
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: goodbye-captcha
