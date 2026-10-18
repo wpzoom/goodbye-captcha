@@ -4,7 +4,7 @@ Tags: anti-spam, spam protection, captcha, brute force, contact form
 Requires at least: 6.5
 Requires PHP: 7.4
 Tested up to: 7.1
-Stable tag: 3.3.1
+Stable tag: 3.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -42,7 +42,7 @@ Each integration is a card on the **Integrations** screen, which shows whether i
 * **[HTML Forms](https://wordpress.org/plugins/html-forms/)**: every form you build with it
 * **[wpDiscuz](https://wordpress.org/plugins/wpdiscuz/)**: comments posted through its AJAX comment system
 
-Using Contact Form 7, WPForms, WooCommerce, Elementor Pro, Gravity Forms or another popular form plugin? [WPBruiser Pro](https://www.wpzoom.com/plugins/wpbruiser/?utm_source=wporg&utm_medium=readme&utm_campaign=free-integrations) protects them too. See "WPBruiser Pro" below.
+Using Contact Form 7, WPForms, WooCommerce, Easy Digital Downloads, Elementor Pro, Gravity Forms or another popular form plugin? [WPBruiser Pro](https://www.wpzoom.com/plugins/wpbruiser/?utm_source=wporg&utm_medium=readme&utm_campaign=free-integrations) protects them too. See "WPBruiser Pro" below.
 
 = Brute-force and hardening tools =
 
@@ -95,6 +95,7 @@ Using Contact Form 7, WPForms, WooCommerce, Elementor Pro, Gravity Forms or anot
 **Shop and newsletters**
 
 * **[WooCommerce](https://wordpress.org/plugins/woocommerce/)**: login (on My Account and at checkout), registration, lost and reset password, product reviews, and account creation at checkout on both the classic checkout and the Checkout block
+* **[Easy Digital Downloads](https://wordpress.org/plugins/easy-digital-downloads/)** 3.0+: login, registration and lost password forms, login and account creation at checkout, and optional card-testing protection that checks every purchase
 * **[MailPoet](https://wordpress.org/plugins/mailpoet/)** subscription forms wherever they appear: widgets, blocks, shortcodes, pop-ups, slide-ins, fixed bars and below posts. No subscriber is created and no confirmation email is sent for a blocked sign-up.
 
 **Security**
@@ -170,7 +171,7 @@ Add your own IP address to the allow list. Allowed addresses skip all checks, in
 
 = What does WPBruiser Pro add? =
 
-Protection for Contact Form 7, WPForms, Elementor Pro forms, Gravity Forms, Fluent Forms, Forminator, Ninja Forms, Formidable Forms, WooCommerce and MailPoet, plus country blocking, submission rate limits and priority support. See "WPBruiser Pro" in the description, or the [WPBruiser Pro page](https://www.wpzoom.com/plugins/wpbruiser/?utm_source=wporg&utm_medium=readme&utm_campaign=faq).
+Protection for Contact Form 7, WPForms, Elementor Pro forms, Gravity Forms, Fluent Forms, Forminator, Ninja Forms, Formidable Forms, WooCommerce, Easy Digital Downloads and MailPoet, plus country blocking, submission rate limits and priority support. See "WPBruiser Pro" in the description, or the [WPBruiser Pro page](https://www.wpzoom.com/plugins/wpbruiser/?utm_source=wporg&utm_medium=readme&utm_campaign=faq).
 
 = Do I still need the free plugin with Pro? =
 
@@ -231,6 +232,15 @@ WPBruiser bundles the following third-party resources, each under its own licens
 The Integrations screen shows the icons the integrated plugins publish on WordPress.org (Gravity Forms: the icon of its official Gravity Forms CLI add-on). Plugin names and logos are trademarks of their owners and are used only to identify the integrations.
 
 == Changelog ==
+
+= 3.3.2 =
+- Fix: Easy Digital Downloads' lost password form was rejected while WordPress lost password protection was on, because the form never received WPBruiser's token. It does now.
+- New: an "Upgrade to Pro" item at the bottom of the WPBruiser menu, and every Pro link now leads to a page made for people already using the free plugin. Both disappear once WPBruiser Pro is active.
+- New: a Documentation button in the Support box, linking to the new WPBruiser documentation on wpzoom.com.
+- New: an Easy Digital Downloads card on the Integrations screen (protected with WPBruiser Pro).
+- Improved: a lighter look for the settings screens, with underlined tabs, on/off switches instead of checkboxes and more spacing in the lists of accepted IP formats.
+- Fix: the WPBruiser Dashboard widget showed its title at the far end of the header, away from its icon.
+- Developer: an integration's form can be marked as opt-in ('EnableByDefault' => false), so it is never switched on automatically or by the card's main switch. When a form ends up with the token field twice, every copy is now filled.
 
 = 3.3.1 =
 - New: [WPZOOM Forms](https://wordpress.org/plugins/wpzoom-forms/) integration, free. Every form is protected whether it is placed as a block, with the `[wpzf_form]` shortcode or as an Elementor widget; a blocked submission is stopped before any email is sent or entry is stored, and Reports show its fields under their labels.

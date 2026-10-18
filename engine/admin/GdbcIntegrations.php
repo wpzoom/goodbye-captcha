@@ -126,6 +126,17 @@ final class GdbcIntegrations
 				'IsDetected'  => array(__CLASS__, 'isWooCommerceActive'),
 			),
 
+			GdbcModulesController::MODULE_EASY_DIGITAL_DOWNLOADS => array(
+				'Name'        => 'Easy Digital Downloads',
+				'Description' => __('Login, registration, lost password, and login and account creation at checkout. Optional card-testing protection for every purchase.', 'goodbye-captcha'),
+				'Category'    => 'ecommerce',
+				'Tier'        => self::TIER_PRO,
+				'Logo'        => array('EDD', '#1c2135', '#ffffff'),
+				'WpOrgSlug'   => 'easy-digital-downloads',
+				'PluginFiles' => array('easy-digital-downloads/easy-digital-downloads.php', 'easy-digital-downloads-pro/easy-digital-downloads.php'),
+				'IsDetected'  => array(__CLASS__, 'isEasyDigitalDownloadsActive'),
+			),
+
 			GdbcModulesController::MODULE_CONTACT_FORM_7 => array(
 				'Name'        => 'Contact Form 7',
 				'Description' => __('Every Contact Form 7 form. Blocked messages are never emailed.', 'goodbye-captcha'),
@@ -449,6 +460,8 @@ final class GdbcIntegrations
 				'Option'  => (string)$optionName,
 				'Label'   => self::getShortFormLabel(wp_strip_all_tags((string)$label)),
 				'Enabled' => (bool)$adminModuleInstance->getOption($optionName),
+				// Opt-in forms ('EnableByDefault' => false) are never switched on in bulk.
+				'OptIn'   => isset($arrOptionInfo['EnableByDefault']) && false === $arrOptionInfo['EnableByDefault'],
 			);
 		}
 
@@ -569,7 +582,10 @@ final class GdbcIntegrations
 		}
 
 		foreach($arrForms as $arrForm)
-			$adminModuleInstance->saveOption($arrForm['Option'], 1);
+		{
+			if(empty($arrForm['OptIn']))
+				$adminModuleInstance->saveOption($arrForm['Option'], 1);
+		}
 
 		return true;
 	}
@@ -623,6 +639,13 @@ final class GdbcIntegrations
 
 			$arrOptionNames = array($optionName);
 		}
+		elseif($isEnabled)
+		{
+			// The card's main switch leaves opt-in forms alone; they have their own switch.
+			$arrOptionNames = wp_list_pluck(array_filter($arrCard['Forms'], function($arrForm) {
+				return empty($arrForm['OptIn']);
+			}), 'Option');
+		}
 
 		$adminModuleInstance = GdbcModulesController::getAdminModuleInstance($moduleName);
 		foreach($arrOptionNames as $name)
@@ -666,6 +689,8 @@ final class GdbcIntegrations
 	public static function isFormidableFormsActive() { return class_exists('FrmAppHelper', false); }
 
 	public static function isMailPoetActive()        { return defined('MAILPOET_VERSION'); }
+	/** @return bool */
+	public static function isEasyDigitalDownloadsActive() { return defined('EDD_VERSION'); }
 
 	private function __construct() {}
 }

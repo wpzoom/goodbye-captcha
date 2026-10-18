@@ -290,6 +290,9 @@ class GdbcWordPressPublicModule extends GdbcBasePublicModule
 	public function activateLostPasswordHooks()
 	{
 		$this->addActionHook('lostpassword_form', array($this, 'renderTokenFieldIntoForm'), 10);
+		// Easy Digital Downloads' lost password form calls retrieve_password(), so the
+		// check below runs on it too; without the token its customers were turned away.
+		$this->addActionHook('edd_lost_password_fields_after', array($this, 'renderTokenFieldIntoForm'), 10);
 		$this->addActionHook('lostpassword_post', array($this, 'validateLostPasswordFormEncryptedToken'), 10, 1);
 	}
 

@@ -128,7 +128,12 @@
                 continue;
             }
             if (p === 'token') {
-                tokenField.value = data[p];
+                // Two integrations can print the field into the same form. The server
+                // reads the last copy, so every copy gets the token.
+                var copies = formElement.querySelectorAll('input[name="' + tokenField.name + '"]');
+                for (var c = 0; c < copies.length; ++c) {
+                    copies[c].value = data[p];
+                }
                 tokens[tokenField.name] = null;
                 continue;
             }
