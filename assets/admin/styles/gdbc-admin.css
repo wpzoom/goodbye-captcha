@@ -770,8 +770,16 @@ div.gdbcwidget ul.pagination a:hover
 
 #gdbc-help-metabox .contact-help
 {
-    display:block;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
     margin: 0;
+}
+
+#gdbc-help-metabox .contact-help .button
+{
+    flex:1 1 auto;
+    text-align:center;
 }
 
 #gdbc-available-extension-metabox .contact-help

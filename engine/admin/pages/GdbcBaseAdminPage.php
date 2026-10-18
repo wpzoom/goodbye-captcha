@@ -161,9 +161,21 @@ abstract class GdbcBaseAdminPage extends MchGdbcBaseAdminPage
 
 	public function renderNeedHelpMetaBox()
 	{
-		$display_div  = '<p>' . esc_html__('Got a question or ran into an issue? Our support forum is the fastest way to reach us.', 'goodbye-captcha') . '</p>';
+		$docsUrl = add_query_arg(
+			array(
+				'utm_source'   => 'wpadmin',
+				'utm_medium'   => 'wpbruiser-free',
+				'utm_campaign' => 'support-box',
+			),
+			GoodByeCaptcha::PLUGIN_DOCS_URL
+		);
 
-		$display_div .= '<p class="contact-help"><a class="button button-primary" href="' . esc_url(GoodByeCaptcha::PLUGIN_SUPPORT_URL) . '" target="_blank" rel="noopener noreferrer">' . esc_html__('Support Forum', 'goodbye-captcha') . '</a></p>';
+		$display_div  = '<p>' . esc_html__('Step-by-step guides for every screen are in the documentation. Still stuck? Our support forum is the fastest way to reach us.', 'goodbye-captcha') . '</p>';
+
+		$display_div .= '<p class="contact-help">';
+		$display_div .= '<a class="button button-primary" href="' . esc_url($docsUrl) . '" target="_blank" rel="noopener noreferrer">' . esc_html__('Documentation', 'goodbye-captcha') . '</a> ';
+		$display_div .= '<a class="button" href="' . esc_url(GoodByeCaptcha::PLUGIN_SUPPORT_URL) . '" target="_blank" rel="noopener noreferrer">' . esc_html__('Support Forum', 'goodbye-captcha') . '</a>';
+		$display_div .= '</p>';
 
 		echo wp_kses_post($display_div);
 	}

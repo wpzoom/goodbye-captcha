@@ -38,6 +38,7 @@ if(!class_exists('GoodByeCaptcha', false))
 		CONST PLUGIN_NAME       = 'WPBruiser';
 		CONST PLUGIN_SITE_URL   = 'https://www.wpzoom.com/plugins/wpbruiser';
 		CONST PLUGIN_SUPPORT_URL = 'https://wordpress.org/support/plugin/goodbye-captcha/';
+		CONST PLUGIN_DOCS_URL    = 'https://www.wpzoom.com/documentation/wpbruiser/';
 		CONST PLUGIN_SHORT_CODE = 'wpbr';
 
 		private static $arrClassMap = array(
