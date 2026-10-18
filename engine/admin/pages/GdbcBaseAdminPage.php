@@ -194,7 +194,7 @@ abstract class GdbcBaseAdminPage extends MchGdbcBaseAdminPage
 
 		$textInfo .= __(' In case something goes wrong, a warning message will be shown.', 'goodbye-captcha');
 
-		echo '<p style="text-align: justify">' . wp_kses_post($textInfo) . '</p>';
+		echo '<p>' . wp_kses_post($textInfo) . '</p>';
 
 		$textInfo  = '<div class = "mch-meta-notice-warning">';
 		$textInfo .= '<b>' . esc_html__('Turn off Test Mode as soon as you\'re done with testing!', 'goodbye-captcha') . '</b>';

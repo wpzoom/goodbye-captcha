@@ -600,18 +600,28 @@ input[type="checkbox"], input[type="radio"] {
 .gdbc-settings form table.form-table th
 {
     width: 280px;
-    padding: 15px 10px 15px 0;
+    padding: 18px 16px 18px 0;
+    font-weight: 600;
+    color: #1d2327;
 }
 
 .gdbc-settings form table.form-table td
 {
-    padding: 15px 10px 15px 0;
+    padding: 18px 0;
+}
+
+/* A hairline between settings instead of large gaps. */
+.gdbc-settings form table.form-table tr + tr > th,
+.gdbc-settings form table.form-table tr + tr > td
+{
+    border-top: 1px solid #f0f0f1;
 }
 
 .gdbc-settings form table.form-table td p.description
 {
     max-width: 60em;
     margin: 6px 0 0;
+    font-size: 13px;
     color: #646970;
 }
 
@@ -626,6 +636,12 @@ input[type="checkbox"], input[type="radio"] {
         width: auto;
         padding: 10px 0;
     }
+
+    /* Stacked rows: keep the divider above the label only. */
+    .gdbc-settings form table.form-table tr + tr > td
+    {
+        border-top: 0;
+    }
 }
 
 /* Modules print their section title as `<h3>...</h3><hr />`. The heading now
@@ -638,10 +654,10 @@ input[type="checkbox"], input[type="radio"] {
 /* Replaces the <hr /> that used to be printed either side of the save button. */
 .gdbc-settings p.submit
 {
-    margin: 15px -12px -12px !important;
-    padding: 15px 12px !important;
-    background: #f6f7f7;
-    border-top: 1px solid #dcdcde;
+    margin: 4px -12px -12px !important;
+    padding: 14px 12px !important;
+    background: #f9f9f9;
+    border-top: 1px solid #f0f0f1;
 }
 .gdbc-settings form hr
 {
@@ -809,7 +825,7 @@ div.mch-meta-notice
 
 div.mch-meta-notice-info
 {
-    border-left:4px solid #428bca;  padding:3px 8px; text-align: justify;
+    border-left:4px solid #428bca;  padding:3px 8px;
 }
 
 div.mch-meta-notice-warning
@@ -883,19 +899,9 @@ div.wp-bruiser-welcome.about-wrap
 }
 
 
-#wpbruiser_page_wp-bruiser-wordpress-group-0 table.form-table th
-{
-    width:300px !important;
-}
-
 #wpbruiser_page_wp-bruiser-wordpress-group-0 table.form-table input[type="text"]
 {
     width: 100px;
-}
-
-#gdbcwordpress-settings-CommentsActivated
-{
-    margin-bottom: 10px;
 }
 
 
@@ -929,7 +935,6 @@ div.wp-bruiser-extensions p.authors
  * modal. These rules used to be printed inline from the PHP partials; the
  * WordPress.org review requires stylesheets to be enqueued instead.
  * ------------------------------------------------------------------------ */
-.gdbc-settings tr.even { background-color: #f5f5f5; }
 
 .gdbc-proxy-headers-holder input[type="text"],
 .gdbc-blacklisted-ips-holder input[type="text"] { width: 99%; padding: 3px 5px; }
@@ -1602,4 +1607,220 @@ div.wp-bruiser-extensions p.authors
     font-size: 12px;
     text-align: center;
     color: #646970;
+}
+
+
+/* ------------------------------------------------------------------------
+ * Settings screens: a lighter, more current look on top of wp-admin.
+ * Underlined tabs, rounded boxes, consistent fields and the same on/off
+ * switches the Integrations screen uses. Scoped to WPBruiser's screens.
+ * ---------------------------------------------------------------------- */
+
+.gdbc-settings .nav-tab-wrapper
+{
+    margin-bottom: 16px;
+    padding-top: 4px;
+    border-bottom: 1px solid #dcdcde;
+}
+
+.gdbc-settings .nav-tab-wrapper .nav-tab
+{
+    margin: 0 4px -1px 0;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: #50575e;
+    background: none;
+    border: 0;
+    border-bottom: 2px solid transparent;
+}
+
+.gdbc-settings .nav-tab-wrapper .nav-tab:hover
+{
+    color: var(--gdbc-accent, #2271b1);
+    background: none;
+}
+
+.gdbc-settings .nav-tab-wrapper .nav-tab-active,
+.gdbc-settings .nav-tab-wrapper .nav-tab-active:hover,
+.gdbc-settings .nav-tab-wrapper .nav-tab-active:focus
+{
+    color: #1d2327;
+    background: none;
+    border-bottom-color: var(--gdbc-accent, #2271b1);
+}
+
+.gdbc-settings .postbox
+{
+    border-color: #dcdcde;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+    overflow: hidden;
+}
+
+.gdbc-settings .postbox .postbox-header
+{
+    border-bottom-color: #f0f0f1;
+}
+
+.gdbc-settings .postbox .postbox-header .hndle
+{
+    padding: 12px;
+    font-size: 14px;
+}
+
+/* Text fields and selects: core height, softer corners. */
+.gdbc-settings .postbox input[type="text"],
+.gdbc-settings .postbox input[type="email"],
+.gdbc-settings .postbox input[type="number"],
+.gdbc-settings .postbox select
+{
+    min-height: 36px;
+    border-color: #c3c4c7;
+    border-radius: 6px;
+}
+
+/* Checkboxes in settings rows become on/off switches, like the Integrations
+   cards. Still a real checkbox, so labels, keyboard and forms work as before. */
+.gdbc-settings .postbox .form-table input[type="checkbox"]
+{
+    position: relative;
+    width: 36px;
+    height: 20px;
+    margin: 0;
+    vertical-align: middle;
+    background: #c3c4c7;
+    border: 0;
+    border-radius: 999px;
+    box-shadow: none;
+    cursor: pointer;
+    transition: background-color .15s ease;
+}
+
+.gdbc-settings .postbox .form-table input[type="checkbox"]::before,
+.gdbc-settings .postbox .form-table input[type="checkbox"]:checked::before
+{
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+    transition: transform .15s ease;
+}
+
+.gdbc-settings .postbox .form-table input[type="checkbox"]:checked
+{
+    background: var(--gdbc-accent, #2271b1);
+}
+
+.gdbc-settings .postbox .form-table input[type="checkbox"]:checked::before
+{
+    transform: translateX(16px);
+}
+
+.gdbc-settings .postbox .form-table input[type="checkbox"]:focus-visible
+{
+    outline: 2px solid var(--gdbc-accent, #2271b1);
+    outline-offset: 2px;
+}
+
+.gdbc-settings .postbox .form-table input[type="checkbox"]:disabled
+{
+    opacity: .5;
+    cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce)
+{
+    .gdbc-settings .postbox .form-table input[type="checkbox"],
+    .gdbc-settings .postbox .form-table input[type="checkbox"]::before
+    {
+        transition: none;
+    }
+}
+
+/* The proxy header and IP list tables inside the boxes. */
+.gdbc-settings .postbox .widefat
+{
+    border-color: #e0e0e0;
+    border-radius: 6px;
+    box-shadow: none;
+    overflow: hidden;
+}
+
+.gdbc-settings .postbox .widefat thead th
+{
+    color: #1d2327;
+    background: #f9f9f9;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.gdbc-settings tr.even
+{
+    background-color: #fcfcfc;
+}
+
+/* "Accepted formats" reference under the allow and block lists. */
+.gdbc-ip-formats
+{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 8px 32px;
+    padding-top: 12px;
+}
+
+.gdbc-ip-formats dl
+{
+    margin: 0;
+}
+
+.gdbc-ip-formats dt
+{
+    margin: 0 0 4px;
+    padding-bottom: 6px;
+    font-weight: 600;
+    color: #1d2327;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.gdbc-ip-formats dd
+{
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0;
+    padding: 7px 0;
+    line-height: 1.5;
+    color: #50575e;
+}
+
+.gdbc-ip-formats dd + dd
+{
+    border-top: 1px solid #f6f7f7;
+}
+
+.gdbc-ip-formats code
+{
+    padding: 0;
+    font-size: 12px;
+    color: #1d2327;
+    background: none;
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* Phones: let long IPv6 examples wrap instead of overflowing. */
+@media screen and (max-width: 600px)
+{
+    .gdbc-ip-formats code
+    {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
 }

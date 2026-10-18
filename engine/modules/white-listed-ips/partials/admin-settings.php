@@ -166,22 +166,22 @@ if(!empty($paginationCode))
 ?>
 
 
-<div class="postbox-footer clearfix" style="">
+<div class="postbox-footer gdbc-ip-formats">
 
-	<dl style="width: 48%; float: left; border-right: 1px solid #ddd; padding-right: 15px">
-		<dt><h4 style="margin: 2px 0; border-bottom: 1px solid #ccc;">Accepted IPV4 Formats</h4></dt>
-		<dd style="margin-left: 0">Standard IPV4 format <span style="float: right">123.123.1.1</span></dd>
-		<dd style="margin-left: 0">Standard CIDR Block format <span style="float: right">123.123.1.1/32</span></dd>
-		<dd style="margin-left: 0">Wildcard Range format <span style="float: right">123.123.1.*</span></dd>
-		<dd style="margin-left: 0">Non-Standard Range format <span style="float: right">123.123.1.1 - 123.123.1.10</span></dd>
+	<dl>
+		<dt>Accepted IPV4 Formats</dt>
+		<dd>Standard IPV4 format <code>123.123.1.1</code></dd>
+		<dd>Standard CIDR Block format <code>123.123.1.1/32</code></dd>
+		<dd>Wildcard Range format <code>123.123.1.*</code></dd>
+		<dd>Non-Standard Range format <code>123.123.1.1 - 123.123.1.10</code></dd>
 	</dl>
 
-	<dl style="width: 50%; float: right;" >
-		<dt><h4 style="margin: 2px 0; border-bottom: 1px solid #ccc;">Accepted IPV6 Formats</h4></dt>
-		<dd style="margin-left: 0">Fully Uncompressed format  <span style="float: right">2002:4559:1FE2:0000:0000:0000:4559:1FE2</span></dd>
-		<dd style="margin-left: 0">Standard CIDR Block format <span style="float: right">2002:4559:1FE2::4559:1FE2/128</span></dd>
-		<dd style="margin-left: 0">Uncompressed format        <span style="float: right">2002:4559:1FE2:0:0:0:4559:1FE2</span></dd>
-		<dd style="margin-left: 0">Compressed format          <span style="float: right">2002:4559:1FE2::4559:1FE2</span></dd>
+	<dl>
+		<dt>Accepted IPV6 Formats</dt>
+		<dd>Fully Uncompressed format <code>2002:4559:1FE2:0000:0000:0000:4559:1FE2</code></dd>
+		<dd>Standard CIDR Block format <code>2002:4559:1FE2::4559:1FE2/128</code></dd>
+		<dd>Uncompressed format <code>2002:4559:1FE2:0:0:0:4559:1FE2</code></dd>
+		<dd>Compressed format <code>2002:4559:1FE2::4559:1FE2</code></dd>
 	</dl>
 
 </div>
