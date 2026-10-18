@@ -48,6 +48,9 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 			add_action( 'admin_menu', array( $this, 'buildPluginMenu' ), 10 );
 		}
 
+		// Styles the "Upgrade to Pro" menu item, which is visible on every admin screen.
+		add_action( 'admin_head', array( __CLASS__, 'printUpgradeMenuItemAssets' ) );
+
 		$pluginBaseName = plugin_basename(GoodByeCaptcha::getMainFilePath());
 		add_filter( 'plugin_action_links_' . $pluginBaseName, array( $this, 'addPluginActionLinks' ) );
 		add_filter( 'network_admin_plugin_action_links_' . $pluginBaseName, array( $this, 'addPluginActionLinks' ) );
@@ -319,7 +322,44 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 			$this->adminPagesList[$i]->setAdminScreenId($pageAdminScreenId);
 		}
 
+		// Until WPBruiser Pro is active, the last item links to the upgrade page. A URL
+		// as the menu slug makes WordPress use it as the link as it is.
+		if(null === GdbcIntegrations::getProVersion())
+		{
+			add_submenu_page(
+					$adminFirstPage->getPageMenuSlug(),
+					__('Upgrade to Pro', 'goodbye-captcha'),
+					__('Upgrade to Pro', 'goodbye-captcha'),
+					'manage_options',
+					GdbcIntegrations::getProUrl('admin-menu')
+			);
+		}
 
+	}
+
+	/**
+	 * Highlights the "Upgrade to Pro" menu item and opens it in a new tab.
+	 */
+	public static function printUpgradeMenuItemAssets()
+	{
+		if(null !== GdbcIntegrations::getProVersion() || !current_user_can('manage_options'))
+			return;
+
+		$selector = '#adminmenu a[href^="' . esc_attr(GdbcIntegrations::PRO_URL) . '"]';
+		?>
+		<style>
+			<?php echo $selector; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from a class constant, escaped above. ?>{background:#6a26c6;color:#fff!important;font-weight:600}
+			<?php echo $selector; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>:hover,<?php echo $selector; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>:focus{background:#5a1fae;color:#fff!important;box-shadow:none}
+		</style>
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+				document.querySelectorAll(<?php echo wp_json_encode($selector); ?>).forEach(function (link) {
+					link.target = '_blank';
+					link.rel = 'noopener noreferrer';
+				});
+			});
+		</script>
+		<?php
 	}
 
 	/**

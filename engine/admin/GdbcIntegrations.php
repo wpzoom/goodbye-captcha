@@ -29,9 +29,9 @@ final class GdbcIntegrations
 	CONST STATE_NEEDS_PRO    = 'needs-pro';    // part of WPBruiser Pro, which is not active
 
 	/**
-	 * Where "Upgrade" links point.
+	 * Where "Upgrade" links point: the upgrade page for people using the free plugin.
 	 */
-	CONST PRO_URL = 'https://www.wpzoom.com/plugins/wpbruiser/';
+	CONST PRO_URL = 'https://www.wpzoom.com/plugins/wpbruiser/upgrade/';
 
 	/**
 	 * Every integration this version knows about, keyed by module name.
