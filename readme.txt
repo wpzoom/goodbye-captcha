@@ -18,7 +18,7 @@ Because bad submissions are rejected at the door, they never land in your modera
 
 Everything runs on your own server. WPBruiser does not call remote APIs, does not load outside scripts or fonts and does not send your visitors' data anywhere.
 
-**Notice:** WPBruiser was created by [Mihai Chelaru](https://profiles.wordpress.org/mihche/). As of version 3.2.0, it is maintained by [WPZOOM](https://profiles.wordpress.org/wpzoom/).
+**Notice:** As of version 3.2.0, it is maintained by [WPZOOM](https://profiles.wordpress.org/wpzoom/).
 
 = Forms you can protect =
 
@@ -253,6 +253,8 @@ The Integrations screen shows the icons the integrated plugins publish on WordPr
 - New: an "Upgrade to Pro" item at the bottom of the WPBruiser menu, and every Pro link now leads to a page made for people already using the free plugin. Both disappear once WPBruiser Pro is active.
 - New: a Documentation button in the Support box, linking to the new WPBruiser documentation on wpzoom.com.
 - New: an Easy Digital Downloads card on the Integrations screen (protected with WPBruiser Pro).
+- New: with WPBruiser Pro active, the sidebar shows that your site is protected: which plugins' forms are checked, attempts blocked in the last 30 days, and whether the Pro license is active. An expired license is pointed out, with a reminder that protection keeps working.
+- New: the Security screen shows WPBruiser Pro's country blocking and submission rate limit settings, locked, so you can see what Pro adds there.
 - Improved: a lighter look for the settings screens, with underlined tabs, on/off switches instead of checkboxes and more spacing in the lists of accepted IP formats.
 - Fix: the WPBruiser Dashboard widget showed its title at the far end of the header, away from its icon.
 - Developer: an integration's form can be marked as opt-in ('EnableByDefault' => false), so it is never switched on automatically or by the card's main switch. When a form ends up with the token field twice, every copy is now filled.

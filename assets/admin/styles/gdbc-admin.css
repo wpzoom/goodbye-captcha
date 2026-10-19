@@ -1609,6 +1609,140 @@ div.wp-bruiser-extensions p.authors
     color: #646970;
 }
 
+/* WPBruiser Pro status, in the sidebar while Pro is active. */
+
+#gdbc-pro-status-metabox .inside {
+    margin: 0;
+    padding: 14px 14px 12px;
+}
+
+.gdbc-pro-status__shield {
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2 4 5v6c0 5 3.4 9.3 8 11 4.6-1.7 8-6 8-11V5l-8-3Z' fill='%2322BB66'/%3E%3Cpath d='m8.5 12 2.5 2.5 4.5-5' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.gdbc-pro-status.is-unprotected .gdbc-pro-status__shield {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2 4 5v6c0 5 3.4 9.3 8 11 4.6-1.7 8-6 8-11V5l-8-3Z' fill='%23dba617'/%3E%3Cpath d='M12 7.5v5.5m0 3v.01' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+.gdbc-pro-status__facts {
+    margin: 0 0 12px;
+    padding: 0;
+    list-style: none;
+}
+
+.gdbc-pro-status__facts li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0;
+    padding: 7px 0;
+    font-size: 13px;
+    border-top: 1px solid #f0f0f1;
+}
+
+.gdbc-pro-status__facts li > :last-child {
+    font-weight: 600;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.gdbc-pro-status__ok {
+    color: #0f6e43;
+}
+
+.gdbc-pro-status__warn {
+    color: #b32d2e;
+}
+
+
+/* Locked previews of WPBruiser Pro settings, while Pro is not active. */
+
+.gdbc-pro-tag {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 0 7px;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 18px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    vertical-align: 1px;
+    color: #6a26c6;
+    background: #f4effc;
+    border-radius: 9px;
+}
+
+.gdbc-pro-preview__intro {
+    max-width: 720px;
+    color: #50575e;
+}
+
+.gdbc-pro-preview__controls {
+    margin: 0 0 16px;
+    padding: 0;
+    border: 0;
+    opacity: .55;
+    pointer-events: none;
+    user-select: none;
+}
+
+.gdbc-pro-preview__controls .form-table {
+    margin-top: 0;
+}
+
+.gdbc-pro-preview__countries {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px 16px;
+    max-width: 720px;
+    padding: 10px 12px;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+}
+
+.gdbc-pro-preview__countries code {
+    float: right;
+    padding: 0;
+    font-size: 11px;
+    background: none;
+}
+
+.gdbc-pro-preview__unlock {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 16px;
+    margin: 0 !important;
+    padding: 10px 12px;
+    font-weight: 600;
+    color: #1d2327;
+    background: #f4effc;
+    border-left: 3px solid #6a26c6;
+}
+
+.gdbc-pro-preview__unlock .button {
+    color: #fff;
+    background: #6a26c6;
+    border-color: #6a26c6;
+}
+
+.gdbc-pro-preview__unlock .button:hover,
+.gdbc-pro-preview__unlock .button:focus {
+    color: #fff;
+    background: #5a1fae;
+    border-color: #5a1fae;
+}
+
+@media screen and (max-width: 782px) {
+    .gdbc-pro-preview__countries {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
 
 /* ------------------------------------------------------------------------
  * Settings screens: a lighter, more current look on top of wp-admin.

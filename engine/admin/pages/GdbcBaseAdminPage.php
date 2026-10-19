@@ -50,6 +50,18 @@ abstract class GdbcBaseAdminPage extends MchGdbcBaseAdminPage
 				null
 			);
 		}
+		else
+		{
+			add_meta_box(
+				"gdbc-pro-status-metabox",
+				__('WPBruiser Pro', 'goodbye-captcha'),
+				array( $this, 'renderProStatusMetaBox' ),
+				$this->getAdminScreenId(),
+				'side',
+				'high',
+				null
+			);
+		}
 
 		add_meta_box(
 			"gdbc-help-metabox",
@@ -157,6 +169,157 @@ abstract class GdbcBaseAdminPage extends MchGdbcBaseAdminPage
 			<p class="gdbc-pro__note"><?php esc_html_e('14-day money-back guarantee.', 'goodbye-captcha'); ?></p>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Sidebar box for sites with WPBruiser Pro: what is protected, how many attempts
+	 * were blocked lately, and whether the license is in order.
+	 *
+	 * The license details come from Pro through the `wpbruiser_pro_license` filter.
+	 * Protection never depends on the license, so the box says so when it has lapsed.
+	 */
+	public function renderProStatusMetaBox()
+	{
+		/**
+		 * Lets WPBruiser Pro describe its license.
+		 *
+		 * @since 3.4.0
+		 * @param array|null $license {
+		 *     @type string $status     'valid', 'expired', '' for no key, or another store status.
+		 *     @type string $expires    Expiry date as the store sent it, 'lifetime' or ''.
+		 *     @type string $message    A sentence describing the status.
+		 *     @type string $manage_url The license screen.
+		 *     @type string $renew_url  Where to renew, or ''.
+		 * }
+		 */
+		$arrLicense = apply_filters('wpbruiser_pro_license', null);
+		$arrLicense = is_array($arrLicense) ? wp_parse_args($arrLicense, array('status' => null, 'expires' => '', 'message' => '', 'manage_url' => '', 'renew_url' => '')) : null;
+
+		$arrProtected = self::getProtectedIntegrationNames();
+		$isLoggingOn  = ((int)GdbcSettingsAdminModule::getInstance()->getOption(GdbcSettingsAdminModule::OPTION_MAX_LOGS_DAYS)) > 0;
+		$blockedCount = $isLoggingOn ? GdbcDbAccessController::countAttemptsSince(MchGdbcHttpRequest::getServerRequestTime() - 30 * DAY_IN_SECONDS) : null;
+
+		$licenseStatus = null !== $arrLicense ? (string)$arrLicense['status'] : null;
+		$expiryDate    = '';
+		if(null !== $arrLicense && '' !== $arrLicense['expires'] && 'lifetime' !== $arrLicense['expires'])
+		{
+			$expiryTime = strtotime($arrLicense['expires']);
+			$expiryDate = $expiryTime ? date_i18n(get_option('date_format'), $expiryTime) : '';
+		}
+
+		$isProtected = !empty($arrProtected);
+		$isLicenseOk = null === $licenseStatus || 'valid' === $licenseStatus;
+		?>
+		<div class="gdbc-pro gdbc-pro-status<?php echo $isProtected ? '' : ' is-unprotected'; ?>">
+			<p class="gdbc-pro__head">
+				<span class="gdbc-pro-status__shield" aria-hidden="true"></span>
+				<strong><?php echo $isProtected ? esc_html__('Your site is protected', 'goodbye-captcha') : esc_html__('No forms are protected yet', 'goodbye-captcha'); ?></strong>
+			</p>
+
+			<?php if($isProtected) : ?>
+				<p>
+					<?php
+					$arrShown  = array_slice($arrProtected, 0, 4);
+					$moreCount = count($arrProtected) - count($arrShown);
+					if($moreCount > 0)
+					{
+						/* translators: %d: number of further integrations. */
+						$arrShown[] = sprintf(_n('%d more', '%d more', $moreCount, 'goodbye-captcha'), $moreCount);
+					}
+
+					/* translators: %s: list of protected plugins, e.g. "WordPress, WooCommerce and Contact Form 7". */
+					echo esc_html(sprintf(__('WPBruiser is checking the forms of %s.', 'goodbye-captcha'), wp_sprintf('%l', $arrShown)));
+					?>
+				</p>
+			<?php else : ?>
+				<p>
+					<a href="<?php echo esc_url((string)self::getPageUrlByName('Integrations')); ?>"><?php esc_html_e('Choose the forms to protect', 'goodbye-captcha'); ?></a>
+				</p>
+			<?php endif; ?>
+
+			<ul class="gdbc-pro-status__facts">
+				<?php if(null !== $blockedCount) : ?>
+					<li>
+						<span><?php esc_html_e('Blocked, last 30 days', 'goodbye-captcha'); ?></span>
+						<a href="<?php echo esc_url((string)self::getPageUrlByName('Reports')); ?>"><?php echo esc_html(number_format_i18n($blockedCount)); ?></a>
+					</li>
+				<?php endif; ?>
+				<li>
+					<span><?php esc_html_e('Version', 'goodbye-captcha'); ?></span>
+					<span><?php echo esc_html(GdbcIntegrations::getProVersion()); ?></span>
+				</li>
+				<?php if(null !== $licenseStatus) : ?>
+					<li>
+						<span><?php esc_html_e('License', 'goodbye-captcha'); ?></span>
+						<?php if('valid' === $licenseStatus) : ?>
+							<span class="gdbc-pro-status__ok">
+								<?php
+								if('lifetime' === $arrLicense['expires'])
+									esc_html_e('Active, lifetime', 'goodbye-captcha');
+								elseif('' !== $expiryDate)
+									/* translators: %s: expiry date. */
+									echo esc_html(sprintf(__('Active until %s', 'goodbye-captcha'), $expiryDate));
+								else
+									esc_html_e('Active', 'goodbye-captcha');
+								?>
+							</span>
+						<?php elseif('expired' === $licenseStatus) : ?>
+							<span class="gdbc-pro-status__warn"><?php esc_html_e('Expired', 'goodbye-captcha'); ?></span>
+						<?php else : ?>
+							<span class="gdbc-pro-status__warn"><?php esc_html_e('Not active', 'goodbye-captcha'); ?></span>
+						<?php endif; ?>
+					</li>
+				<?php endif; ?>
+			</ul>
+
+			<?php if(!$isLicenseOk) : ?>
+				<p class="gdbc-pro__found">
+					<?php
+					if('expired' === $licenseStatus)
+						esc_html_e('Protection keeps working. Renew your license to keep getting updates and support.', 'goodbye-captcha');
+					else
+						esc_html_e('Protection keeps working. Activate your license to get updates and support.', 'goodbye-captcha');
+					?>
+				</p>
+				<p class="gdbc-pro__cta">
+					<?php if('expired' === $licenseStatus && '' !== $arrLicense['renew_url']) : ?>
+						<a class="button button-primary" href="<?php echo esc_url($arrLicense['renew_url']); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Renew License', 'goodbye-captcha'); ?><span class="screen-reader-text"> <?php esc_html_e('(opens in a new tab)', 'goodbye-captcha'); ?></span></a>
+					<?php elseif('' !== $arrLicense['manage_url']) : ?>
+						<a class="button button-primary" href="<?php echo esc_url($arrLicense['manage_url']); ?>"><?php esc_html_e('Activate License', 'goodbye-captcha'); ?></a>
+					<?php endif; ?>
+				</p>
+			<?php elseif(null !== $arrLicense && '' !== $arrLicense['manage_url']) : ?>
+				<p class="gdbc-pro__note"><a href="<?php echo esc_url($arrLicense['manage_url']); ?>"><?php esc_html_e('Manage license', 'goodbye-captcha'); ?></a></p>
+			<?php endif; ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Names of the integrations with at least one protected form, WordPress first.
+	 *
+	 * @return string[]
+	 */
+	private static function getProtectedIntegrationNames()
+	{
+		$arrNames = array();
+
+		foreach(GdbcIntegrations::getForms(GdbcModulesController::MODULE_WORDPRESS) as $arrForm)
+		{
+			if($arrForm['Enabled'])
+			{
+				$arrNames[] = __('WordPress', 'goodbye-captcha');
+				break;
+			}
+		}
+
+		foreach(GdbcIntegrations::getCards() as $arrCard)
+		{
+			if(GdbcIntegrations::STATE_AVAILABLE === $arrCard['State'] && $arrCard['EnabledCount'] > 0)
+				$arrNames[] = $arrCard['Name'];
+		}
+
+		return $arrNames;
 	}
 
 	public function renderNeedHelpMetaBox()

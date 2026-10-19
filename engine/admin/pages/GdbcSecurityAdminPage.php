@@ -153,6 +153,30 @@ class GdbcSecurityAdminPage  extends GdbcBaseAdminPage
 		if($this->getPageLayoutColumns() <= 1)
 			return;
 
+		// What WPBruiser Pro adds to this screen, shown locked until Pro is active.
+		if(null === GdbcIntegrations::getProVersion())
+		{
+			add_meta_box(
+				"gdbc-pro-preview-country",
+				__('Country Blocking', 'goodbye-captcha') . ' <span class="gdbc-pro-tag">' . esc_html__('Pro', 'goodbye-captcha') . '</span>',
+				array( $this, 'renderCountryBlockingPreview' ),
+				$this->getAdminScreenId(),
+				'advanced',
+				'low',
+				null
+			);
+
+			add_meta_box(
+				"gdbc-pro-preview-rate-limits",
+				__('Submission Rate Limits', 'goodbye-captcha') . ' <span class="gdbc-pro-tag">' . esc_html__('Pro', 'goodbye-captcha') . '</span>',
+				array( $this, 'renderRateLimitsPreview' ),
+				$this->getAdminScreenId(),
+				'advanced',
+				'low',
+				null
+			);
+		}
+
 		add_meta_box(
 			"gdbc-help-web-attackers-list",
 			__('Web Attackers IPs List', 'goodbye-captcha'),
@@ -173,6 +197,92 @@ class GdbcSecurityAdminPage  extends GdbcBaseAdminPage
 			null
 		);
 
+	}
+
+	/**
+	 * WPBruiser Pro's country blocking, shown with its controls switched off.
+	 */
+	public function renderCountryBlockingPreview()
+	{
+		// The start of the alphabetical list, as Pro shows it.
+		$arrSampleCountries = array(
+			'AF' => __('Afghanistan', 'goodbye-captcha'),
+			'AL' => __('Albania', 'goodbye-captcha'),
+			'DZ' => __('Algeria', 'goodbye-captcha'),
+			'AD' => __('Andorra', 'goodbye-captcha'),
+			'AO' => __('Angola', 'goodbye-captcha'),
+			'AR' => __('Argentina', 'goodbye-captcha'),
+		);
+		?>
+		<div class="gdbc-pro-preview">
+			<p class="gdbc-pro-preview__intro"><?php esc_html_e('Reject form submissions and logins from the countries you choose, or accept them only from those countries. Countries are looked up on your own server, and on sites behind Cloudflare its country header is used.', 'goodbye-captcha'); ?></p>
+
+			<fieldset class="gdbc-pro-preview__controls" disabled aria-hidden="true">
+				<p><label><input type="radio" checked /> <?php esc_html_e('Reject submissions from the selected countries', 'goodbye-captcha'); ?></label></p>
+				<p><label><input type="radio" /> <?php esc_html_e('Accept submissions only from the selected countries', 'goodbye-captcha'); ?></label></p>
+				<p><input type="search" class="regular-text" placeholder="<?php esc_attr_e('Search countries', 'goodbye-captcha'); ?>" /></p>
+				<div class="gdbc-pro-preview__countries">
+					<?php foreach($arrSampleCountries as $countryCode => $countryName) : ?>
+						<label><input type="checkbox" /> <?php echo esc_html($countryName); ?> <code><?php echo esc_html($countryCode); ?></code></label>
+					<?php endforeach; ?>
+				</div>
+			</fieldset>
+
+			<?php $this->renderProPreviewUnlock('security-country-blocking'); ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * WPBruiser Pro's submission rate limits, shown with their controls switched off.
+	 */
+	public function renderRateLimitsPreview()
+	{
+		?>
+		<div class="gdbc-pro-preview">
+			<p class="gdbc-pro-preview__intro"><?php esc_html_e('Stop a person or script that gets past the other checks from flooding your forms: once an IP address has sent a set number of submissions, the next ones are rejected until the time window ends.', 'goodbye-captcha'); ?></p>
+
+			<fieldset class="gdbc-pro-preview__controls" disabled aria-hidden="true">
+				<table class="form-table" role="presentation">
+					<tr>
+						<th scope="row"><?php esc_html_e('Limit submissions per visitor', 'goodbye-captcha'); ?></th>
+						<td><input type="checkbox" checked /></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e('Submissions allowed', 'goodbye-captcha'); ?></th>
+						<td><input type="number" class="small-text" value="5" /></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e('Time window', 'goodbye-captcha'); ?></th>
+						<td><select><option><?php esc_html_e('10 minutes', 'goodbye-captcha'); ?></option></select></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e('Applies to', 'goodbye-captcha'); ?></th>
+						<td><select><option><?php esc_html_e('Forms, but not logins', 'goodbye-captcha'); ?></option></select></td>
+					</tr>
+				</table>
+			</fieldset>
+
+			<?php $this->renderProPreviewUnlock('security-rate-limits'); ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * The line under a locked Pro preview.
+	 *
+	 * @param string $placement Where the link was clicked, for the Pro URL.
+	 */
+	private function renderProPreviewUnlock($placement)
+	{
+		?>
+		<p class="gdbc-pro-preview__unlock">
+			<span><?php esc_html_e('Available in WPBruiser Pro.', 'goodbye-captcha'); ?></span>
+			<a class="button" href="<?php echo esc_url(GdbcIntegrations::getProUrl($placement)); ?>" target="_blank" rel="noopener noreferrer">
+				<?php esc_html_e('Unlock with Pro', 'goodbye-captcha'); ?><span class="screen-reader-text"> <?php esc_html_e('(opens in a new tab)', 'goodbye-captcha'); ?></span>
+			</a>
+		</p>
+		<?php
 	}
 
 	public function renderWebAttackersMetaBox()
