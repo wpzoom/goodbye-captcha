@@ -153,8 +153,9 @@ class GdbcSecurityAdminPage  extends GdbcBaseAdminPage
 		if($this->getPageLayoutColumns() <= 1)
 			return;
 
-		// What WPBruiser Pro adds to this screen, shown locked until Pro is active.
-		if(null === GdbcIntegrations::getProVersion())
+		// What WPBruiser Pro adds to this screen, shown locked until Pro is active and
+		// licensed.
+		if(null === GdbcIntegrations::getProVersion() || GdbcIntegrations::isProLocked())
 		{
 			add_meta_box(
 				"gdbc-pro-preview-country",
@@ -275,11 +276,21 @@ class GdbcSecurityAdminPage  extends GdbcBaseAdminPage
 	 */
 	private function renderProPreviewUnlock($placement)
 	{
+		$arrLicense = GdbcIntegrations::isProLocked() ? GdbcIntegrations::getProLicense() : null;
+		$isExpired  = null !== $arrLicense && 'expired' === $arrLicense['status'];
+		$opensTab   = null === $arrLicense || $isExpired;
 		?>
 		<p class="gdbc-pro-preview__unlock">
-			<span><?php esc_html_e('Available in WPBruiser Pro.', 'goodbye-captcha'); ?></span>
-			<a class="button" href="<?php echo esc_url(GdbcIntegrations::getProUrl($placement)); ?>" target="_blank" rel="noopener noreferrer">
-				<?php esc_html_e('Unlock with Pro', 'goodbye-captcha'); ?><span class="screen-reader-text"> <?php esc_html_e('(opens in a new tab)', 'goodbye-captcha'); ?></span>
+			<?php if(null === $arrLicense) : ?>
+				<span><?php esc_html_e('Available in WPBruiser Pro.', 'goodbye-captcha'); ?></span>
+				<a class="button" href="<?php echo esc_url(GdbcIntegrations::getProUrl($placement)); ?>" target="_blank" rel="noopener noreferrer">
+					<?php esc_html_e('Unlock with Pro', 'goodbye-captcha'); ?>
+			<?php else : ?>
+				<span><?php echo $isExpired ? esc_html__('Off until your WPBruiser Pro license is renewed. Your settings are kept.', 'goodbye-captcha') : esc_html__('Off until your WPBruiser Pro license is activated.', 'goodbye-captcha'); ?></span>
+				<a class="button" href="<?php echo esc_url(GdbcIntegrations::getProLicenseActionUrl()); ?>"<?php echo $opensTab ? ' target="_blank" rel="noopener noreferrer"' : ''; ?>>
+					<?php echo $isExpired ? esc_html__('Renew License', 'goodbye-captcha') : esc_html__('Activate License', 'goodbye-captcha'); ?>
+			<?php endif; ?>
+				<?php if($opensTab) : ?><span class="screen-reader-text"> <?php esc_html_e('(opens in a new tab)', 'goodbye-captcha'); ?></span><?php endif; ?>
 			</a>
 		</p>
 		<?php

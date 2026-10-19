@@ -27,6 +27,7 @@ final class GdbcIntegrations
 	CONST STATE_AVAILABLE    = 'available';    // switches work
 	CONST STATE_NOT_DETECTED = 'not-detected'; // the plugin it protects is not active
 	CONST STATE_NEEDS_PRO    = 'needs-pro';    // part of WPBruiser Pro, which is not active
+	CONST STATE_NEEDS_LICENSE = 'needs-license'; // Pro is installed, but its license isn't active
 
 	/**
 	 * Where "Upgrade" links point: the upgrade page for people using the free plugin.
@@ -310,6 +311,65 @@ final class GdbcIntegrations
 	}
 
 	/**
+	 * WPBruiser Pro's license, as Pro describes it, or null without Pro (or with a
+	 * Pro version from before 1.1.0).
+	 *
+	 * @return array|null With status, expires, message, manage_url, renew_url,
+	 *                    features ('active', 'grace' or 'locked') and grace_ends.
+	 */
+	public static function getProLicense()
+	{
+		if(null === self::getProVersion())
+			return null;
+
+		/**
+		 * Lets WPBruiser Pro describe its license.
+		 *
+		 * @since 3.4.0
+		 * @param array|null $license License summary.
+		 */
+		$arrLicense = apply_filters('wpbruiser_pro_license', null);
+		if(!is_array($arrLicense))
+			return null;
+
+		return wp_parse_args($arrLicense, array(
+			'status'     => '',
+			'expires'    => '',
+			'message'    => '',
+			'manage_url' => '',
+			'renew_url'  => '',
+			'features'   => 'active',
+			'grace_ends' => 0,
+		));
+	}
+
+	/**
+	 * Whether WPBruiser Pro is installed but switched off for lack of an active license.
+	 *
+	 * @return bool
+	 */
+	public static function isProLocked()
+	{
+		$arrLicense = self::getProLicense();
+		return null !== $arrLicense && 'locked' === $arrLicense['features'];
+	}
+
+	/**
+	 * Where to send someone whose Pro is switched off: renewal for an expired
+	 * license, the license screen otherwise.
+	 *
+	 * @return string
+	 */
+	public static function getProLicenseActionUrl()
+	{
+		$arrLicense = self::getProLicense();
+		if(null === $arrLicense)
+			return self::getProUrl('license');
+
+		return ('expired' === $arrLicense['status'] && '' !== $arrLicense['renew_url']) ? $arrLicense['renew_url'] : $arrLicense['manage_url'];
+	}
+
+	/**
 	 * Every card for the Integrations screen, with its current state.
 	 *
 	 * Order: switched-on integrations first, then ones whose plugin is active, then
@@ -320,6 +380,7 @@ final class GdbcIntegrations
 	public static function getCards()
 	{
 		$isProActive = null !== self::getProVersion();
+		$isProLocked = self::isProLocked();
 		$arrCards    = array();
 
 		$arrEntries = self::getCatalog();
@@ -356,6 +417,8 @@ final class GdbcIntegrations
 
 			if(self::TIER_PRO === $arrEntry['Tier'] && !$isProActive)
 				$state = self::STATE_NEEDS_PRO;
+			elseif(self::TIER_PRO === $arrEntry['Tier'] && $isProLocked)
+				$state = self::STATE_NEEDS_LICENSE;
 			elseif(!$isDetected || !$isRegistered)
 				$state = self::STATE_NOT_DETECTED;
 			else

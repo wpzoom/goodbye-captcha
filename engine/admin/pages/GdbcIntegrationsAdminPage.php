@@ -186,6 +186,13 @@ class GdbcIntegrationsAdminPage extends GdbcBaseAdminPage
 						<?php esc_html_e('Upgrade', 'goodbye-captcha'); ?><span class="screen-reader-text"> <?php /* translators: %s: integration name. */ echo esc_html(sprintf(__('to protect %s (opens in a new tab)', 'goodbye-captcha'), $arrCard['Name'])); ?></span>
 					</a>
 
+				<?php elseif(GdbcIntegrations::STATE_NEEDS_LICENSE === $state) : ?>
+					<span class="gdbc-int-status gdbc-int-status--muted"><?php esc_html_e('Off: Pro license not active', 'goodbye-captcha'); ?></span>
+					<?php $isExpired = 'expired' === GdbcIntegrations::getProLicense()['status']; ?>
+					<a class="button button-small" href="<?php echo esc_url(GdbcIntegrations::getProLicenseActionUrl()); ?>"<?php echo $isExpired ? ' target="_blank" rel="noopener noreferrer"' : ''; ?>>
+						<?php echo $isExpired ? esc_html__('Renew', 'goodbye-captcha') : esc_html__('Activate', 'goodbye-captcha'); ?><span class="screen-reader-text"> <?php /* translators: %s: integration name. */ echo esc_html(sprintf(__('WPBruiser Pro to protect %s', 'goodbye-captcha'), $arrCard['Name'])); ?></span>
+					</a>
+
 				<?php elseif(!empty($arrCard['InactiveFile'])) : ?>
 					<span class="gdbc-int-status gdbc-int-status--muted"><?php esc_html_e('Installed, not active', 'goodbye-captcha'); ?></span>
 

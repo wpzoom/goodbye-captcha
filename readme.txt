@@ -114,7 +114,7 @@ Using Contact Form 7, WPForms, WooCommerce, Easy Digital Downloads, Elementor Pr
 * Every Pro integration is switched on automatically for the plugins you already use, on first activation and after each update
 * Blocked attempts from every integration appear in the same Reports screen and Dashboard widget, with the submitted content when you keep it
 * Updates and priority support from the WPZOOM team, with a 14-day money-back guarantee
-* Protection keeps working if your license expires; only updates and support stop
+* An active license switches the Pro features on; if it expires, they keep working for 14 more days, then the site keeps the free protection until you renew
 
 [Compare free and Pro, and see the plans](https://www.wpzoom.com/plugins/wpbruiser/?utm_source=wporg&utm_medium=readme&utm_campaign=pro-plans)
 
@@ -187,11 +187,11 @@ Yes. WPBruiser Pro is an add-on: it adds integrations and security features to t
 
 = Does WPBruiser Pro call any external service? =
 
-Only for license activation and updates, which come from wpzoom.com. Every check still runs on your server, and the IP-to-country data ships inside the add-on.
+Only for the license (activation and a daily check) and updates, which come from wpzoom.com. Every check still runs on your server, and the IP-to-country data ships inside the add-on.
 
 = Does it send data to any server? =
 
-No. See "External services" in the description. (The optional WPBruiser Pro add-on contacts wpzoom.com for license activation and updates only.)
+No. See "External services" in the description. (The optional WPBruiser Pro add-on contacts wpzoom.com for its license and updates only.)
 
 = Does it replace a full security plugin? =
 
@@ -253,7 +253,7 @@ The Integrations screen shows the icons the integrated plugins publish on WordPr
 - New: an "Upgrade to Pro" item at the bottom of the WPBruiser menu, and every Pro link now leads to a page made for people already using the free plugin. Both disappear once WPBruiser Pro is active.
 - New: a Documentation button in the Support box, linking to the new WPBruiser documentation on wpzoom.com.
 - New: an Easy Digital Downloads card on the Integrations screen (protected with WPBruiser Pro).
-- New: with WPBruiser Pro active, the sidebar shows that your site is protected: which plugins' forms are checked, attempts blocked in the last 30 days, and whether the Pro license is active. An expired license is pointed out, with a reminder that protection keeps working.
+- New: with WPBruiser Pro active, the sidebar shows that your site is protected: which plugins' forms are checked, attempts blocked in the last 30 days, and whether the Pro license is active. When the license has expired or isn't activated, the box, the Integrations cards and the Security screen say what is switched off and link to renew or activate it.
 - New: the Security screen shows WPBruiser Pro's country blocking and submission rate limit settings, locked, so you can see what Pro adds there.
 - Improved: a lighter look for the settings screens, with underlined tabs, on/off switches instead of checkboxes and more spacing in the lists of accepted IP formats.
 - Fix: the WPBruiser Dashboard widget showed its title at the far end of the header, away from its icon.
