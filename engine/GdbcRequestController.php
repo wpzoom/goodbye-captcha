@@ -50,6 +50,9 @@ final class GdbcRequestController
 	CONST REJECT_REASON_COMMENT_FIELD_TOO_LONG = 14;
 	CONST REJECT_REASON_COUNTRY_IP_BLOCKED     = 15;
 	CONST REJECT_REASON_RATE_LIMITED           = 16;
+	CONST REJECT_REASON_LOGIN_LOCKED_OUT       = 17;
+	CONST REJECT_REASON_BANNED_USERNAME        = 18;
+	CONST REJECT_REASON_LOGIN_LOCKDOWN         = 19;
 
 	private static $rejectReasonCode     = null;
 	private static $browserInfoInputName = null;
@@ -343,6 +346,9 @@ final class GdbcRequestController
 				self::REJECT_REASON_COMMENT_FIELD_TOO_LONG  => __('Comment Field Too Long', 'goodbye-captcha'),
 				self::REJECT_REASON_COUNTRY_IP_BLOCKED      => __('Blocked Country', 'goodbye-captcha'),
 				self::REJECT_REASON_RATE_LIMITED            => __('Too Many Submissions', 'goodbye-captcha'),
+				self::REJECT_REASON_LOGIN_LOCKED_OUT        => __('Too Many Failed Logins', 'goodbye-captcha'),
+				self::REJECT_REASON_BANNED_USERNAME         => __('Banned Username', 'goodbye-captcha'),
+				self::REJECT_REASON_LOGIN_LOCKDOWN          => __('Login Lockdown', 'goodbye-captcha'),
 			);
 		}
 

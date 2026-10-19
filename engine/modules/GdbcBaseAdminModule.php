@@ -131,6 +131,13 @@ abstract class GdbcBaseAdminModule extends MchGdbcBaseAdminModule
 			$arrFieldAttributes['value'] = true;
 		}
 
+		// Choices for a select, label => value, from the option definition.
+		if(isset($arrSettingsField['Options']) && is_array($arrSettingsField['Options']))
+			$arrFieldAttributes['options'] = $arrSettingsField['Options'];
+
+		if(!empty($arrSettingsField['InputClass']))
+			$arrFieldAttributes['class'] = $arrSettingsField['InputClass'];
+
 
 		switch ($arrFieldAttributes['type'])
 		{

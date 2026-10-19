@@ -1,10 +1,10 @@
 === WPBruiser - No CAPTCHA Anti-Spam & Login Protection ===
 Contributors: wpzoom
-Tags: anti-spam, spam protection, captcha, brute force, contact form
+Tags: anti-spam, spam protection, captcha, brute force, limit login attempts
 Requires at least: 6.5
 Requires PHP: 7.4
 Tested up to: 7.1
-Stable tag: 3.3.2
+Stable tag: 3.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,6 +46,12 @@ Using Contact Form 7, WPForms, WooCommerce, Easy Digital Downloads, Elementor Pr
 
 = Brute-force and hardening tools =
 
+* Limits failed logins: after 5 failed logins (you choose the number) an IP address is locked out for 20 minutes, and for a day if it keeps coming back. Covers the login form, XML-RPC, application passwords and the login forms of WooCommerce, Easy Digital Downloads and other plugins, with a list of current lockouts and a Release button
+* Bans usernames such as "admin" and "root": an IP address that tries one that no account uses is locked out at once
+* Optional lockdown mode: during a detected attack, accepts logins only from IP addresses each user has logged in from before
+* Moves the login page to an address of your choice, so wp-login.php and wp-admin show a "not found" page to visitors
+* Closes the REST API to visitors who are not logged in, with a list of plugin namespaces that stay open
+* Turns off application passwords, and stops PHP files in the uploads folder from running
 * Detects a login brute-force attack in progress and can email you when one starts
 * Automatically blocks IP addresses that keep hammering your login
 * Optionally rejects login attempts from IP addresses on the bundled lists of known web attackers and anonymous proxies, including Tor exit nodes
@@ -167,7 +173,9 @@ The common proxies and CDNs are recognised automatically. For anything else, add
 
 = I locked myself out. What now? =
 
-Add your own IP address to the allow list. Allowed addresses skip all checks, including the block list. If you can't reach the dashboard, rename the `wp-content/plugins/goodbye-captcha` folder over FTP or with your host's file manager to deactivate the plugin. Then sign in, rename it back and add your address to the allow list.
+If you mistyped your password too many times, wait for the lockout to end (20 minutes by default) or log in from another connection and press Release on the Security screen. If you moved the login page and lost its address, add `define('WPBRUISER_DISABLE_LOGIN_URL', true);` to wp-config.php to use wp-login.php again; the address was also emailed to the site admin when you set it.
+
+To avoid both, add your own IP address to the allow list. Allowed addresses skip all checks, including the block list. If you can't reach the dashboard, rename the `wp-content/plugins/goodbye-captcha` folder over FTP or with your host's file manager to deactivate the plugin. Then sign in, rename it back and add your address to the allow list.
 
 = What does WPBruiser Pro add? =
 
@@ -233,7 +241,14 @@ The Integrations screen shows the icons the integrated plugins publish on WordPr
 
 == Changelog ==
 
-= 3.3.2 =
+= 3.4.0 =
+- New: login lockouts. After 5 failed logins in 12 hours (you choose the number), an IP address is locked out for 20 minutes, and for 24 hours after its 4th lockout in a day. They cover the login form, XML-RPC, application passwords and the login forms of other plugins (WooCommerce, Easy Digital Downloads and any plugin that uses WordPress' own login). Allow-listed IP addresses are never locked out, nothing is locked out in Test Mode, and the Security screen lists current lockouts with a Release button. On by default, also on existing sites.
+- New: banned usernames. An IP address that tries "admin", "administrator", "root" and similar names that no account on your site uses is locked out at once. You can edit the list.
+- New, optional: lock out IP addresses that try any username that doesn't exist, and a lockdown mode that, during a detected brute-force attack, accepts logins only from IP addresses each user has logged in from before.
+- New: Reports show lockouts as "Too Many Failed Logins", "Banned Username" and "Login Lockdown".
+- New, optional: a custom login URL. wp-login.php and, for visitors who are not logged in, wp-admin show a "not found" page; every login, logout and password reset link follows the new address, and it is emailed to the site admin when you set it. `define('WPBRUISER_DISABLE_LOGIN_URL', true);` in wp-config.php turns it off.
+- New, optional: close the REST API to visitors who are not logged in. oEmbed, Contact Form 7, the WooCommerce Store API, Jetpack, LiteSpeed and Wordfence stay open by default, and you can add other namespaces.
+- New, optional: turn off application passwords, and block PHP files in the uploads folder (Apache and LiteSpeed; the rules are removed again when you switch the option off or deactivate WPBruiser).
 - Fix: Easy Digital Downloads' lost password form was rejected while WordPress lost password protection was on, because the form never received WPBruiser's token. It does now.
 - New: an "Upgrade to Pro" item at the bottom of the WPBruiser menu, and every Pro link now leads to a page made for people already using the free plugin. Both disappear once WPBruiser Pro is active.
 - New: a Documentation button in the Support box, linking to the new WPBruiser documentation on wpzoom.com.

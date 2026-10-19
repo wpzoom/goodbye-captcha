@@ -51,6 +51,8 @@ final class GdbcAjaxController
 		foreach(array(
 
 			        GdbcModulesController::MODULE_MAIL_CHIMP_FOR_WP,
+					// Login lockouts also apply to logins made over AJAX.
+					GdbcModulesController::MODULE_BRUTE_FORCE,
 					GdbcModulesController::MODULE_ULTIMATE_MEMBER,
 					GdbcModulesController::MODULE_HTML_FORMS,
 

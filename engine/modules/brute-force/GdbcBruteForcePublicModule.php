@@ -32,6 +32,20 @@ class GdbcBruteForcePublicModule extends GdbcBasePublicModule
 	{
 		parent::__construct();
 
+		if($this->getOption(GdbcBruteForceAdminModule::OPTION_LIMIT_LOGIN_ATTEMPTS))
+		{
+			// First on `authenticate`, before any password is checked, and last, so no
+			// other handler can turn a refused login into a successful one.
+			$this->addFilterHook('authenticate', array('GdbcLoginLockout', 'checkBeforeAuthentication'), 1, 2);
+			$this->addFilterHook('authenticate', array('GdbcLoginLockout', 'checkAfterAuthentication'), PHP_INT_MAX, 1);
+			$this->addActionHook('wp_login_failed', array('GdbcLoginLockout', 'recordFailedLogin'), 10, 1);
+			$this->addActionHook('wp_login', array('GdbcLoginLockout', 'recordSuccessfulLogin'), 10, 2);
+
+			// Application passwords sent to the REST API skip `authenticate`.
+			$this->addActionHook('wp_authenticate_application_password_errors', array('GdbcLoginLockout', 'checkApplicationPassword'), 10, 2);
+			$this->addActionHook('application_password_failed_authentication', array('GdbcLoginLockout', 'recordFailedApplicationPassword'), 10, 1);
+		}
+
 		if($this->getOption(GdbcBruteForceAdminModule::OPTION_PREVENT_USER_ENUM))
 		{
 			$this->addActionHook('pre_get_posts', array($this, 'checkUserEnumeration'), 10, 1);

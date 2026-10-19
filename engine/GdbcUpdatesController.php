@@ -149,6 +149,35 @@ final class GdbcUpdatesController
 			}
 		}
 
+		// 3.4.0 adds login lockouts. Existing sites get the new options' defaults (failed
+		// logins limited, banned usernames on); options already saved are left alone.
+		if( -1 === version_compare($savedPluginVersion, '3.4.0') )
+		{
+			$bruteForceModule = GdbcModulesController::getAdminModuleInstance(GdbcModulesController::MODULE_BRUTE_FORCE);
+			if(null !== $bruteForceModule)
+			{
+				$arrNewOptions = array(
+					GdbcBruteForceAdminModule::OPTION_LIMIT_LOGIN_ATTEMPTS, GdbcBruteForceAdminModule::OPTION_MAX_FAILED_LOGINS,
+					GdbcBruteForceAdminModule::OPTION_LOCKOUT_MINUTES, GdbcBruteForceAdminModule::OPTION_LONG_LOCKOUT_HOURS,
+					GdbcBruteForceAdminModule::OPTION_BAN_USERNAMES, GdbcBruteForceAdminModule::OPTION_BANNED_USERNAMES,
+				);
+				$arrDefaults = $bruteForceModule->getDefaultOptionsValues();
+
+				foreach($arrNewOptions as $optionName)
+				{
+					if(null === $bruteForceModule->getOption($optionName) && isset($arrDefaults[$optionName]))
+						$bruteForceModule->saveOption($optionName, $arrDefaults[$optionName]);
+				}
+			}
+
+			// The hardening options all start off; only the REST API allow list has a value.
+			$tweaksModule = GdbcModulesController::getAdminModuleInstance(GdbcModulesController::MODULE_WORDPRESS_TWEAKS);
+			if(null !== $tweaksModule && null === $tweaksModule->getOption(GdbcWordPressTweaksAdminModule::WORDPRESS_REST_API_ALLOWED_NAMESPACES))
+			{
+				$tweaksModule->saveOption(GdbcWordPressTweaksAdminModule::WORDPRESS_REST_API_ALLOWED_NAMESPACES, GdbcWordPressTweaksAdminModule::DEFAULT_REST_API_ALLOWED_NAMESPACES);
+			}
+		}
+
 		$settingsModuleInstance->saveOption(GdbcSettingsAdminModule::OPTION_PLUGIN_VERSION, GoodByeCaptcha::PLUGIN_VERSION);
 
 		GoodByeCaptchaUtils::flushSiteCache();

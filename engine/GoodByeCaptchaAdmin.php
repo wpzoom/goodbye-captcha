@@ -48,6 +48,10 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 			add_action( 'admin_menu', array( $this, 'buildPluginMenu' ), 10 );
 		}
 
+		// Release link for login lockouts on the Security screen.
+		add_action( 'admin_init', array( 'GdbcBruteForceAdminModule', 'handleReleaseRequest' ) );
+		add_action( 'admin_init', array( 'GdbcLoginLockout', 'rememberCurrentUserIp' ) );
+
 		// Styles the "Upgrade to Pro" menu item, which is visible on every admin screen.
 		add_action( 'admin_head', array( __CLASS__, 'printUpgradeMenuItemAssets' ) );
 

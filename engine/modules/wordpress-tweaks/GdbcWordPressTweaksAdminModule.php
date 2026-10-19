@@ -35,6 +35,17 @@ class GdbcWordPressTweaksAdminModule extends GdbcBaseAdminModule
 	CONST WORDPRESS_COMMENTS_FORM_WEBSITE_FIELD = 'CommentsWebsiteFieldHidden';
 	CONST WORDPRESS_COMMENTS_FORM_NOTES_FIELDS  = 'CommentsNoteHidden'; // hides allowed tags and text like "Your email address will not be published"
 
+	CONST WORDPRESS_CUSTOM_LOGIN_SLUG           = 'CustomLoginSlug';
+	CONST WORDPRESS_REST_API_VISITORS           = 'RestApiLoggedInOnly';
+	CONST WORDPRESS_REST_API_ALLOWED_NAMESPACES = 'RestApiAllowedNamespaces';
+	CONST WORDPRESS_APP_PASSWORDS_DISABLED      = 'AppPasswordsDisabled';
+	CONST WORDPRESS_UPLOADS_PHP_BLOCKED         = 'UploadsPhpBlocked';
+
+	CONST DEFAULT_REST_API_ALLOWED_NAMESPACES   = 'oembed/1.0, contact-form-7, wc/store, jetpack, litespeed, wordfence';
+
+	// Login slugs that would clash with WordPress' own paths.
+	private static $arrReservedLoginSlugs = array('wp-admin', 'wp-login', 'wp-login-php', 'login', 'admin', 'dashboard', 'wp-content', 'wp-includes', 'wp-json', 'feed', 'xmlrpc', 'xmlrpc-php');
+
 	protected function __construct()
 	{
 		parent::__construct();
@@ -47,6 +58,47 @@ class GdbcWordPressTweaksAdminModule extends GdbcBaseAdminModule
 			return $arrDefaultSettingOptions;
 
 		$arrDefaultSettingOptions = array(
+
+			self::WORDPRESS_CUSTOM_LOGIN_SLUG => array(
+				'Id'          => 9,
+				'Value'       => NULL,
+				'LabelText'   => __('Custom Login URL', 'goodbye-captcha'),
+				'Description' => $this->getCustomLoginSlugDescription(),
+				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_TEXT,
+			),
+
+			self::WORDPRESS_REST_API_VISITORS => array(
+				'Id'          => 10,
+				'Value'       => NULL,
+				'LabelText'   => __('Restrict the REST API', 'goodbye-captcha'),
+				'Description' => __('Only logged-in users can use the REST API, except for the plugins listed below. Stops bots from reading your users, posts and settings through it.', 'goodbye-captcha'),
+				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
+			),
+
+			self::WORDPRESS_REST_API_ALLOWED_NAMESPACES => array(
+				'Id'          => 11,
+				'Value'       => self::DEFAULT_REST_API_ALLOWED_NAMESPACES,
+				'LabelText'   => __('REST API Open to Visitors', 'goodbye-captcha'),
+				'Description' => __('REST API namespaces visitors can still use, separated by commas. If a form or shop feature stops working for visitors, add its plugin\'s namespace here, for example the part after /wp-json/ in its requests.', 'goodbye-captcha'),
+				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_TEXT,
+				'InputClass'  => 'large-text',
+			),
+
+			self::WORDPRESS_APP_PASSWORDS_DISABLED => array(
+				'Id'          => 12,
+				'Value'       => NULL,
+				'LabelText'   => __('Disable Application Passwords', 'goodbye-captcha'),
+				'Description' => __('Turns off application passwords, which let apps and scripts log in to the REST API and XML-RPC. Leave this off if you use the WordPress mobile app or connect external services that way.', 'goodbye-captcha'),
+				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
+			),
+
+			self::WORDPRESS_UPLOADS_PHP_BLOCKED => array(
+				'Id'          => 13,
+				'Value'       => NULL,
+				'LabelText'   => __('Block PHP in Uploads', 'goodbye-captcha'),
+				'Description' => __('Stops PHP files in the uploads folder from running, so a malicious file uploaded through a vulnerable plugin cannot be executed. Adds rules to the uploads folder\'s .htaccess file, which Apache and LiteSpeed servers use. On Nginx, ask your host to deny PHP in /wp-content/uploads/.', 'goodbye-captcha'),
+				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_INPUT_CHECKBOX
+			),
 
 			self::WORDPRESS_HIDE_VERSION => array(
 				'Id'          => 1,
@@ -117,8 +169,102 @@ class GdbcWordPressTweaksAdminModule extends GdbcBaseAdminModule
 
 		);
 
+		// The custom login URL is for single sites; a network has a login page per site.
+		if(is_multisite())
+			unset($arrDefaultSettingOptions[self::WORDPRESS_CUSTOM_LOGIN_SLUG]);
+
 		return $arrDefaultSettingOptions;
 
+	}
+
+	public function validateModuleSettingsFields($arrSettingOptions)
+	{
+		$arrSettingOptions = $this->sanitizeSubmittedOptions($arrSettingOptions);
+
+		if(isset($arrSettingOptions[self::WORDPRESS_CUSTOM_LOGIN_SLUG]))
+		{
+			$arrSettingOptions[self::WORDPRESS_CUSTOM_LOGIN_SLUG] = $this->validateCustomLoginSlug($arrSettingOptions[self::WORDPRESS_CUSTOM_LOGIN_SLUG]);
+		}
+
+		if(isset($arrSettingOptions[self::WORDPRESS_REST_API_ALLOWED_NAMESPACES]))
+		{
+			$arrNamespaces = array_filter(array_unique(array_map(function($namespace) {
+				return trim(preg_replace('#[^a-z0-9_./-]#', '', strtolower($namespace)), '/');
+			}, explode(',', (string)$arrSettingOptions[self::WORDPRESS_REST_API_ALLOWED_NAMESPACES]))));
+
+			$arrSettingOptions[self::WORDPRESS_REST_API_ALLOWED_NAMESPACES] = implode(', ', $arrNamespaces);
+		}
+
+		$blockUploadsPhp = !empty($arrSettingOptions[self::WORDPRESS_UPLOADS_PHP_BLOCKED]);
+		if($blockUploadsPhp !== (bool)$this->getOption(self::WORDPRESS_UPLOADS_PHP_BLOCKED) || $blockUploadsPhp)
+		{
+			if(!GdbcHardening::writeUploadsHtaccess($blockUploadsPhp) && $blockUploadsPhp)
+			{
+				unset($arrSettingOptions[self::WORDPRESS_UPLOADS_PHP_BLOCKED]);
+				$this->registerErrorMessage(__('PHP in uploads could not be blocked: the .htaccess file in the uploads folder is not writable.', 'goodbye-captcha'));
+				return $arrSettingOptions;
+			}
+		}
+
+		$this->registerSuccessMessage(__('Your changes were successfully saved!', 'goodbye-captcha'));
+
+		return $arrSettingOptions;
+	}
+
+	/**
+	 * Checks a new login slug. An unusable one keeps the current slug and shows why.
+	 *
+	 * @param string $slug Submitted slug.
+	 * @return string|null
+	 */
+	private function validateCustomLoginSlug($slug)
+	{
+		$currentSlug = $this->getOption(self::WORDPRESS_CUSTOM_LOGIN_SLUG);
+		$slug        = sanitize_title((string)$slug);
+
+		if('' === $slug)
+			return null;
+
+		if(in_array($slug, self::$arrReservedLoginSlugs, true) || strlen($slug) < 4)
+		{
+			$this->registerErrorMessage(__('That login URL cannot be used. Choose a word of at least 4 letters that WordPress does not use itself.', 'goodbye-captcha'));
+			return $currentSlug;
+		}
+
+		if(get_page_by_path($slug, OBJECT, get_post_types(array('public' => true))))
+		{
+			$this->registerErrorMessage(__('A page or post already uses that address. Choose a different login URL.', 'goodbye-captcha'));
+			return $currentSlug;
+		}
+
+		if($slug !== $currentSlug)
+		{
+			GdbcHardening::emailNewLoginUrl($slug);
+		}
+
+		return $slug;
+	}
+
+	/**
+	 * The custom login URL description, with the current address when one is set.
+	 *
+	 * @return string
+	 */
+	private function getCustomLoginSlugDescription()
+	{
+		$description = __('Moves the login page to an address only you know, such as "my-login". wp-login.php and, for visitors who are not logged in, wp-admin show a "not found" page. Leave empty to keep the standard login page.', 'goodbye-captcha');
+
+		$loginUrl = GdbcHardening::getCustomLoginUrl();
+		if(null !== $loginUrl)
+		{
+			/* translators: %s: the login page address. */
+			$description .= '<br /><strong>' . sprintf(esc_html__('Your login page: %s', 'goodbye-captcha'), '<code>' . esc_html($loginUrl) . '</code>') . '</strong>';
+		}
+
+		/* translators: %s: PHP constant. */
+		$description .= '<br />' . sprintf(esc_html__('Locked out? Add %s to wp-config.php to use wp-login.php again.', 'goodbye-captcha'), '<code>define(\'' . GdbcHardening::DISABLE_LOGIN_URL_CONSTANT . '\', true);</code>');
+
+		return $description;
 	}
 
 
