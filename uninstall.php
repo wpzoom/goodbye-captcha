@@ -24,6 +24,8 @@ class GoodByeCaptchaUninstaller
 		}
 
 		GdbcTaskScheduler::unScheduleGdbcTasks();
+		GdbcSummaryReport::unschedule();
+		GdbcSummaryReport::deleteState();
 		GdbcBruteGuardian::deleteSiteFlags();
 
 		foreach(GdbcModulesController::getRegisteredModules() as $moduleName => $arrModuleInfo)

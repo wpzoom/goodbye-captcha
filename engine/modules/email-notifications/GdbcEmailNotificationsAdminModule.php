@@ -25,6 +25,10 @@ class GdbcEmailNotificationsAdminModule extends GdbcBaseAdminModule
 	CONST OPTION_TEST_MODE_NOTIFICATION       = 'TestModeNotification';
 	CONST OPTION_BRUTE_FORCE_ATTACK_DETECTED  = 'IsUnderAttack';
 	CONST OPTION_ADMIN_LOGGED_IN_DETECTED     = 'AdminLoggedIn';
+	CONST OPTION_SUMMARY_REPORT               = 'SummaryReport';
+
+	/** Form field array that add-on settings on the Notifications screen are posted in. */
+	CONST ADDON_FIELDS_NAME = 'wpbruiser_report_addon';
 
 	protected function __construct()
 	{
@@ -38,6 +42,16 @@ class GdbcEmailNotificationsAdminModule extends GdbcBaseAdminModule
 			return $arrDefaultSettingOptions;
 
 		$arrDefaultSettingOptions = array(
+
+			// New sites get the weekly report; sites updated from before 3.5.0 start
+			// with it off and are offered it once (see GdbcSummaryReport).
+			self::OPTION_SUMMARY_REPORT => array(
+				'Value'       => GdbcSummaryReport::FREQUENCY_WEEKLY,
+				'LabelText'   => __('Security Report', 'goodbye-captcha'),
+				'Description' => __('A summary of what WPBruiser blocked, the usernames bots tried and anything that needs your attention.', 'goodbye-captcha'),
+				'InputType'   => MchGdbcHtmlUtils::FORM_ELEMENT_SELECT,
+				'Options'     => GdbcSummaryReport::getFrequencyChoices(),
+			),
 
 			self::OPTION_BRUTE_FORCE_ATTACK_DETECTED  => array(
 				'Value'       => true,
@@ -75,6 +89,9 @@ class GdbcEmailNotificationsAdminModule extends GdbcBaseAdminModule
 	public  function renderModuleSettingsField(array $arrSettingsField)
 	{
 		parent::renderModuleSettingsField($arrSettingsField);
+
+		if(self::OPTION_SUMMARY_REPORT === key($arrSettingsField))
+			GdbcSummaryReport::renderSettingsExtras();
 	}
 
 
@@ -82,6 +99,27 @@ class GdbcEmailNotificationsAdminModule extends GdbcBaseAdminModule
 	{
 
 		$arrSettingOptions = $this->sanitizeSubmittedOptions($arrSettingOptions);
+
+		if(isset($arrSettingOptions[self::OPTION_SUMMARY_REPORT]) && !in_array($arrSettingOptions[self::OPTION_SUMMARY_REPORT], GdbcSummaryReport::getFrequencyChoices(), true))
+			$arrSettingOptions[self::OPTION_SUMMARY_REPORT] = GdbcSummaryReport::FREQUENCY_OFF;
+
+		// Fields an add-on printed under the report setting arrive in the same form. This
+		// callback also runs when an option is saved from code, so it only fires when
+		// they were actually submitted. options.php has already checked the nonce.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- see above; the add-on sanitizes its own fields.
+		if(isset($_POST[self::ADDON_FIELDS_NAME]) && is_array($_POST[self::ADDON_FIELDS_NAME]))
+		{
+			/**
+			 * Fires when the Notifications screen is saved, with the fields add-ons print
+			 * from the wpbruiser_report_settings_extras action under the name
+			 * GdbcEmailNotificationsAdminModule::ADDON_FIELDS_NAME.
+			 *
+			 * @since 3.5.0
+			 * @param array $arrSubmitted Submitted values, unslashed and not yet sanitized.
+			 */
+			do_action('wpbruiser_notifications_settings_saved', wp_unslash($_POST[self::ADDON_FIELDS_NAME])); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		}
+
 		if(!empty($arrSettingOptions[self::OPTION_EMAIL_ADDRESS]))
 		{
 			$arrSettingOptions[self::OPTION_EMAIL_ADDRESS] = sanitize_email($arrSettingOptions[self::OPTION_EMAIL_ADDRESS]);

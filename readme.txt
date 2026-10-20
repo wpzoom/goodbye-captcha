@@ -1,14 +1,14 @@
-=== WPBruiser - No CAPTCHA Anti-Spam & Login Protection ===
+=== WPBruiser Security - No CAPTCHA Anti-Spam & Login Protection ===
 Contributors: wpzoom
-Tags: anti-spam, spam protection, captcha, brute force, limit login attempts
+Tags: security, anti-spam, captcha, limit login attempts, brute force
 Requires at least: 6.5
 Requires PHP: 7.4
 Tested up to: 7.1
-Stable tag: 3.4.0
+Stable tag: 3.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Stop spam on contact forms, comments, logins and registrations with an invisible check. No CAPTCHA, no puzzles, no third-party service.
+Security and anti-spam without CAPTCHA. Blocks bots on forms, comments and logins, limits login attempts and hardens WordPress. No outside service.
 
 == Description ==
 
@@ -73,6 +73,7 @@ Using Contact Form 7, WPForms, WooCommerce, Easy Digital Downloads, Elementor Pr
 * See the submitted content of a blocked attempt (optional, kept for the number of days you choose)
 * Block or unblock an address straight from the reports screen
 * A Dashboard widget with blocked attempts for the last day, week and month, and the forms bots target most
+* A weekly or monthly security report by email: what was blocked, the usernames bots tried, and anything that needs your attention
 * Old log entries are deleted automatically after the number of days you choose, or you can turn logging off
 
 = Everyday details =
@@ -240,6 +241,13 @@ WPBruiser bundles the following third-party resources, each under its own licens
 The Integrations screen shows the icons the integrated plugins publish on WordPress.org (Gravity Forms: the icon of its official Gravity Forms CLI add-on). Plugin names and logos are trademarks of their owners and are used only to identify the integrations.
 
 == Changelog ==
+
+= 3.5.0 =
+- New: security report email. Once a week or once a month, WPBruiser emails you what it blocked (with the change from the previous period), the forms bots went for, the IP addresses and usernames they used, and anything that needs your attention: Test Mode left on, an active form plugin that isn't protected, an update waiting or a Pro license about to run out. Choose how often on the Notifications screen, where you can also send a test report. New sites get it weekly; on existing sites it starts off, and a one-time notice offers to turn it on.
+- Improved: the attack, administrator sign-in and Test Mode emails have a new, cleaner design that reads well on phones.
+- Fixed: the administrator sign-in email greeted "Hi ," when the account had no first or last name.
+- The plugin is now called WPBruiser Security, since it covers login security and WordPress hardening as well as spam. Same plugin, same settings.
+- For developers: new filters `wpbruiser_report_frequencies`, `wpbruiser_report_data`, `wpbruiser_report_checks` and `wpbruiser_email_recipients`, and actions `wpbruiser_report_sent` and `wpbruiser_report_email_sections`.
 
 = 3.4.0 =
 - New: login lockouts. After 5 failed logins in 12 hours (you choose the number), an IP address is locked out for 20 minutes, and for 24 hours after its 4th lockout in a day. They cover the login form, XML-RPC, application passwords and the login forms of other plugins (WooCommerce, Easy Digital Downloads and any plugin that uses WordPress' own login). Allow-listed IP addresses are never locked out, nothing is locked out in Test Mode, and the Security screen lists current lockouts with a Release button. On by default, also on existing sites.

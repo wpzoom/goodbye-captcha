@@ -1,6 +1,6 @@
-# WPBruiser: No-CAPTCHA Anti-Spam & Login Protection
+# WPBruiser Security: No-CAPTCHA Anti-Spam & Login Protection
 
-Stop spam on contact forms, comments, logins and registrations with an invisible check. No CAPTCHA, no puzzles, no third-party service.
+Security and anti-spam without CAPTCHA. Blocks bots on forms, comments and logins, limits login attempts and hardens WordPress. No outside service.
 
 [![WordPress Plugin Version](https://img.shields.io/wordpress/plugin/v/goodbye-captcha)](https://wordpress.org/plugins/goodbye-captcha/)
 [![WordPress Plugin Rating](https://img.shields.io/wordpress/plugin/stars/goodbye-captcha)](https://wordpress.org/plugins/goodbye-captcha/#reviews)
@@ -57,7 +57,8 @@ Because bad submissions are rejected at the door, they never land in your modera
 - Blocked attempts per day and per form, a world map, and the content bots tried to send
 - A Dashboard widget with the last day, week and month
 - IP allow and block lists (IPv4 and IPv6, ranges and CIDR)
-- Email notifications for attacks and administrator logins
+- A weekly or monthly security report by email: what was blocked, the usernames bots tried, and anything that needs attention
+- Email alerts for attacks and administrator logins
 - Test Mode, to check protection before switching it on for real
 
 ## WPBruiser Pro

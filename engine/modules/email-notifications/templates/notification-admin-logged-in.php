@@ -1,30 +1,20 @@
 <?php defined( 'ABSPATH' ) || exit; ?>
-<p>Hi {admin-full-name},</p>
-<p>On {date-time}, a user with Administrator Capabilities signed in on your {current-site-link} website.</p>
+<p style="margin:0 0 14px;color:#4a475c;">Hi {admin-full-name},</p>
+<p style="margin:0 0 20px;color:#4a475c;">A user with administrator rights signed in to {current-site-link}. If this was you or someone you trust, there's nothing to do.</p>
 
-
-<table width="100%"  cellpadding = "0" cellspacing="0" style="border:1px solid #ddd; background-color: transparent; border-spacing:0; border-collapse: collapse">
-	<caption style = "text-align: left">User information</caption>
-	<thead>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f7f6fa;border-radius:10px;">
 	<tr>
-
-		<th style = "padding:5px; text-align: center; border: 1px solid #ddd; border-bottom-width: 2px; border-top: 0 none; ">Username</th>
-		<th style = "padding:5px; text-align: center; border: 1px solid #ddd; border-bottom-width: 2px;">Ip Address</th>
+		<td style="padding:12px 16px 4px;font-size:13px;color:#6b6880;width:120px;">Username</td>
+		<td style="padding:12px 16px 4px;font-size:14px;font-weight:600;color:#1f1d2b;">{username}</td>
 	</tr>
-	</thead>
-
-	<tbody>
-	<?php
-	echo '<tr>';
-
-	echo '<td style = "text-align: center; border: 1px solid #ddd; border-top: 0 none;">{username}</td>';
-	echo '<td style = "text-align: center; border: 1px solid #ddd;">{client-ip}</td>';
-
-	echo '</tr>';
-	?>
-
-	</tbody>
-
+	<tr>
+		<td style="padding:4px 16px;font-size:13px;color:#6b6880;">IP address</td>
+		<td style="padding:4px 16px;font-size:14px;font-weight:600;color:#1f1d2b;font-family:SFMono-Regular,Menlo,Consolas,monospace;">{client-ip}</td>
+	</tr>
+	<tr>
+		<td style="padding:4px 16px 12px;font-size:13px;color:#6b6880;">When</td>
+		<td style="padding:4px 16px 12px;font-size:14px;font-weight:600;color:#1f1d2b;">{date-time}</td>
+	</tr>
 </table>
 
-
+<p style="margin:20px 0 0;font-size:13px;color:#6b6880;">If you don't recognise this sign-in, change that account's password right away and check the list of administrators.</p>

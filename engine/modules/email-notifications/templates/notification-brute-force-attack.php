@@ -1,102 +1,45 @@
 <?php defined( 'ABSPATH' ) || exit; ?>
-<p>Hi {admin-full-name},</p>
-<p>On {detection-date-time}, WPBruiser has detected a Brute Force Attack on your {current-site-link} website.</p>
+<p style="margin:0 0 14px;color:#4a475c;">Hi {admin-full-name},</p>
+<p style="margin:0 0 20px;color:#4a475c;">On {detection-date-time}, WPBruiser detected a brute-force attack on the login of {current-site-link}: many login attempts in a short time.</p>
 
-
-<table width="100%"  cellpadding = "0" cellspacing="0" style="border:1px solid #ddd; background-color: transparent; border-spacing:0; border-collapse: collapse">
-	<caption style = "text-align: left">Statistics at detection time</caption>
-	<thead>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 	<tr>
-
-		<th style = "padding:5px; text-align: center; border: 1px solid #ddd; border-bottom-width: 2px; border-top: 0 none; ">Total Hits</th>
-		<th style = "padding:5px; text-align: center; border: 1px solid #ddd; border-bottom-width: 2px;">Total IPs</th>
-		<th style = "padding:5px; text-align: center; border: 1px solid #ddd; border-bottom-width: 2px;">BlackListed IPs</th>
-		<th style = "padding:5px; text-align: center; border: 1px solid #ddd; border-bottom-width: 2px;">Web Attackers IPs</th>
-		<th style = "padding:5px; text-align: center; border: 1px solid #ddd; border-bottom-width: 2px; ">Anonymizers IPs</th>
+		<td width="50%" style="vertical-align:top;padding:0 6px 12px 0;">
+			<div style="padding:14px;background:#fbeeee;border-radius:10px;">
+				<div style="font-size:26px;line-height:1.15;font-weight:700;color:#a52828;">{total-hits}</div>
+				<div style="margin-top:4px;font-size:13px;font-weight:600;color:#1f1d2b;">Login attempts</div>
+			</div>
+		</td>
+		<td width="50%" style="vertical-align:top;padding:0 0 12px 6px;">
+			<div style="padding:14px;background:#f7f6fa;border-radius:10px;">
+				<div style="font-size:26px;line-height:1.15;font-weight:700;color:#1f1d2b;">{total-ips}</div>
+				<div style="margin-top:4px;font-size:13px;font-weight:600;color:#1f1d2b;">IP addresses</div>
+			</div>
+		</td>
 	</tr>
-	</thead>
-
-	<tbody>
-<?php
-	echo '<tr>';
-
-	echo '<td style = "text-align: center; border: 1px solid #ddd; border-top: 0 none;">{total-hits}</td>';
-	echo '<td style = "text-align: center; border: 1px solid #ddd;">{total-ips}</td>';
-	echo '<td style = "text-align: center; border: 1px solid #ddd;">{total-black-listed}</td>';
-	echo '<td style = "text-align: center; border: 1px solid #ddd;">{total-web-attackers}</td>';
-	echo '<td style = "text-align: center; border: 1px solid #ddd;">{total-proxy-anonymizers}</td>';
-
-	echo '</tr>';
-?>
-
-	</tbody>
-
 </table>
 
-<?php
-if(!empty($arrSuggestions))
-{
-?>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+	<tr>
+		<td style="padding:9px 0;border-top:1px solid #efedf5;font-size:14px;color:#1f1d2b;">On your block list</td>
+		<td style="padding:9px 0;border-top:1px solid #efedf5;font-size:14px;color:#1f1d2b;text-align:right;">{total-black-listed}</td>
+	</tr>
+	<tr>
+		<td style="padding:9px 0;border-top:1px solid #efedf5;font-size:14px;color:#1f1d2b;">Known web attackers</td>
+		<td style="padding:9px 0;border-top:1px solid #efedf5;font-size:14px;color:#1f1d2b;text-align:right;">{total-web-attackers}</td>
+	</tr>
+	<tr>
+		<td style="padding:9px 0;border-top:1px solid #efedf5;font-size:14px;color:#1f1d2b;">Anonymous proxies</td>
+		<td style="padding:9px 0;border-top:1px solid #efedf5;font-size:14px;color:#1f1d2b;text-align:right;">{total-proxy-anonymizers}</td>
+	</tr>
+</table>
 
-	<table width="100%"  cellpadding = "0" cellspacing="0" style="margin-top: 30px; background-color: transparent; border-spacing:0; border-collapse: collapse">
-		<caption style = "text-align: left">Suggestions:</caption>
-		<tbody>
-
-			<?php
-				$suggestionsCounter = 0;
-				foreach($arrSuggestions as $suggestion)
-				{
-					echo '<tr>';
-					echo '<td style = "text-align: left; width: 20px;">' . esc_html(++$suggestionsCounter) . '.</td>';
-					echo '<td style = "text-align: left; ">' . wp_kses_post($suggestion) . '</td>';
-					echo '</tr>';
-				}
-			?>
-
-
-		</tbody>
+<?php if(!empty($arrSuggestions)) : ?>
+	<h2 style="margin:28px 0 10px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6b6880;">Worth turning on</h2>
+	<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+		<?php foreach($arrSuggestions as $suggestion) : ?>
+			<tr><td style="padding:9px 0;border-top:1px solid #efedf5;font-size:14px;color:#1f1d2b;"><?php echo wp_kses_post($suggestion); ?></td></tr>
+		<?php endforeach; ?>
 	</table>
-<?php
-}
-?>
-
-
-<!--<table width="100%"  cellpadding = "0" cellspacing="0" style="border:1px solid #ddd; background-color: transparent; border-spacing:0; border-collapse: collapse">-->
-<!---->
-<!--	<thead>-->
-<!--		<tr>-->
-<!--			<th style = "padding:5px; text-align: center; border: 1px solid #ddd; border-bottom-width: 2px; border-top: 0 none;">No.</th>-->
-<!--			<th style = "padding:5px; text-align: center; border: 1px solid #ddd; border-bottom-width: 2px;">Client IP</th>-->
-<!--			<th style = "padding:5px; text-align: center; border: 1px solid #ddd; border-bottom-width: 2px;">Hits</th>-->
-<!--			<th style = "padding:5px; text-align: center; border: 1px solid #ddd; border-bottom-width: 2px; ">BlackListed</th>-->
-<!--			<th style = "padding:5px; text-align: center; border: 1px solid #ddd; border-bottom-width: 2px; ">Attacker</th>-->
-<!--			<th style = "padding:5px; text-align: center; border: 1px solid #ddd; border-bottom-width: 2px; ">Anonymizer</th>-->
-<!--		</tr>-->
-<!--	</thead>-->
-<!---->
-<!--	<tbody>-->
-<!---->
-<?php
-
-//$ipCounter = 0; $arrLoginAttempts = array();
-//foreach($arrLoginAttempts as $loginAttempt)
-//{
-//	echo "<tr>";
-//
-//	echo '<td style = "text-align: center; border: 1px solid #ddd;">' . (++$ipCounter) . '</td>';
-//	echo '<td style = "text-align: center; border: 1px solid #ddd;">' . $loginAttempt->ClientIp . '</td>';
-//	echo '<td style = "text-align: center; border: 1px solid #ddd;">' . $loginAttempt->Hits . '</td>';
-//
-//	echo '<td style = "text-align: center; border: 1px solid #ddd;">' . ($loginAttempt->IsIpBlackListed ? 'Yes' : 'No') . '</td>';
-//	echo '<td style = "text-align: center; border: 1px solid #ddd;">' . ($loginAttempt->IsIpWebAttacker ? 'Yes' : 'No') . '</td>';
-//	echo '<td style = "text-align: center; border: 1px solid #ddd;">' . ($loginAttempt->IsIpProxyAnonym ? 'Yes' : 'No') . '</td>';
-//
-//	echo "</tr>";
-//}
-
-?>
-<!---->
-<!---->
-<!---->
-<!--	</tbody>-->
-<!--</table>-->
+	<p style="margin:10px 0 0;font-size:13px;color:#6b6880;">You'll find these on the WPBruiser Security screen.</p>
+<?php endif; ?>

@@ -106,7 +106,7 @@ final class GdbcDashboardWidget
 	 * @param int $sectionId Option ID within the module.
 	 * @return string
 	 */
-	private static function getFormLabel($moduleId, $sectionId)
+	public static function getFormLabel($moduleId, $sectionId)
 	{
 		$moduleName = GdbcModulesController::getModuleNameById($moduleId);
 		$label      = null !== $moduleName ? GdbcModulesController::getModuleDisplayName($moduleName) : __('Unknown form', 'goodbye-captcha');

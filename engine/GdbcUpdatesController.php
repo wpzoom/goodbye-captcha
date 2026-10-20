@@ -178,6 +178,18 @@ final class GdbcUpdatesController
 			}
 		}
 
+		// 3.5.0 adds the security report email. New sites get it weekly; sites updated
+		// from an older version start with it off and see a one-time offer instead.
+		if( -1 === version_compare($savedPluginVersion, '3.5.0') )
+		{
+			$emailModule = GdbcModulesController::getAdminModuleInstance(GdbcModulesController::MODULE_EMAIL_NOTIFICATIONS);
+			if(null !== $emailModule && null === $emailModule->getOption(GdbcEmailNotificationsAdminModule::OPTION_SUMMARY_REPORT))
+			{
+				$emailModule->saveOption(GdbcEmailNotificationsAdminModule::OPTION_SUMMARY_REPORT, GdbcSummaryReport::FREQUENCY_OFF);
+				GdbcSummaryReport::offerToExistingSite();
+			}
+		}
+
 		$settingsModuleInstance->saveOption(GdbcSettingsAdminModule::OPTION_PLUGIN_VERSION, GoodByeCaptcha::PLUGIN_VERSION);
 
 		GoodByeCaptchaUtils::flushSiteCache();

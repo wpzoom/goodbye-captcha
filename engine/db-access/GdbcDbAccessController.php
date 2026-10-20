@@ -299,6 +299,89 @@ final class GdbcDbAccessController
 		return self::executePreparedQuery($wpdb->prepare($sqlQuery, array((int)$sinceTimestamp, GoodByeCaptcha::isNetworkActivated() ? 0 : get_current_blog_id(), max(1, (int)$limit))));
 	}
 
+	/**
+	 * Number of blocked attempts in a period.
+	 *
+	 * @param int $fromTimestamp Start, inclusive.
+	 * @param int $toTimestamp   End, exclusive.
+	 * @return int
+	 */
+	public static function countAttemptsBetween($fromTimestamp, $toTimestamp)
+	{
+		global $wpdb;
+
+		$sqlQuery  = 'SELECT COUNT(1) AS Total FROM ' . self::getAttemptsTableName() . ' WHERE CreatedDate >= %d AND CreatedDate < %d';
+		$sqlQuery .= GoodByeCaptcha::isNetworkActivated() ? ' AND Id > %d' : ' AND SiteId = %d';
+
+		$arrResult = self::executePreparedQuery($wpdb->prepare($sqlQuery, array((int)$fromTimestamp, (int)$toTimestamp, GoodByeCaptcha::isNetworkActivated() ? 0 : get_current_blog_id())));
+
+		return isset($arrResult[0]->Total) ? (int)$arrResult[0]->Total : 0;
+	}
+
+	/**
+	 * Blocked attempts since a point in time, counted by reject reason.
+	 *
+	 * @param int $sinceTimestamp Unix timestamp.
+	 * @return int[] Reason ID => number of attempts.
+	 */
+	public static function countAttemptsByReasonSince($sinceTimestamp)
+	{
+		global $wpdb;
+
+		$sqlQuery  = 'SELECT ReasonId, COUNT(1) AS Total FROM ' . self::getAttemptsTableName() . ' WHERE CreatedDate >= %d';
+		$sqlQuery .= GoodByeCaptcha::isNetworkActivated() ? ' AND Id > %d' : ' AND SiteId = %d';
+		$sqlQuery .= ' GROUP BY ReasonId';
+
+		$arrCounts = array();
+		foreach(self::executePreparedQuery($wpdb->prepare($sqlQuery, array((int)$sinceTimestamp, GoodByeCaptcha::isNetworkActivated() ? 0 : get_current_blog_id()))) as $row)
+		{
+			$arrCounts[(int)$row->ReasonId] = (int)$row->Total;
+		}
+
+		return $arrCounts;
+	}
+
+	/**
+	 * The IP addresses with the most blocked attempts since a point in time.
+	 *
+	 * @param int $sinceTimestamp Unix timestamp.
+	 * @param int $limit          Maximum number of rows.
+	 * @return object[] Rows with ClientIp and Total.
+	 */
+	public static function getTopClientIpsSince($sinceTimestamp, $limit = 5)
+	{
+		global $wpdb;
+
+		$sqlQuery  = 'SELECT ClientIp, COUNT(1) AS Total FROM ' . self::getAttemptsTableName() . ' WHERE CreatedDate >= %d';
+		$sqlQuery .= GoodByeCaptcha::isNetworkActivated() ? ' AND Id > %d' : ' AND SiteId = %d';
+		$sqlQuery .= " AND ClientIp IS NOT NULL AND ClientIp <> '' GROUP BY ClientIp ORDER BY Total DESC LIMIT %d";
+
+		return self::executePreparedQuery($wpdb->prepare($sqlQuery, array((int)$sinceTimestamp, GoodByeCaptcha::isNetworkActivated() ? 0 : get_current_blog_id(), max(1, (int)$limit))));
+	}
+
+	/**
+	 * The notes saved with one form's blocked attempts since a point in time, newest
+	 * first. Login lockouts keep the username that was tried here.
+	 *
+	 * @param int $sinceTimestamp Unix timestamp.
+	 * @param int $moduleId       Module ID.
+	 * @param int $sectionId      Option ID within the module.
+	 * @param int $limit          Maximum number of rows.
+	 * @return string[] Serialized notes.
+	 */
+	public static function getAttemptNotesSince($sinceTimestamp, $moduleId, $sectionId, $limit = 2000)
+	{
+		global $wpdb;
+
+		$sqlQuery  = 'SELECT Notes FROM ' . self::getAttemptsTableName() . ' WHERE CreatedDate >= %d AND ModuleId = %d AND SectionId = %d';
+		$sqlQuery .= GoodByeCaptcha::isNetworkActivated() ? ' AND Id > %d' : ' AND SiteId = %d';
+		$sqlQuery .= ' AND Notes IS NOT NULL ORDER BY CreatedDate DESC LIMIT %d';
+
+		$arrRows = self::executePreparedQuery($wpdb->prepare($sqlQuery, array((int)$sinceTimestamp, (int)$moduleId, (int)$sectionId, GoodByeCaptcha::isNetworkActivated() ? 0 : get_current_blog_id(), max(1, (int)$limit))));
+
+		return wp_list_pluck($arrRows, 'Notes');
+	}
+
 	private static function getDaysAgoTimeStamp($numberOfDays)
 	{
 		return MchGdbcHttpRequest::getServerRequestTime() - ( absint($numberOfDays) * 3600 * 24 );

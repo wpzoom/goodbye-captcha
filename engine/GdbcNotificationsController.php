@@ -26,6 +26,7 @@ final class GdbcNotificationsController
 	public static function sendTestModeEmailNotification(GdbcAttemptEntity $gdbcAttemptEntity)
 	{
 		GdbcEmailNotificationsPublicModule::getInstance()->EmailSubject = __('WPBruiser - Test Mode Notification', 'goodbye-captcha');
+		GdbcEmailNotificationsPublicModule::getInstance()->EmailHeading = __('Test Mode check', 'goodbye-captcha');
 
 		$clientIpAddress = GdbcIPUtils::getClientIpAddress();
 		$currentSiteLink = MchGdbcWpUtils::getCurrentBlogLink();
@@ -61,6 +62,7 @@ final class GdbcNotificationsController
 			return;
 
 		GdbcEmailNotificationsPublicModule::getInstance()->EmailSubject = __('Alert - Brute Force Attack Detected by WPBruiser!', 'goodbye-captcha');
+		GdbcEmailNotificationsPublicModule::getInstance()->EmailHeading = __('Brute-force attack detected', 'goodbye-captcha');
 
 		$adminFullName = MchGdbcWpUtils::getAdminFullName();
 		empty($adminFullName) ? $adminFullName = MchGdbcWpUtils::getAdminDisplayName() : null;

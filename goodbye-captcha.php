@@ -7,10 +7,10 @@
  * @copyright 2014-2018 Mihai Chelaru, 2026 WPZOOM
  *
  * @wordpress-plugin
- * Plugin Name: WPBruiser - No CAPTCHA Anti-Spam & Login Protection
+ * Plugin Name: WPBruiser Security - No CAPTCHA Anti-Spam & Login Protection
  * Plugin URI: https://www.wpzoom.com/plugins/wpbruiser/
- * Description: Stops spam bots and brute-force logins on your WordPress forms with an invisible check. No puzzles, no image challenges, no third-party service.
- * Version: 3.4.0
+ * Description: Security and anti-spam without CAPTCHA. Stops spam bots on your forms, limits login attempts and hardens WordPress, with an invisible check and no third-party service.
+ * Version: 3.5.0
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * Author: WPZOOM
@@ -29,7 +29,7 @@ if(!class_exists('GoodByeCaptcha', false))
 	class GoodByeCaptcha
 	{
 		
-		CONST PLUGIN_VERSION    = '3.4.0';
+		CONST PLUGIN_VERSION    = '3.5.0';
 		// PLUGIN_SLUG is also the prefix for option keys and admin menu slugs, so it
 		// must keep its historical value or existing installs lose their settings.
 		// The text domain is separate and must equal the WordPress.org slug.
@@ -71,6 +71,7 @@ if(!class_exists('GoodByeCaptcha', false))
 			'GdbcHardening'               => '/engine/GdbcHardening.php',
 			'GdbcAttemptEntity'           => '/engine/entities/GdbcAttemptEntity.php',
 			'GdbcNotificationsController' => '/engine/GdbcNotificationsController.php',
+			'GdbcSummaryReport'           => '/engine/GdbcSummaryReport.php',
 			'GdbcLogsCleanerTask'         => '/engine/tasks/GdbcLogsCleanerTask.php',
 			'GdbcTaskScheduler'           => '/engine/GdbcTaskScheduler.php',
 
@@ -97,6 +98,9 @@ if(!class_exists('GoodByeCaptcha', false))
 
 			// The custom login URL and the REST API rules apply on every request.
 			GdbcHardening::init();
+
+			// The security report email, sent from a daily WP-Cron check.
+			GdbcSummaryReport::init();
 
 			if (MchGdbcWpUtils::isAjaxRequest()) {
 				GdbcAjaxController::processRequest();
@@ -149,6 +153,7 @@ if(!class_exists('GoodByeCaptcha', false))
 		public static function deactivate($isForNetwork)
 		{
 			GdbcHardening::removeUploadsHtaccessRules();
+			GdbcSummaryReport::unschedule();
 		}
 
 	}

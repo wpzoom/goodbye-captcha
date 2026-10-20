@@ -26,7 +26,9 @@ defined( 'ABSPATH' ) || exit;
 
 class GdbcEmailNotificationsPublicModule extends GdbcBasePublicModule
 {
-	public $EmailSubject    = null;
+	public $EmailSubject     = null;
+	public $EmailHeading     = null;
+	public $EmailPreheader   = null;
 	public $EmailBodyContent = null;
 
 	protected function __construct()
@@ -53,14 +55,18 @@ class GdbcEmailNotificationsPublicModule extends GdbcBasePublicModule
 		if(!MchGdbcWpUtils::fileExists($templateFilePath))
 			return;
 
-		//$this->EmailSubject = __('WPBruiser - Notification', 'goodbye-captcha');
+		$this->EmailSubject = __('WPBruiser - Administrator Signed In', 'goodbye-captcha');
+		$this->EmailHeading = __('An administrator signed in', 'goodbye-captcha');
 
 		$detectedDate = get_date_from_gmt ( gmdate( 'Y-m-d H:i:s', MchGdbcHttpRequest::getServerRequestTime() ), 'l, F d, Y');
 		$detectedTime = get_date_from_gmt ( gmdate( 'Y-m-d H:i:s', MchGdbcHttpRequest::getServerRequestTime() ), 'H:i:s');
 
+		$adminFullName = MchGdbcWpUtils::getAdminFullName();
+		empty($adminFullName) ? $adminFullName = MchGdbcWpUtils::getAdminDisplayName() : null;
+
 		$arrReplaceableContent = array(
 				'{current-site-link}' => MchGdbcWpUtils::getCurrentBlogLink(),
-				'{admin-full-name}'   => MchGdbcWpUtils::getAdminFullName(),
+				'{admin-full-name}'   => $adminFullName,
 				'{date-time}'         => $detectedDate . ' at ' . $detectedTime,
 //				'{date}'              => $detectedDate,
 //				'{time}'              => $detectedTime,
@@ -88,7 +94,15 @@ class GdbcEmailNotificationsPublicModule extends GdbcBasePublicModule
 	}
 
 
-	public function send($isHtmlFormattedEmail = true)
+	/**
+	 * Sends the email set up in EmailSubject, EmailHeading and EmailBodyContent, then
+	 * clears them.
+	 *
+	 * @param bool   $isHtmlFormattedEmail Whether the body is HTML.
+	 * @param string $context              What is being sent: "alert" or "report".
+	 * @return bool Whether wp_mail() accepted the email.
+	 */
+	public function send($isHtmlFormattedEmail = true, $context = 'alert')
 	{
 		$emailHeaders = array();
 		$isHtmlFormattedEmail ? $emailHeaders[] = 'Content-Type: text/html; charset=UTF-8' : null;
@@ -97,25 +111,69 @@ class GdbcEmailNotificationsPublicModule extends GdbcBasePublicModule
 
 		empty($emailAddressToSend) ? $emailAddressToSend = MchGdbcWpUtils::getAdminEmailAddress() : null;
 
-		empty($this->EmailSubject) ? $this->EmailSubject =  __('WPBruiser Notification', 'goodbye-captcha') : null;
+		/**
+		 * Filters who receives WPBruiser's emails.
+		 *
+		 * @since 3.5.0
+		 * @param string[] $arrRecipients Email addresses. The Notifications address comes first.
+		 * @param string   $context       "alert" or "report".
+		 */
+		$arrRecipients = array_values(array_unique(array_filter(array_map('sanitize_email', (array)apply_filters('wpbruiser_email_recipients', array($emailAddressToSend), $context)), 'is_email')));
+		if(empty($arrRecipients))
+			return false;
 
-		//$emailContent = file_get_contents($this->layoutTemplateFilePath);
+		$emailContent = $this->renderEmail();
+
+		$isSent = (bool)@wp_mail($arrRecipients, $this->EmailSubject, $emailContent, $emailHeaders);
+
+		$this->EmailSubject = $this->EmailHeading = $this->EmailPreheader = $this->EmailBodyContent = null;
+
+		return $isSent;
+	}
+
+	/**
+	 * The full HTML email for EmailSubject, EmailHeading, EmailPreheader and
+	 * EmailBodyContent, without sending it. Used by send() and the report preview.
+	 *
+	 * @return string
+	 */
+	public function renderEmail()
+	{
+		empty($this->EmailSubject) ? $this->EmailSubject =  __('WPBruiser Notification', 'goodbye-captcha') : null;
+		empty($this->EmailHeading) ? $this->EmailHeading = __('Security notification', 'goodbye-captcha') : null;
 
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- reading an email template shipped inside the plugin, not a remote URL.
 		$emailContent = @file_get_contents(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'notification-base-layout.html');
 
-		if(false !== $emailContent)
-		{
-			$emailContent = str_replace('{email-body-content}', trim($this->EmailBodyContent), $emailContent);
-		}
-		else
-		{
-			$emailContent = trim($this->EmailBodyContent);
-		}
+		if(false === $emailContent)
+			return trim((string)$this->EmailBodyContent);
 
-		@wp_mail($emailAddressToSend, $this->EmailSubject, $emailContent, $emailHeaders);
+		$siteName = wp_specialchars_decode(get_bloginfo('name'), ENT_QUOTES);
+		'' === trim($siteName) ? $siteName = wp_parse_url(home_url(), PHP_URL_HOST) : null;
 
+		$settingsUrl = GoodByeCaptcha::isNetworkActivated() ? network_admin_url('admin.php?page=wp-bruiser-notifications') : admin_url('admin.php?page=wp-bruiser-notifications');
+
+		$arrReplace = array(
+			'{email-title}'        => esc_html($this->EmailSubject),
+			'{email-heading}'      => esc_html($this->EmailHeading),
+			'{email-preheader}'    => esc_html($this->EmailPreheader),
+			'{site-name}'          => esc_html($siteName),
+			'{site-url}'           => esc_url(home_url('/')),
+			'{logo-url}'           => esc_url(plugins_url('assets/images/email-logo.png', GoodByeCaptcha::getMainFilePath())),
+			'{settings-url}'       => esc_url($settingsUrl),
+			'{footer-settings}'    => esc_html__('Email settings', 'goodbye-captcha'),
+			'{footer-note}'        => esc_html(sprintf(
+				/* translators: %s: site name. */
+				__('You get this email because WPBruiser protects %s.', 'goodbye-captcha'),
+				$siteName
+			)),
+			'{footer-help}'        => esc_html__('Support forum', 'goodbye-captcha'),
+		);
+
+		// The body goes in last, so placeholders inside it are left alone.
+		$emailContent = str_replace(array_keys($arrReplace), array_values($arrReplace), $emailContent);
+
+		return str_replace('{email-body-content}', trim((string)$this->EmailBodyContent), $emailContent);
 	}
-
 
 }
