@@ -117,6 +117,8 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 				// One screen for every integration, free and Pro. It replaced the separate
 				// Contact Forms, Membership, eCommerce and Others screens in 3.3.0.
 				new GdbcIntegrationsAdminPage(__('Integrations', 'goodbye-captcha'), __('Integrations', 'goodbye-captcha'), self::$PLUGIN_SLUG),
+				// Checkup: what needs attention, which protections are on, and the plugin check.
+				new GdbcCheckupAdminPage(__('Checkup', 'goodbye-captcha'), __('Security Checkup', 'goodbye-captcha'), self::$PLUGIN_SLUG),
 				new GdbcNotificationsAdminPage(__('Notifications', 'goodbye-captcha'), __('Notifications Settings', 'goodbye-captcha'), self::$PLUGIN_SLUG),
 				new GdbcReportsAdminPage(__('Reports', 'goodbye-captcha'), __('WPBruiser - Blocked Attempts', 'goodbye-captcha'), self::$PLUGIN_SLUG),
 

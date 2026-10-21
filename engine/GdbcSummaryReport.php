@@ -427,10 +427,11 @@ final class GdbcSummaryReport
 	/**
 	 * Things on the site worth fixing, most important first.
 	 *
-	 * @param bool $isLogging Whether blocked attempts are logged.
+	 * @param bool   $isLogging Whether blocked attempts are logged.
+	 * @param string $context   "report" or "checkup".
 	 * @return array[] With Level ("warning" or "notice"), Text, Url and Button.
 	 */
-	public static function getChecks($isLogging = true)
+	public static function getChecks($isLogging = true, $context = 'report')
 	{
 		$arrChecks = array();
 
@@ -520,6 +521,27 @@ final class GdbcSummaryReport
 			);
 		}
 
+		if(GdbcPluginHealth::isEnabled())
+			$arrChecks = array_merge($arrChecks, GdbcPluginHealth::getReportChecks($context));
+
+		$otherUpdates = self::countOtherPluginUpdates();
+		if($otherUpdates > 0)
+		{
+			// "Other" when the WPBruiser update above is listed too.
+			$updatesText = empty(self::getAvailableUpdates())
+				/* translators: %d: number of plugins. */
+				? _n('%d plugin has an update waiting.', '%d plugins have updates waiting.', $otherUpdates, 'goodbye-captcha')
+				/* translators: %d: number of plugins. */
+				: _n('%d other plugin has an update waiting.', '%d other plugins have updates waiting.', $otherUpdates, 'goodbye-captcha');
+
+			$arrChecks[] = array(
+				'Level'  => 'notice',
+				'Text'   => sprintf($updatesText, $otherUpdates),
+				'Url'    => GoodByeCaptcha::isNetworkActivated() ? network_admin_url('update-core.php') : admin_url('update-core.php'),
+				'Button' => __('See updates', 'goodbye-captcha'),
+			);
+		}
+
 		if(!$isLogging)
 		{
 			$arrChecks[] = array(
@@ -594,6 +616,20 @@ final class GdbcSummaryReport
 		}
 
 		return null;
+	}
+
+	/**
+	 * Plugins other than WPBruiser and WPBruiser Pro with an update waiting.
+	 *
+	 * @return int
+	 */
+	private static function countOtherPluginUpdates()
+	{
+		$updates = get_site_transient('update_plugins');
+		if(!is_object($updates) || empty($updates->response) || !is_array($updates->response))
+			return 0;
+
+		return count(array_diff_key($updates->response, array_flip(array(plugin_basename(GoodByeCaptcha::getMainFilePath()), 'wpbruiser-pro/wpbruiser-pro.php'))));
 	}
 
 	/**

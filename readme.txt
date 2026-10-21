@@ -4,7 +4,7 @@ Tags: security, anti-spam, captcha, limit login attempts, brute force
 Requires at least: 6.5
 Requires PHP: 7.4
 Tested up to: 7.1
-Stable tag: 3.5.0
+Stable tag: 3.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -74,6 +74,7 @@ Using Contact Form 7, WPForms, WooCommerce, Easy Digital Downloads, Elementor Pr
 * Block or unblock an address straight from the reports screen
 * A Dashboard widget with blocked attempts for the last day, week and month, and the forms bots target most
 * A weekly or monthly security report by email: what was blocked, the usernames bots tried, and anything that needs your attention
+* A weekly check of your plugins against WordPress.org, with a warning for any that were closed (often for a security issue) or abandoned, on the Plugins screen and in Site Health
 * Old log entries are deleted automatically after the number of days you choose, or you can turn logging off
 
 = Everyday details =
@@ -121,7 +122,15 @@ Using Contact Form 7, WPForms, WooCommerce, Easy Digital Downloads, Elementor Pr
 
 = External services =
 
-WPBruiser does not connect to any external service. It makes no remote API requests, collects no telemetry, runs no license or update checks of its own and loads no third-party fonts or scripts. All detection happens on your server, and the IP reputation and country data it uses ship inside the plugin.
+All spam and bot detection happens on your server. WPBruiser collects no telemetry, runs no license or update checks of its own and loads no third-party fonts or scripts, and the IP reputation and country data it uses ship inside the plugin. Nothing about your visitors is ever sent anywhere.
+
+The one external service is the WordPress.org plugin directory, for the plugin check:
+
+* What is sent: the folder names of the plugins installed on your site (for example "contact-form-7"), one request per plugin, to api.wordpress.org. Plugins with an Update URI pointing somewhere other than WordPress.org are not sent. WordPress itself already sends this list to WordPress.org to check for updates.
+* When: about once a week per plugin, from the daily WP-Cron event, and when you open WPBruiser's Checkup screen or Tools > Site Health.
+* Why: to find plugins that WordPress.org has closed or that haven't been updated in over two years.
+* You can turn it off with `add_filter( 'wpbruiser_plugin_health_enabled', '__return_false' );`.
+* WordPress.org [privacy policy](https://wordpress.org/about/privacy/).
 
 = Support =
 
@@ -192,7 +201,7 @@ Only for the license (activation and a daily check) and updates, which come from
 
 = Does it send data to any server? =
 
-No. See "External services" in the description. (The optional WPBruiser Pro add-on contacts wpzoom.com for its license and updates only.)
+Nothing about your visitors, ever. The only outside request is the weekly plugin check, which sends the names of your installed plugins to the WordPress.org plugin directory, as WordPress itself does for updates. See "External services" in the description. (The optional WPBruiser Pro add-on contacts wpzoom.com for its license and updates, and, only if you set them up, Slack, Telegram or your webhook for the report.)
 
 = Does it replace a full security plugin? =
 
@@ -241,6 +250,13 @@ WPBruiser bundles the following third-party resources, each under its own licens
 The Integrations screen shows the icons the integrated plugins publish on WordPress.org (Gravity Forms: the icon of its official Gravity Forms CLI add-on). Plugin names and logos are trademarks of their owners and are used only to identify the integrations.
 
 == Changelog ==
+
+= 3.6.0 =
+- New: Checkup screen. One page with everything that needs your attention, every WPBruiser protection grouped by area with whether it's on and a link to turn it on, and the status of each installed plugin on WordPress.org.
+- New: plugin check. Once a week WPBruiser looks up your installed plugins on the WordPress.org plugin directory and warns you about any that were closed (often for a security issue) or haven't been updated in over two years. Closed plugins no longer get security fixes, and even an inactive one can be a way in. You'll find them on the Checkup screen, under the plugin on the Plugins screen, in Site Health, on the Dashboard widget and in the security report. Premium and custom plugins that aren't in the directory are skipped.
+- Improved: the security report also says when other plugins have updates waiting.
+- New: a Preview email button next to "Send a test report", which opens the report in a new tab.
+- For developers: new filters `wpbruiser_plugin_health_enabled`, to turn the plugin check off, and `wpbruiser_checkup_protections`, to add to the Checkup screen's list.
 
 = 3.5.0 =
 - New: security report email. Once a week or once a month, WPBruiser emails you what it blocked (with the change from the previous period), the forms bots went for, the IP addresses and usernames they used, and anything that needs your attention: Test Mode left on, an active form plugin that isn't protected, an update waiting or a Pro license about to run out. Choose how often on the Notifications screen, where you can also send a test report. New sites get it weekly; on existing sites it starts off, and a one-time notice offers to turn it on.

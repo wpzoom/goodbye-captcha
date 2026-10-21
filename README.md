@@ -29,7 +29,7 @@ sequenceDiagram
     Note over S: Valid: the form is processed as usual<br/>Missing or invalid: rejected and logged
 ```
 
-Because bad submissions are rejected at the door, they never land in your moderation queue and never create junk user accounts. Everything runs on your own server: no remote APIs, no outside scripts or fonts, and no visitor data sent anywhere.
+Because bad submissions are rejected at the door, they never land in your moderation queue and never create junk user accounts. Everything runs on your own server: no outside scripts or fonts, and no visitor data sent anywhere. The only outside request is the weekly plugin check, which looks your installed plugins up on the WordPress.org plugin directory.
 
 ## Features
 
@@ -58,6 +58,7 @@ Because bad submissions are rejected at the door, they never land in your modera
 - A Dashboard widget with the last day, week and month
 - IP allow and block lists (IPv4 and IPv6, ranges and CIDR)
 - A weekly or monthly security report by email: what was blocked, the usernames bots tried, and anything that needs attention
+- A Checkup screen: what needs attention, which protections are on, and a weekly plugin check that warns about installed plugins WordPress.org closed (often for a security issue) or that are abandoned
 - Email alerts for attacks and administrator logins
 - Test Mode, to check protection before switching it on for real
 

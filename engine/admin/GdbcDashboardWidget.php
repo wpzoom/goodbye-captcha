@@ -60,6 +60,26 @@ final class GdbcDashboardWidget
 				</p>
 			<?php endif; ?>
 
+			<?php
+			$arrClosedPlugins = array();
+			foreach(GdbcPluginHealth::isEnabled() ? GdbcPluginHealth::getIssues() : array() as $arrPluginIssue)
+			{
+				GdbcPluginHealth::STATUS_CLOSED === $arrPluginIssue['Status'] ? $arrClosedPlugins[] = $arrPluginIssue['Name'] : null;
+			}
+			?>
+			<?php if(!empty($arrClosedPlugins)) : ?>
+				<p class="gdbc-dash__warning">
+					<?php
+					echo esc_html(sprintf(
+						/* translators: %s: list of plugin names. */
+						_n('%s was closed on WordPress.org and no longer gets security fixes.', '%s were closed on WordPress.org and no longer get security fixes.', count($arrClosedPlugins), 'goodbye-captcha'),
+						wp_sprintf_l('%l', $arrClosedPlugins)
+					));
+					?>
+					<a href="<?php echo esc_url(GdbcSummaryReport::getAdminPageUrl('checkup') . '#gdbc-chk-plugins'); ?>"><?php esc_html_e('See details', 'goodbye-captcha'); ?></a>
+				</p>
+			<?php endif; ?>
+
 			<?php if(!$isLoggingOn) : ?>
 				<p><?php esc_html_e('Blocked attempts are not being logged, so there are no numbers to show. You can turn logging on in the WPBruiser settings.', 'goodbye-captcha'); ?></p>
 			<?php else : ?>
@@ -125,7 +145,7 @@ final class GdbcDashboardWidget
 	 *
 	 * @return bool
 	 */
-	private static function isAnythingProtected()
+	public static function isAnythingProtected()
 	{
 		foreach(array_keys(GdbcModulesController::getRegisteredModules()) as $moduleName)
 		{

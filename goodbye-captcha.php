@@ -10,7 +10,7 @@
  * Plugin Name: WPBruiser Security - No CAPTCHA Anti-Spam & Login Protection
  * Plugin URI: https://www.wpzoom.com/plugins/wpbruiser/
  * Description: Security and anti-spam without CAPTCHA. Stops spam bots on your forms, limits login attempts and hardens WordPress, with an invisible check and no third-party service.
- * Version: 3.5.0
+ * Version: 3.6.0
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * Author: WPZOOM
@@ -29,7 +29,7 @@ if(!class_exists('GoodByeCaptcha', false))
 	class GoodByeCaptcha
 	{
 		
-		CONST PLUGIN_VERSION    = '3.5.0';
+		CONST PLUGIN_VERSION    = '3.6.0';
 		// PLUGIN_SLUG is also the prefix for option keys and admin menu slugs, so it
 		// must keep its historical value or existing installs lose their settings.
 		// The text domain is separate and must equal the WordPress.org slug.
@@ -63,6 +63,7 @@ if(!class_exists('GoodByeCaptcha', false))
 			'GdbcNotificationsAdminPage'  => '/engine/admin/pages/GdbcNotificationsAdminPage.php',
 			'GdbcSecurityAdminPage'       => '/engine/admin/pages/GdbcSecurityAdminPage.php',
 			'GdbcReportsAdminPage'        => '/engine/admin/pages/GdbcReportsAdminPage.php',
+			'GdbcCheckupAdminPage'        => '/engine/admin/pages/GdbcCheckupAdminPage.php',
 			'GdbcWelcomeAdminPage'        => '/engine/admin/pages/GdbcWelcomeAdminPage.php',
 			'GdbcAdminNotice'             => '/engine/admin/GdbcAdminNotice.php',
 			'GdbcDbAccessController'      => '/engine/db-access/GdbcDbAccessController.php',
@@ -72,6 +73,7 @@ if(!class_exists('GoodByeCaptcha', false))
 			'GdbcAttemptEntity'           => '/engine/entities/GdbcAttemptEntity.php',
 			'GdbcNotificationsController' => '/engine/GdbcNotificationsController.php',
 			'GdbcSummaryReport'           => '/engine/GdbcSummaryReport.php',
+			'GdbcPluginHealth'            => '/engine/GdbcPluginHealth.php',
 			'GdbcLogsCleanerTask'         => '/engine/tasks/GdbcLogsCleanerTask.php',
 			'GdbcTaskScheduler'           => '/engine/GdbcTaskScheduler.php',
 
@@ -101,6 +103,9 @@ if(!class_exists('GoodByeCaptcha', false))
 
 			// The security report email, sent from a daily WP-Cron check.
 			GdbcSummaryReport::init();
+
+			// Weekly check of installed plugins against the WordPress.org directory.
+			GdbcPluginHealth::init();
 
 			if (MchGdbcWpUtils::isAjaxRequest()) {
 				GdbcAjaxController::processRequest();
