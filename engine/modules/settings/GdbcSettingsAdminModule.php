@@ -140,7 +140,7 @@ class GdbcSettingsAdminModule extends GdbcBaseAdminModule
 		{
 			$arrFieldAttributes['options'] = array();
 			for($i = 0; $i <= 6; ++$i) {
-				$arrFieldAttributes['options'][ ( 30 * $i ) . ' days' ] = 30 * $i;
+				$arrFieldAttributes['options'][ self::getDaysLabel(30 * $i) ] = 30 * $i;
 			}
 		}
 
@@ -148,7 +148,7 @@ class GdbcSettingsAdminModule extends GdbcBaseAdminModule
 		{
 			$arrFieldAttributes['options'] = array();
 			for($i = 0; $i <= 6; ++$i) {
-				$arrFieldAttributes['options'][ ( 5 * $i ) . ' days' ] = 5 * $i;
+				$arrFieldAttributes['options'][ self::getDaysLabel(5 * $i) ] = 5 * $i;
 			}
 		}
 
@@ -237,6 +237,18 @@ class GdbcSettingsAdminModule extends GdbcBaseAdminModule
 		foreach($arrSettingOptions as $optionName => $value){
 			$this->saveOption($optionName, $value);
 		}
+	}
+
+	/**
+	 * "30 days" for the log retention selects; "0 days" keeps nothing.
+	 *
+	 * @param int $days Number of days.
+	 * @return string
+	 */
+	private static function getDaysLabel($days)
+	{
+		/* translators: %s: number of days. */
+		return sprintf(_n('%s day', '%s days', $days, 'goodbye-captcha'), number_format_i18n($days));
 	}
 
 	public static function getInstance()

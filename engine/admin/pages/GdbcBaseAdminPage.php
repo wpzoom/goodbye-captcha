@@ -30,6 +30,58 @@ abstract class GdbcBaseAdminPage extends MchGdbcBaseAdminPage
 		self::$arrPageInstances[get_class($this)] = $this;
 	}
 
+	/**
+	 * The page's address in wp-admin (admin.php?page=wp-bruiser-settings), taken
+	 * from the class name. It used to come from the menu title, so on a translated
+	 * site it was translated too ("wp-bruiser-innstillinger") and every link built
+	 * with the English name, like the Checkup screen's, went nowhere.
+	 *
+	 * @return string
+	 */
+	public function getPageMenuSlug()
+	{
+		return GoodByeCaptcha::PLUGIN_SLUG . '-' . strtolower(str_replace(array('Gdbc', 'AdminPage'), '', get_class($this)));
+	}
+
+	/**
+	 * The address the page had before 3.6.1, built from its (translated) menu title,
+	 * so old bookmarks can be sent to the current one.
+	 *
+	 * @return string
+	 */
+	public function getLegacyPageMenuSlug()
+	{
+		return MchGdbcUtils::replaceNonAlphaNumericCharacters(strtolower(GoodByeCaptcha::PLUGIN_SLUG . '-' . $this->getPageMenuTitle()), '-');
+	}
+
+	/**
+	 * Sends an address from before 3.6.1 (a translated page name) to the page's
+	 * current address, keeping the rest of the query.
+	 */
+	public static function redirectLegacyPageSlugs()
+	{
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- only picks where to redirect.
+		$requested = isset($_GET['page']) && is_string($_GET['page']) ? sanitize_key(wp_unslash($_GET['page'])) : '';
+		if('' === $requested || 0 !== strpos($requested, GoodByeCaptcha::PLUGIN_SLUG . '-'))
+			return;
+
+		foreach(self::$arrPageInstances as $pageInstance)
+		{
+			if($requested === $pageInstance->getPageMenuSlug())
+				return;
+		}
+
+		foreach(self::$arrPageInstances as $pageInstance)
+		{
+			if($requested !== $pageInstance->getLegacyPageMenuSlug())
+				continue;
+
+			$requestUri = isset($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : '';
+			wp_safe_redirect(add_query_arg('page', $pageInstance->getPageMenuSlug(), $requestUri));
+			exit;
+		}
+	}
+
 	public function registerPageMetaBoxes()
 	{
 

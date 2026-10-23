@@ -30,8 +30,8 @@ foreach($detectedIpProxyHeaders as $index => $header)
 	<thead>
 
 	<tr>
-		<th style="text-align: center">Detected Proxy Header</th>
-		<th style="text-align: center">Action</th>
+		<th style="text-align: center"><?php esc_html_e('Detected Proxy Header', 'goodbye-captcha'); ?></th>
+		<th style="text-align: center"><?php esc_html_e('Action', 'goodbye-captcha'); ?></th>
 	</tr>
 
 	</thead>
@@ -65,7 +65,7 @@ foreach($detectedIpProxyHeaders as $index => $header)
 										}
 										else
 										{
-											echo '<option value="' . esc_attr( '' ) . '">' . 'No Proxy Header Detected' . '</option>';
+											echo '<option value="">' . esc_html__( 'No Proxy Header Detected', 'goodbye-captcha' ) . '</option>';
 										}
 									?>
 
@@ -99,10 +99,10 @@ foreach($detectedIpProxyHeaders as $index => $header)
 		echo '<tr class = "'.  ( ($index % 2 !== 0) ? 'even' : '' )  .'" >';
 		echo '<td style="text-align: center">' . esc_html($registeredHeader) . '</td>';
 		echo '<td style="text-align: center">';
-		echo '<form method="post" action="' . esc_html($formAction) . '">';
+		echo '<form method="post" action="' . esc_url($formAction) . '">';
 
 		echo '<input type="hidden" name="'.esc_attr($fieldName).'"  value="remove-'.esc_attr($registeredHeader).'" />';
-		echo '<input type="submit" value="Remove" class="button" />';
+		echo '<input type="submit" value="' . esc_attr__('Remove', 'goodbye-captcha') . '" class="button" />';
 
 		settings_fields(  $this->getSettingGroupId($this->proxyHeadersGroupIndex) );
 
@@ -128,11 +128,15 @@ foreach($detectedIpProxyHeaders as $index => $header)
 		}
 		elseif(null !== $detectedProxyService)
 		{
-			$proxyDetectionMessage = 'WPBruiser has detected you are using <b style = "color:#d54e21">' . $detectedProxyService . '</b> as a Proxy Service!';
+			$proxyDetectionMessage = sprintf(
+				/* translators: %s: proxy service name, such as "CloudFlare". */
+				__('WPBruiser has detected you are using %s as a Proxy Service!', 'goodbye-captcha'),
+				'<b style = "color:#d54e21">' . esc_html($detectedProxyService) . '</b>'
+			);
 		}
 		else
 		{
-			$proxyDetectionMessage = "WPBruiser has detected that your web site is behind a web proxy server!";
+			$proxyDetectionMessage = __('WPBruiser has detected that your web site is behind a web proxy server!', 'goodbye-captcha');
 		}
 
 	?>
@@ -149,7 +153,14 @@ foreach($detectedIpProxyHeaders as $index => $header)
 			<?php } ?>
 
 			<p style="margin-top: 15px; padding: 0; font-size: 1.05em;">
-				If <b style = "color:#d54e21"> <?php echo esc_html(GdbcIPUtils::getClientIpAddress()); ?> </b> is your current IP Address - check by clicking here: <a target="_blank" href = "http://www.whatsmyip.org/">What'sMyIP</a> - no additional action is required!
+				<?php
+				echo wp_kses_post(sprintf(
+					/* translators: 1: IP address, 2: link to a "what is my IP" website. */
+					__('If %1$s is your current IP Address - check by clicking here: %2$s - no additional action is required!', 'goodbye-captcha'),
+					'<b style = "color:#d54e21">' . esc_html(GdbcIPUtils::getClientIpAddress()) . '</b>',
+					'<a target="_blank" rel="noopener noreferrer" href="https://www.whatsmyip.org/">What\'sMyIP</a>'
+				));
+				?>
 			</p>
 
 
@@ -169,8 +180,13 @@ foreach($detectedIpProxyHeaders as $index => $header)
 
 					echo '<p style="margin-top: 8px; padding-top:8px; border-top:1px solid #e1e1e1; font-size: 1.05em;">';
 
-					echo 'If <b style = "color:#d54e21">' . esc_html(MchGdbcHttpRequest::getClientIpAddressFromProxyHeader($proxyHeader)) . '</b> is your current IP Address - check by clicking here: <a target="_blank" href = "http://www.whatsmyip.org/">What\'sMyIP</a> - ';
-					echo 'Register  <b style = "color:#d54e21">' . esc_html($proxyHeader) . '</b> Proxy Header';
+					echo wp_kses_post(sprintf(
+						/* translators: 1: IP address, 2: link to a "what is my IP" website, 3: proxy header name. */
+						__('If %1$s is your current IP Address - check by clicking here: %2$s - Register %3$s Proxy Header', 'goodbye-captcha'),
+						'<b style = "color:#d54e21">' . esc_html(MchGdbcHttpRequest::getClientIpAddressFromProxyHeader($proxyHeader)) . '</b>',
+						'<a target="_blank" rel="noopener noreferrer" href="https://www.whatsmyip.org/">What\'sMyIP</a>',
+						'<b style = "color:#d54e21">' . esc_html($proxyHeader) . '</b>'
+					));
 
 					echo '</p>';
 				}
@@ -185,7 +201,15 @@ foreach($detectedIpProxyHeaders as $index => $header)
 		<td colspan="2"></td>
 	</tr>
 	<tr>
-		<td colspan="2">Wrong IP Address detected? Please feel free to <a href="<?php echo esc_url(GoodByeCaptcha::PLUGIN_SUPPORT_URL); ?>" target="_blank" rel="noopener noreferrer">ask on the support forum</a>!</td>
+		<td colspan="2">
+			<?php
+			echo wp_kses_post(sprintf(
+				/* translators: %s: link to the support forum. */
+				__('Wrong IP Address detected? Please feel free to %s!', 'goodbye-captcha'),
+				'<a href="' . esc_url(GoodByeCaptcha::PLUGIN_SUPPORT_URL) . '" target="_blank" rel="noopener noreferrer">' . esc_html__('ask on the support forum', 'goodbye-captcha') . '</a>'
+			));
+			?>
+		</td>
 	</tr>
 
 

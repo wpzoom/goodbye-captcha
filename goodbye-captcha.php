@@ -10,7 +10,7 @@
  * Plugin Name: WPBruiser Security - No CAPTCHA Anti-Spam & Login Protection
  * Plugin URI: https://www.wpzoom.com/plugins/wpbruiser/
  * Description: Security and anti-spam without CAPTCHA. Stops spam bots on your forms, limits login attempts and hardens WordPress, with an invisible check and no third-party service.
- * Version: 3.6.0
+ * Version: 3.6.1
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * Author: WPZOOM
@@ -29,7 +29,7 @@ if(!class_exists('GoodByeCaptcha', false))
 	class GoodByeCaptcha
 	{
 		
-		CONST PLUGIN_VERSION    = '3.6.0';
+		CONST PLUGIN_VERSION    = '3.6.1';
 		// PLUGIN_SLUG is also the prefix for option keys and admin menu slugs, so it
 		// must keep its historical value or existing installs lose their settings.
 		// The text domain is separate and must equal the WordPress.org slug.

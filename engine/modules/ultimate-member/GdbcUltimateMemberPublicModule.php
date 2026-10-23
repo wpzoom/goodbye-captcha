@@ -27,6 +27,9 @@ defined( 'ABSPATH' ) || exit;
 
 final class GdbcUltimateMemberPublicModule extends GdbcBasePublicModule
 {
+	/** The ?err= code Ultimate Member shows our message for. */
+	CONST ERROR_CODE = 'wpbruiser_invalid_token';
+
 
 	protected function __construct()
 	{
@@ -48,25 +51,32 @@ final class GdbcUltimateMemberPublicModule extends GdbcBasePublicModule
 		}
 	}
 
+	/*
+	 * Each form has its own validation hook, so each gets its own callback: the hook
+	 * says which form was submitted. Since Ultimate Member 2.6.7 these hooks pass
+	 * ($submitted_data, $form_data), and the form's mode and fields are in $form_data;
+	 * reading them from the submitted data, as before, rejected every login.
+	 */
+
 	private function registerLoginHooks()
 	{
-		add_action('um_submit_form_errors_hook_login', array($this, 'validateFormEncryptedToken'), 1);
+		add_action('um_submit_form_errors_hook_login', array($this, 'validateLoginForm'), 1, 2);
 		add_action('um_after_login_fields', array($this, 'renderHiddenFieldIntoForm'));
-
-
+		add_filter('um_custom_error_message_handler', array($this, 'filterErrorMessage'), 10, 2);
 	}
-
 
 	public function registerRegistrationHooks()
 	{
-		add_action('um_submit_form_errors_hook__registration', array($this, 'validateFormEncryptedToken'), 1);
+		add_action('um_submit_form_errors_hook__registration', array($this, 'validateRegistrationForm'), 1, 2);
 		add_action('um_after_register_fields', array($this, 'renderHiddenFieldIntoForm'));
+		add_filter('um_custom_error_message_handler', array($this, 'filterErrorMessage'), 10, 2);
 	}
 
 	public function registerLostPasswordHooks()
 	{
 		add_action('um_reset_password_page_hidden_fields', array($this, 'renderHiddenFieldIntoForm'), 10);
-		add_action('um_reset_password_errors_hook',  array($this, 'validateFormEncryptedToken'), 1);
+		add_action('um_reset_password_errors_hook',  array($this, 'validateLostPasswordForm'), 1, 2);
+		add_filter('um_custom_error_message_handler', array($this, 'filterErrorMessage'), 10, 2);
 	}
 
 	public function renderHiddenFieldIntoForm()
@@ -77,60 +87,119 @@ final class GdbcUltimateMemberPublicModule extends GdbcBasePublicModule
 		)));
 	}
 
-	public function validateFormEncryptedToken($arrRequestInfo)
+	/**
+	 * @param array $arrSubmittedData Submitted values.
+	 * @param array $arrFormData      The form's settings (Ultimate Member 2.6.7+).
+	 */
+	public function validateLoginForm($arrSubmittedData = array(), $arrFormData = array())
+	{
+		$this->validateFormEncryptedToken(GdbcUltimateMemberAdminModule::OPTION_ULTIMATE_MEMBER_LOGIN_FORM, $arrSubmittedData, $arrFormData);
+	}
+
+	/**
+	 * @param array $arrSubmittedData Submitted values.
+	 * @param array $arrFormData      The form's settings (Ultimate Member 2.6.7+).
+	 */
+	public function validateRegistrationForm($arrSubmittedData = array(), $arrFormData = array())
+	{
+		$this->validateFormEncryptedToken(GdbcUltimateMemberAdminModule::OPTION_ULTIMATE_MEMBER_REGISTER_FORM, $arrSubmittedData, $arrFormData);
+	}
+
+	/**
+	 * @param array $arrSubmittedData Submitted values.
+	 * @param array $arrFormData      The form's settings (Ultimate Member 2.6.8+).
+	 */
+	public function validateLostPasswordForm($arrSubmittedData = array(), $arrFormData = array())
+	{
+		$this->validateFormEncryptedToken(GdbcUltimateMemberAdminModule::OPTION_ULTIMATE_MEMBER_LOST_PASSWORD_FORM, $arrSubmittedData, $arrFormData);
+	}
+
+	/**
+	 * Checks the token of one Ultimate Member form, and sends a bad submission back
+	 * to the form with Ultimate Member's own error notice.
+	 *
+	 * @param string $umSection        Option name of the form.
+	 * @param array  $arrSubmittedData Submitted values.
+	 * @param array  $arrFormData      The form's settings, or empty before Ultimate Member 2.6.7.
+	 */
+	private function validateFormEncryptedToken($umSection, $arrSubmittedData, $arrFormData)
 	{
 		if(MchGdbcWpUtils::isUserLoggedIn())
 			return;
 
-		$umSection = !empty($arrRequestInfo['_um_password_reset']) ?  GdbcUltimateMemberAdminModule::OPTION_ULTIMATE_MEMBER_LOST_PASSWORD_FORM : null;
-		if(null === $umSection && !empty($arrRequestInfo['mode']))
-		{
-			('login' === $arrRequestInfo['mode']) ? $umSection = GdbcUltimateMemberAdminModule::OPTION_ULTIMATE_MEMBER_LOGIN_FORM : ('register' === $arrRequestInfo['mode'] ? $umSection =  GdbcUltimateMemberAdminModule::OPTION_ULTIMATE_MEMBER_REGISTER_FORM : null);
-		}
-
-		global $ultimatemember;
-
-		if(null === $umSection)
-		{
-			wp_safe_redirect(esc_url(add_query_arg('err', '1')));
-			exit;
-		}
+		$arrSubmittedData = is_array($arrSubmittedData) ? $arrSubmittedData : array();
+		$arrFormData      = is_array($arrFormData) ? $arrFormData : array();
 
 		$this->attemptEntity->SectionId = $this->getOptionIdByOptionName($umSection);
 
-		$arrSubmittedData = array();
-		if(!empty($arrRequestInfo['custom_fields']) && is_serialized($arrRequestInfo['custom_fields']))
-		{
-			// SECURITY: custom_fields is unauthenticated, attacker-controlled POST data.
-			// Never rebuild PHP objects from it (CVE-2026-65556 PHP Object Injection).
-			$arrFields = (array)GoodByeCaptchaUtils::safeMaybeUnserialize($arrRequestInfo['custom_fields']);
-			unset($arrRequestInfo['custom_fields']);
-
-			foreach((array)$arrRequestInfo as $formFieldName => $value)
-			{
-				if(!isset($arrFields[$formFieldName]['label']))
-					continue;
-				if(isset($arrFields[$formFieldName]['type']) && $arrFields[$formFieldName]['type'] === 'password')
-					continue;
-
-				$arrSubmittedData[$arrFields[$formFieldName]['label']] = $value;
-			}
-		}
-
-		if(isset($_POST['username_b']) && $umSection === GdbcUltimateMemberAdminModule::OPTION_ULTIMATE_MEMBER_LOST_PASSWORD_FORM)
-		{
-			is_email(sanitize_text_field(wp_unslash($_POST['username_b']))) ?
-				$arrSubmittedData['email'] = sanitize_email(wp_unslash($_POST['username_b'])) :
-				$arrSubmittedData['username'] = sanitize_user(wp_unslash($_POST['username_b']));
-		}
-
-		$this->getAttemptEntity()->Notes = $arrSubmittedData;
+		$this->getAttemptEntity()->Notes = $this->getSubmittedNotes($umSection, $arrSubmittedData, $arrFormData);
 
 		if(GdbcRequestController::isValid($this->attemptEntity))
 			return;
 
-		wp_safe_redirect(esc_url(add_query_arg('err', '1')));
+		// The password reset form shows field errors, not ?err= notices: flag the field
+		// the way Ultimate Member flags its own reset errors, and the form comes back
+		// with the message and what the visitor typed.
+		if(GdbcUltimateMemberAdminModule::OPTION_ULTIMATE_MEMBER_LOST_PASSWORD_FORM === $umSection && function_exists('UM'))
+		{
+			UM()->form()->add_error('username_b', $this->filterErrorMessage('', self::ERROR_CODE));
+			return;
+		}
+
+		$redirectUrl = isset($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : home_url('/');
+		wp_safe_redirect(add_query_arg('err', self::ERROR_CODE, remove_query_arg('err', $redirectUrl)));
 		exit;
+	}
+
+	/**
+	 * What was submitted, by field label, for the Reports screen. Passwords are left out.
+	 *
+	 * @return array
+	 */
+	private function getSubmittedNotes($umSection, array $arrSubmittedData, array $arrFormData)
+	{
+		$arrNotes = array();
+
+		// The field list comes from the form's settings since Ultimate Member 2.6.7,
+		// and from the submission before that.
+		$customFields = isset($arrFormData['custom_fields']) ? $arrFormData['custom_fields'] : (isset($arrSubmittedData['custom_fields']) ? $arrSubmittedData['custom_fields'] : null);
+
+		// SECURITY: before 2.6.7 custom_fields was attacker-controlled POST data. Never
+		// rebuild PHP objects from it (CVE-2026-65556 PHP Object Injection).
+		$arrFields = is_array($customFields) ? $customFields : (is_string($customFields) && is_serialized($customFields) ? (array)GoodByeCaptchaUtils::safeMaybeUnserialize($customFields) : array());
+
+		foreach($arrSubmittedData as $formFieldName => $value)
+		{
+			if(!isset($arrFields[$formFieldName]['label']) || !is_scalar($value))
+				continue;
+			if(isset($arrFields[$formFieldName]['type']) && 'password' === $arrFields[$formFieldName]['type'])
+				continue;
+
+			$arrNotes[$arrFields[$formFieldName]['label']] = $value;
+		}
+
+		if(GdbcUltimateMemberAdminModule::OPTION_ULTIMATE_MEMBER_LOST_PASSWORD_FORM === $umSection && isset($arrSubmittedData['username_b']) && is_string($arrSubmittedData['username_b']))
+		{
+			is_email($arrSubmittedData['username_b']) ?
+				$arrNotes['email'] = sanitize_email($arrSubmittedData['username_b']) :
+				$arrNotes['username'] = sanitize_user($arrSubmittedData['username_b']);
+		}
+
+		return $arrNotes;
+	}
+
+	/**
+	 * Ultimate Member's notice for our ?err= code.
+	 *
+	 * @param string $errorMessage Message so far.
+	 * @param string $errorCode    The ?err= value.
+	 * @return string
+	 */
+	public function filterErrorMessage($errorMessage, $errorCode = '')
+	{
+		return self::ERROR_CODE === $errorCode
+			? __('Your submission could not be verified. Please reload the page and try again.', 'goodbye-captcha')
+			: $errorMessage;
 	}
 
 

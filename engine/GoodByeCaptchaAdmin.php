@@ -52,6 +52,11 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 		add_action( 'admin_init', array( 'GdbcBruteForceAdminModule', 'handleReleaseRequest' ) );
 		add_action( 'admin_init', array( 'GdbcLoginLockout', 'rememberCurrentUserIp' ) );
 
+		// Old bookmarks to translated page addresses (before 3.6.1). WordPress refuses an
+		// unknown admin page while it builds the menu, before admin_init, and fires
+		// admin_page_access_denied just before it does.
+		add_action( 'admin_page_access_denied', array( 'GdbcBaseAdminPage', 'redirectLegacyPageSlugs' ) );
+
 		// Styles the "Upgrade to Pro" menu item, which is visible on every admin screen.
 		add_action( 'admin_head', array( __CLASS__, 'printUpgradeMenuItemAssets' ) );
 

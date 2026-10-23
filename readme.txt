@@ -4,7 +4,7 @@ Tags: security, anti-spam, captcha, limit login attempts, brute force
 Requires at least: 6.5
 Requires PHP: 7.4
 Tested up to: 7.1
-Stable tag: 3.6.0
+Stable tag: 3.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -250,6 +250,11 @@ WPBruiser bundles the following third-party resources, each under its own licens
 The Integrations screen shows the icons the integrated plugins publish on WordPress.org (Gravity Forms: the icon of its official Gravity Forms CLI add-on). Plugin names and logos are trademarks of their owners and are used only to identify the integrations.
 
 == Changelog ==
+
+= 3.6.1 =
+- Fixed: with Ultimate Member 2.6.7 or later, every login through an Ultimate Member form was refused once its protection was on. Ultimate Member moved the form's details to a second argument of its validation hooks; WPBruiser now reads them from there (and still works with older versions). A refused submission shows Ultimate Member's own error notice. Thanks to Mykyta Synelnikov of the Ultimate Member team for the patch and the pointers.
+- Fixed: on a translated site, links to WPBruiser's screens (on the Checkup screen, in the security report and on the Dashboard widget) led to "Sorry, you are not allowed to access this page". The screens' addresses were built from their translated names; they now stay the same in every language (`wp-bruiser-settings` and so on), and old translated addresses redirect to the new ones.
+- Fixed: on the Settings screen, the number of days in the log settings and most of the text in the Trusted Proxy Headers box couldn't be translated.
 
 = 3.6.0 =
 - New: Checkup screen. One page with everything that needs your attention, every WPBruiser protection grouped by area with whether it's on and a link to turn it on, and the status of each installed plugin on WordPress.org.
