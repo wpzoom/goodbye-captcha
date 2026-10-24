@@ -257,6 +257,7 @@ The Integrations screen shows the icons the integrated plugins publish on WordPr
 - Fixed: the remaining English-only text can now be translated: the three alert emails, country names (in Reports, the IP lists and the security report), the "Brute Force" and "Country Blocking" names, the XML-RPC "disabled" message apps see, and "N/A". Dates in Reports and in the alert emails now follow the site's language and date format, and the Test Mode help box is written as whole sentences translators can reorder.
 - Fixed: deleting the original WPBruiser Pro (sold on CodeCanyon until 2019) also deleted the current plugin's settings and blocked-attempt logs, because both share them. They are now kept.
 - Fixed: deleting WPBruiser and the original WPBruiser Pro together could stop with a PHP error.
+- For developers: new filter `wpbruiser_module_display_name`, so add-ons can translate their module names.
 - New: a notice when the original WPBruiser Pro is still installed. It bundles an old copy of WPBruiser and is no longer needed, so it can be deactivated and deleted.
 
 = 3.6.1 =

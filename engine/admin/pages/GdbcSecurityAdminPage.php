@@ -78,7 +78,7 @@ class GdbcSecurityAdminPage  extends GdbcBaseAdminPage
 				continue;
 
 			$this->registerGroupedModules(array(
-				new MchGdbcGroupedModules($arrModule['DisplayName'], array($adminModuleInstance))
+				new MchGdbcGroupedModules(GdbcModulesController::getModuleDisplayName($moduleName), array($adminModuleInstance))
 			));
 		}
 

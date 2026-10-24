@@ -560,7 +560,18 @@ final class GdbcModulesController
 		}
 
 		if(isset(self::$arrExtensionModules[$moduleName]['DisplayName']))
-			return self::$arrExtensionModules[$moduleName]['DisplayName'];
+		{
+			/**
+			 * Filters an add-on module's name as shown in the admin. Add-ons register
+			 * their modules before WordPress loads translations, so a name that needs
+			 * translating (a feature, not a plugin name) is translated here.
+			 *
+			 * @since 3.6.2
+			 * @param string $displayName Name from the module's registration.
+			 * @param string $moduleName  Module name, e.g. "RateLimits".
+			 */
+			return (string)apply_filters('wpbruiser_module_display_name', self::$arrExtensionModules[$moduleName]['DisplayName'], $moduleName);
+		}
 
 		return $moduleName;
 	}
