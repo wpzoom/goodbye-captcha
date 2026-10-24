@@ -4,7 +4,7 @@ Tags: security, anti-spam, captcha, limit login attempts, brute force
 Requires at least: 6.5
 Requires PHP: 7.4
 Tested up to: 7.1
-Stable tag: 3.6.1
+Stable tag: 3.6.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -250,6 +250,14 @@ WPBruiser bundles the following third-party resources, each under its own licens
 The Integrations screen shows the icons the integrated plugins publish on WordPress.org (Gravity Forms: the icon of its official Gravity Forms CLI add-on). Plugin names and logos are trademarks of their owners and are used only to identify the integrations.
 
 == Changelog ==
+
+= 3.6.2 =
+- Fixed: more text couldn't be translated: the Reports screen (box titles, table headers, chart labels and tooltips, the map tooltip, "No records found", Previous/Next and the block menu) and the allowed and blocked IP lists (the accepted formats and "Your IP Address is"). Chart dates now use the site language's month names.
+- Fixed: with no blocked attempts, the Reports pagination showed a page "0".
+- Fixed: the remaining English-only text can now be translated: the three alert emails, country names (in Reports, the IP lists and the security report), the "Brute Force" and "Country Blocking" names, the XML-RPC "disabled" message apps see, and "N/A". Dates in Reports and in the alert emails now follow the site's language and date format, and the Test Mode help box is written as whole sentences translators can reorder.
+- Fixed: deleting the original WPBruiser Pro (sold on CodeCanyon until 2019) also deleted the current plugin's settings and blocked-attempt logs, because both share them. They are now kept.
+- Fixed: deleting WPBruiser and the original WPBruiser Pro together could stop with a PHP error.
+- New: a notice when the original WPBruiser Pro is still installed. It bundles an old copy of WPBruiser and is no longer needed, so it can be deactivated and deleted.
 
 = 3.6.1 =
 - Fixed: with Ultimate Member 2.6.7 or later, every login through an Ultimate Member form was refused once its protection was on. Ultimate Member moved the form's details to a second argument of its validation hooks; WPBruiser now reads them from there (and still works with older versions). A refused submission shows Ultimate Member's own error notice. Thanks to Mykyta Synelnikov of the Ultimate Member team for the patch and the pointers.

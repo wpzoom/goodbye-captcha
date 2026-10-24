@@ -306,7 +306,7 @@ class GdbcSecurityAdminPage  extends GdbcBaseAdminPage
 
 	public function renderProxyAnonymizersMetaBox()
 	{
-		$textInfo   = __('Provides protection against the most Proxy used IP addresses identified as high risk. ', 'goodbye-captcha');
+		$textInfo   = __('Provides protection against the most Proxy used IP addresses identified as high risk.', 'goodbye-captcha') . ' ';
 		$textInfo  .= __('The list also contains the most fraudulent TOR network, TOR Nodes and TOR Exit Points IP Addresses.', 'goodbye-captcha');
 
 		echo '<p style="text-align: justify">' . wp_kses_post($textInfo) . '</p>';

@@ -10,6 +10,16 @@ var gdbcAccent      = gdbcAccentColors.accent      || '#2271b1';
 var gdbcAccentDark  = gdbcAccentColors.accentDark  || '#1b588a';
 var gdbcAccentLight = gdbcAccentColors.accentLight || '#76a7cf';
 var gdbcAccentPale  = gdbcAccentColors.accentPale  || '#cee0ee';
+
+// Translated text, localized by PHP (GoodByeCaptchaAdmin::getReportsScriptStrings()).
+var gdbcL10n = (window.GdbcReportsData && window.GdbcReportsData.i18n) || {};
+function gdbcT(key, fallback) {
+    return (typeof gdbcL10n[key] === 'string' && gdbcL10n[key] !== '') ? gdbcL10n[key] : fallback;
+}
+function gdbcEsc(text) {
+    return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+var gdbcMonthNames = (gdbcL10n.monthNames && gdbcL10n.monthNames.length === 12) ? gdbcL10n.monthNames : null;
 jQuery( document ).ready(function($) {
 	
 	
@@ -78,7 +88,7 @@ jQuery( document ).ready(function($) {
                         var hover = '<div>';
 
                         hover += '<p>' + label + '</p>';
-                        hover += '<p><span>' + moduleInfo.attempts + ' attempts' + '</span></p>';
+                        hover += '<p><span>' + gdbcEsc(gdbcT('attemptsCount', '%s attempts').replace('%s', moduleInfo.attempts)) + '</span></p>';
 
                         hover += '</div>';
                         return hover;
@@ -149,12 +159,13 @@ jQuery( document ).ready(function($) {
                 $('#ip-attempts-holder div.module-pagination').append(showPagination(pageNumber, totalPages));
 
                 $('#ip-attempts-holder div.module-pagination li[class!="disabled"] a').on('click', function(){
-                    var newPage = $(this).html();
+                    // Previous and Next say which they are in data-page; their labels are translated.
+                    var newPage = $(this).data('page') || $(this).html();
                     if (newPage == '...' || newPage == pageNumber)
                         return;
-                    else if (newPage == 'Next')
+                    else if (newPage == 'next')
                         newPage = pageNumber + 1;
-                    else if (newPage == 'Prev')
+                    else if (newPage == 'prev')
                         newPage = pageNumber - 1;
 
                     displayAttemptsPerClientIpTable(newPage);
@@ -192,19 +203,19 @@ jQuery( document ).ready(function($) {
                     if ('PaginationInfo' == prop) {
 
                         if (moduleData == 0) {
-                            $('#wid-id-' + moduleId + ' table tbody').html('<td style="text-align: center; padding-top: 15px">No records found</td>');
+                            $('#wid-id-' + moduleId + ' table tbody').html('<td style="text-align: center; padding-top: 15px">' + gdbcEsc(gdbcT('noRecords', 'No records found')) + '</td>');
                             return;
                         }
 
                         $('#mp-' + moduleId).empty();
                         $('#mp-' + moduleId).append(showPagination(moduleData[0], moduleData[1]));
                         $('#wid-id-' + moduleId + ' .module-pagination li[class!="disabled"] a').on('click', function(){
-                            var newPage = $(this).html();
+                            var newPage = $(this).data('page') || $(this).html();
                             if (newPage == '...' || newPage == pageNumber)
                                 return;
-                            else if (newPage == 'Next')
+                            else if (newPage == 'next')
                                 newPage = parseInt(pageNumber, 10) + 1;
-                            else if (newPage == 'Prev')
+                            else if (newPage == 'prev')
                                 newPage = parseInt(pageNumber, 10) - 1;
 
                             var modId = $(this).parent().parent().parent().attr('id').substr(3);
@@ -290,15 +301,15 @@ jQuery( document ).ready(function($) {
         var ulContainer  = $('<ul class="pagination pagination-sm"></ul>');
         var firstPageLi  = $('<li><a>1</a></li>');
         var lastPageLi   = $('<li><a>' + totalPages + '</a>');
-        var previousLi   = $('<li><a>Prev</a></li>');
-        var nextLi       = $('<li><a>Next</a></li>');
+        var previousLi   = $('<li><a data-page="prev">' + gdbcEsc(gdbcT('previous', 'Previous')) + '</a></li>');
+        var nextLi       = $('<li><a data-page="next">' + gdbcEsc(gdbcT('next', 'Next')) + '</a></li>');
         var separatorLi1 = $('<li><a>...</a></li>');
         var separatorLi2 = $('<li><a>...</a></li>');
 
         var currentPageLi = $('<li class="active"><a>' + pageNumber + '</a></li>');
 
         pageNumber = parseInt(pageNumber, 10);
-        totalPages = parseInt(totalPages, 10);
+        totalPages = Math.max(1, parseInt(totalPages, 10) || 0); // no records: one empty page, not "1 0"
 
         if (totalPages == 1) {
             firstPageLi = null;
@@ -382,7 +393,8 @@ jQuery( document ).ready(function($) {
             },
             legend: {show: false},
             xaxis : {
-                mode : "time"
+                mode : "time",
+                monthNames : gdbcMonthNames
             },
             yaxes : {
                 tickFormatter : function(val) {
@@ -422,7 +434,7 @@ jQuery( document ).ready(function($) {
                         var i = 0;
                         $.each(modulesData, function(key, value){
                             var $graphObj = {
-                                label : '%x - ' + $('#gra-'+i).parent().text() + ' attempts',
+                                label : '%x - ' + gdbcT('moduleAttempts', '%s attempts').replace('%s', $('#gra-'+i).parent().text()),
                                 data : value,
                                 color : colorArray[i],
                                 lines : {
@@ -507,7 +519,8 @@ jQuery( document ).ready(function($) {
         var options = {
             xaxis : {
                 mode : "time",
-                tickLength : 5
+                tickLength : 5,
+                monthNames : gdbcMonthNames
             },
             yaxis : {
                 mode : "number",
@@ -541,8 +554,9 @@ jQuery( document ).ready(function($) {
             },
             tooltip:{
                 show:true,
-                content : '<div id = "flotTip"><p>%y attempts </p><p><b>%x</b></p>',
-                xDateFormat: "%b %d, %Y",
+                content : '<div id = "flotTip"><p>' + gdbcEsc(gdbcT('attemptsCount', '%s attempts').replace('%s', '%y')) + '</p><p><b>%x</b></p>',
+                xDateFormat: gdbcT('dateFormat', '%b %d, %Y'),
+                monthNames: gdbcMonthNames,
                 shifts: {
                     x: 10,
                     y: 10
@@ -654,10 +668,9 @@ jQuery( document ).ready(function($) {
                     e.preventDefault();
                 } else {
                     var countryLbl = attemptsCountryArray[code];
-                    var attemptLbl = ' total attempts';
-                    if (countryLbl == 1)
-                        attemptLbl = ' attempt';
-                    el.html(el.html() + ': ' + countryLbl + attemptLbl);
+                    var attemptLbl = (countryLbl == 1) ? gdbcT('attemptOne', '%s attempt') : gdbcT('attemptsCount', '%s attempts');
+                    var countryName = (gdbcL10n.countryNames && gdbcL10n.countryNames[code]) ? gdbcEsc(gdbcL10n.countryNames[code]) : el.html();
+                    el.html(countryName + ': ' + gdbcEsc(attemptLbl.replace('%s', countryLbl)));
                 }
             }
         });
@@ -684,7 +697,7 @@ jQuery( document ).ready(function($) {
                     if ('TopAttemptsArrayPerModule' == prop) {
                         $('#gdbc-pie-chart table tbody').empty();
                         if (moduleData == 0)
-                            $('#gdbc-pie-chart table tbody').append($('<tr><td colspan="4" class="text-center">No records found</tr>'));
+                            $('#gdbc-pie-chart table tbody').append($('<tr><td colspan="4" class="text-center">' + gdbcEsc(gdbcT('noRecords', 'No records found')) + '</td></tr>'));
                         else {
 
                             $.each(moduleData, function (k, v) {
@@ -760,14 +773,14 @@ jQuery( document ).ready(function($) {
 
     function createBlockLinkOptions(ip, shouldBlock)
     {
-        var blockIpLink = '<a href="javascript:void(0);" class="block-' +ip+ '"> <i class="glyphicon glyphicon-remove icon-danger" style = "margin-right: 5px"></i>Block Ip Address</a>';
-        var unblockIpLink = '<a href="javascript:void(0);" class="unblock-' +ip+ '"> <i class="glyphicon glyphicon-ok icon-success" style = "margin-right: 5px"></i>UnBlock Ip Address</a>';
+        var blockIpLink = '<a href="javascript:void(0);" class="block-' +ip+ '"> <i class="glyphicon glyphicon-remove icon-danger" style = "margin-right: 5px"></i>' + gdbcEsc(gdbcT('blockIp', 'Block IP Address')) + '</a>';
+        var unblockIpLink = '<a href="javascript:void(0);" class="unblock-' +ip+ '"> <i class="glyphicon glyphicon-ok icon-success" style = "margin-right: 5px"></i>' + gdbcEsc(gdbcT('unblockIp', 'Unblock IP Address')) + '</a>';
 
         var insertLink = '<li> ' + (shouldBlock ? blockIpLink : unblockIpLink) + ' <li>';
 
         var blockMenu = $('<ul class="dropdown-menu dropdown-menu-xs pull-right manage-ip-action-holder">' + insertLink +
         '<li class="divider"><li>' +
-        '<li> <a href="javascript:void(0);">Cancel</a> <li>' +
+        '<li> <a href="javascript:void(0);">' + gdbcEsc(gdbcT('cancel', 'Cancel')) + '</a> <li>' +
         '</ul>');
 
         blockMenu.on('click', 'a', function(){

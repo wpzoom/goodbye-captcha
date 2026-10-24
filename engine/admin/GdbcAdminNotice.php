@@ -25,6 +25,7 @@ final class GdbcAdminNotice extends MchGdbcAdminNotice
 	CONST USER_IP_WEB_ATTACKER_NOTICE_KEY = 'UserIpWebAttacker';
 	CONST USER_IP_PROXY_ANONYM_NOTICE_KEY = 'UserIpProxyAnonym';
 	CONST UNTRUSTED_PROXY_HEADER_DETECTED = 'UntrustedProxyHeader';
+	CONST LEGACY_PRO_INSTALLED            = 'LegacyProInstalled';
 
 
 	public function __construct($noticeKey, $noticeType, $noticeMessage = null)

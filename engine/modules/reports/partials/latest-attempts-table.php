@@ -4,7 +4,7 @@
 		<div id="wid-id-1" class="gdbcwidget clearfix">
 			<header>
 				<span class="widget-icon icon-primary"><span class="glyphicon glyphicon-th-list"></span></span>
-				<h2>Latest attempts</h2>
+				<h2><?php esc_html_e('Latest Attempts', 'goodbye-captcha'); ?></h2>
 			</header>
 			<div class="no-padding">
 				<div class="widget-body" class="tab-content">

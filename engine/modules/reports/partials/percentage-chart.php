@@ -3,7 +3,7 @@
 	<div id="wid-id-3" class="gdbcwidget clearfix">
 		<header>
 			<span class="widget-icon icon-primary"><span class="glyphicon glyphicon-adjust"></span></span>
-			<h2>Attempts Distribution per Module</h2>
+			<h2><?php esc_html_e('Attempts per Module', 'goodbye-captcha'); ?></h2>
 		</header>
 		<div class="no-padding">
 			<div class="widget-body" class="tab-content">
@@ -14,8 +14,8 @@
 							<table class="table table-hover">
 								<thead>
 									<tr>
-										<th>Module</th>
-										<th>Total Attempts</th>
+										<th><?php esc_html_e('Module', 'goodbye-captcha'); ?></th>
+										<th><?php esc_html_e('Total Attempts', 'goodbye-captcha'); ?></th>
                                     </tr>
 								</thead>
 								<tbody>

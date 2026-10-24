@@ -4,13 +4,13 @@
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<button type="button" class="close" data-dismiss="modal" aria-label="<?php esc_attr_e('Close', 'goodbye-captcha'); ?>"><span aria-hidden="true">&times;</span></button>
 				<h6 class="modal-title" id="gdbc-modal-title">&nbsp;</h6>
 			</div>
 			<div class="modal-body">
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal"><?php esc_html_e('Close', 'goodbye-captcha'); ?></button>
 <!--				<button type="button" class="btn btn-primary">Send email</button>-->
 			</div>
 		</div>

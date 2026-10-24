@@ -161,21 +161,30 @@ defined( 'ABSPATH' ) || exit;
 
 <div class="postbox-footer gdbc-ip-formats">
 
-	<dl>
-		<dt>Accepted IPV4 Formats</dt>
-		<dd>Standard IPV4 format <code>123.123.1.1</code></dd>
-		<dd>Standard CIDR Block format <code>123.123.1.1/32</code></dd>
-		<dd>Wildcard Range format <code>123.123.1.*</code></dd>
-		<dd>Non-Standard Range format <code>123.123.1.1 - 123.123.1.10</code></dd>
-	</dl>
-
-	<dl>
-		<dt>Accepted IPV6 Formats</dt>
-		<dd>Fully Uncompressed format <code>2002:4559:1FE2:0000:0000:0000:4559:1FE2</code></dd>
-		<dd>Standard CIDR Block format <code>2002:4559:1FE2::4559:1FE2/128</code></dd>
-		<dd>Uncompressed format <code>2002:4559:1FE2:0:0:0:4559:1FE2</code></dd>
-		<dd>Compressed format <code>2002:4559:1FE2::4559:1FE2</code></dd>
-	</dl>
+	<?php
+	$arrIpFormats = array(
+		__('Accepted IPv4 Formats', 'goodbye-captcha') => array(
+			array(__('Standard IPv4 format', 'goodbye-captcha'), '123.123.1.1'),
+			array(__('Standard CIDR block format', 'goodbye-captcha'), '123.123.1.1/32'),
+			array(__('Wildcard range format', 'goodbye-captcha'), '123.123.1.*'),
+			array(__('Non-standard range format', 'goodbye-captcha'), '123.123.1.1 - 123.123.1.10'),
+		),
+		__('Accepted IPv6 Formats', 'goodbye-captcha') => array(
+			array(__('Fully uncompressed format', 'goodbye-captcha'), '2002:4559:1FE2:0000:0000:0000:4559:1FE2'),
+			array(__('Standard CIDR block format', 'goodbye-captcha'), '2002:4559:1FE2::4559:1FE2/128'),
+			array(__('Uncompressed format', 'goodbye-captcha'), '2002:4559:1FE2:0:0:0:4559:1FE2'),
+			array(__('Compressed format', 'goodbye-captcha'), '2002:4559:1FE2::4559:1FE2'),
+		),
+	);
+	?>
+	<?php foreach($arrIpFormats as $formatsTitle => $arrFormats) : ?>
+		<dl>
+			<dt><?php echo esc_html($formatsTitle); ?></dt>
+			<?php foreach($arrFormats as $arrFormat) : ?>
+				<dd><?php echo esc_html($arrFormat[0]); ?> <code><?php echo esc_html($arrFormat[1]); ?></code></dd>
+			<?php endforeach; ?>
+		</dl>
+	<?php endforeach; ?>
 
 </div>
 

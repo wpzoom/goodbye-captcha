@@ -85,7 +85,7 @@ final class GdbcReportsAdminModule extends GdbcBaseAdminModule
 
 			$totalAttempts += $gdbcAttempt->Total;
 			$attemptsPerModulesList[] = array(
-				'label' => $moduleName,
+				'label' => GdbcModulesController::getModuleDisplayName($moduleName),
 				'value' => $gdbcAttempt->Total
 			);
 		}
@@ -199,9 +199,10 @@ final class GdbcReportsAdminModule extends GdbcBaseAdminModule
 				continue;
 			}
 
-			$attempt->CreatedDate = get_date_from_gmt ( gmdate( 'Y-m-d H:i:s', $attempt->CreatedDate ), 'M d, Y H:i:s');
+			$attempt->CreatedDate = wp_date(get_option('date_format') . ' ' . get_option('time_format'), (int)$attempt->CreatedDate);
 
 			$sectionName = GdbcModulesController::getModuleOptionDisplayText($attempt->ModuleId, $attempt->SectionId);
+			$attempt->ModuleName  = GdbcModulesController::getModuleDisplayName($attempt->ModuleName);
 			$attempt->ModuleName .= empty($sectionName) ? '' : '/' . $sectionName;
 
 			$attempt->IsIpBlocked = GdbcIPUtils::isIpAddressBlocked($attempt->ClientIp);
@@ -209,11 +210,11 @@ final class GdbcReportsAdminModule extends GdbcBaseAdminModule
 
 			$attempt->Country     = self::getCountryForDisplay($attempt->ClientIp);
 
-			empty($attempt->Country) ? $attempt->Country = 'N/A' : null;
+			empty($attempt->Country) ? $attempt->Country = __('N/A', 'goodbye-captcha') : null;
 
 			if(empty($attempt->Notes))
 			{
-				$attempt->Notes = 'N/A';
+				$attempt->Notes = __('N/A', 'goodbye-captcha');
 			}
 			else
 			{
@@ -300,7 +301,7 @@ final class GdbcReportsAdminModule extends GdbcBaseAdminModule
 			if(! ($moduleName = GdbcModulesController::getModuleNameById($attempt->ModuleId)) )
 				continue;
 
-			$arrModules[$attempt->ModuleId] = $moduleName;
+			$arrModules[$attempt->ModuleId] = GdbcModulesController::getModuleDisplayName($moduleName);
 		}
 
 		$ajaxData = array();
@@ -426,7 +427,7 @@ final class GdbcReportsAdminModule extends GdbcBaseAdminModule
 				empty($attempt->Section) ? $attempt->Section = 'N\A' : null;
 			}
 
-			$attempt->CreatedDate = get_date_from_gmt ( gmdate( 'Y-m-d H:i:s', $attempt->CreatedDate ), 'M d, Y H:i:s');
+			$attempt->CreatedDate = wp_date(get_option('date_format') . ' ' . get_option('time_format'), (int)$attempt->CreatedDate);
 			//$sectionName = GdbcModulesController::getModuleOptionDisplayText($attempt->ModuleId, (int)$attempt->SectionId);
 			//$attempt->ModuleName .=  '/' . (empty($sectionName) ? 'N/A' : $sectionName);
 
@@ -437,11 +438,11 @@ final class GdbcReportsAdminModule extends GdbcBaseAdminModule
 
 			$attempt->Country     = self::getCountryForDisplay($attempt->ClientIp);
 
-			empty($attempt->Country) ? $attempt->Country = 'N/A' : null;
+			empty($attempt->Country) ? $attempt->Country = __('N/A', 'goodbye-captcha') : null;
 
 			if(empty($attempt->Notes))
 			{
-				$attempt->Notes = 'N/A';
+				$attempt->Notes = __('N/A', 'goodbye-captcha');
 			}
 			else
 			{
@@ -544,7 +545,7 @@ final class GdbcReportsAdminModule extends GdbcBaseAdminModule
 			if(empty($sectionName))
 				$sectionName = '';
 
-			$arrFormattedAttempt['module']  = $moduleName;
+			$arrFormattedAttempt['module']  = GdbcModulesController::getModuleDisplayName($moduleName);
 			$arrFormattedAttempt['section'] = $sectionName;
 
 			$arrAjaxData[] = $arrFormattedAttempt;

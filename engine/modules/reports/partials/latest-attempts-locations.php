@@ -4,7 +4,7 @@
 		<div id="wid-id-2" class="gdbcwidget clearfix">
 			<header>
 				<span class="widget-icon icon-primary"><span class="glyphicon glyphicon-map-marker"></span></span>
-				<h2>Attempts By Locations</h2>
+				<h2><?php esc_html_e('Attempts by Location', 'goodbye-captcha'); ?></h2>
 			</header>
 			<div class="no-padding">
 				<div class="widget-body" class="tab-content" id = "ip-attempts-holder">
@@ -15,9 +15,9 @@
 							<table class="table countriesTable table-hover">
 								<thead>
 									<tr>
-										<th>Country</th>
-										<th>Ip Address</th>
-										<th>Total Attempts</th>
+										<th><?php esc_html_e('Country', 'goodbye-captcha'); ?></th>
+										<th><?php esc_html_e('IP Address', 'goodbye-captcha'); ?></th>
+										<th><?php esc_html_e('Total Attempts', 'goodbye-captcha'); ?></th>
 										<th></th>
 									</tr>
 								</thead>

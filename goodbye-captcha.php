@@ -10,7 +10,7 @@
  * Plugin Name: WPBruiser Security - No CAPTCHA Anti-Spam & Login Protection
  * Plugin URI: https://www.wpzoom.com/plugins/wpbruiser/
  * Description: Security and anti-spam without CAPTCHA. Stops spam bots on your forms, limits login attempts and hardens WordPress, with an invisible check and no third-party service.
- * Version: 3.6.1
+ * Version: 3.6.2
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * Author: WPZOOM
@@ -29,7 +29,7 @@ if(!class_exists('GoodByeCaptcha', false))
 	class GoodByeCaptcha
 	{
 		
-		CONST PLUGIN_VERSION    = '3.6.1';
+		CONST PLUGIN_VERSION    = '3.6.2';
 		// PLUGIN_SLUG is also the prefix for option keys and admin menu slugs, so it
 		// must keep its historical value or existing installs lose their settings.
 		// The text domain is separate and must equal the WordPress.org slug.
@@ -145,6 +145,40 @@ if(!class_exists('GoodByeCaptcha', false))
 			return null !== $isNetworkActivated ? $isNetworkActivated : $isNetworkActivated = MchGdbcWpUtils::isPluginNetworkActivated(self::getMainFilePath());
 		}
 
+		/**
+		 * Set while the original WPBruiser Pro is being deleted (see isProVersion()).
+		 *
+		 * @var bool
+		 */
+		private static $isLegacyProUninstalling = false;
+
+		/**
+		 * Kept for the original WPBruiser Pro (sold on CodeCanyon until 2019), which
+		 * bundles its own copy of this plugin. Its uninstall.php asks this before it
+		 * deletes the plugin's settings and drops the blocked-attempts table: when the
+		 * answer is true and this plugin is active, it leaves them alone. So the answer
+		 * is true only while that plugin is being deleted. Nothing else uses it.
+		 *
+		 * @deprecated 3.2.0
+		 * @return bool
+		 */
+		public static function isProVersion()
+		{
+			return self::$isLegacyProUninstalling;
+		}
+
+		/**
+		 * pre_uninstall_plugin: notes that the original WPBruiser Pro is about to run
+		 * its uninstall.php.
+		 *
+		 * @param string $pluginFile Plugin being deleted, e.g. "wp-bruiser/__wpbruiser.php".
+		 */
+		public static function onPreUninstallPlugin($pluginFile)
+		{
+			if('__wpbruiser.php' === basename((string)$pluginFile))
+				self::$isLegacyProUninstalling = true;
+		}
+
 		public static function getMainFilePath()
 		{
 			return __FILE__;
@@ -192,6 +226,9 @@ if(!class_exists('GoodByeCaptcha', false))
 		register_activation_hook(__FILE__, array('GoodByeCaptcha', 'activate'));
 
 		register_deactivation_hook(__FILE__, array('GoodByeCaptcha', 'deactivate'));
+
+		// Deleting the original WPBruiser Pro must not delete this plugin's data.
+		add_action('pre_uninstall_plugin', array('GoodByeCaptcha', 'onPreUninstallPlugin'));
 
 		add_action('plugins_loaded', array('GoodByeCaptcha', 'startRunning'), 0);
 	}

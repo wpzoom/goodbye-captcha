@@ -33,7 +33,7 @@ final class GdbcNotificationsController
 		$adminFullName = MchGdbcWpUtils::getAdminFullName();
 		empty($adminFullName) ? $adminFullName = MchGdbcWpUtils::getAdminDisplayName() : null;
 
-		$submittedForm  = GdbcModulesController::getModuleNameById($gdbcAttemptEntity->ModuleId);
+		$submittedForm  = GdbcModulesController::getModuleDisplayName(GdbcModulesController::getModuleNameById($gdbcAttemptEntity->ModuleId));
 		$submittedForm .=  empty($gdbcAttemptEntity->SectionId) ? '' : '/' . GdbcModulesController::getModuleOptionDisplayText($gdbcAttemptEntity->ModuleId, $gdbcAttemptEntity->SectionId);
 
 		$rejectReason = GdbcRequestController::tokenAlreadyRejected() ? GdbcRequestController::getRejectReasonDescription(GdbcRequestController::getRejectReasonId()) : null;
@@ -73,8 +73,8 @@ final class GdbcNotificationsController
 		$totalWebAttackers = 0;
 		$totalBlackListed  = 0;
 
-		$detectedDate = get_date_from_gmt ( gmdate( 'Y-m-d H:i:s', MchGdbcHttpRequest::getServerRequestTime() ), 'l, F d, Y');
-		$detectedTime = get_date_from_gmt ( gmdate( 'Y-m-d H:i:s', MchGdbcHttpRequest::getServerRequestTime() ), 'H:i:s');
+		$detectedDate = wp_date(get_option('date_format'), MchGdbcHttpRequest::getServerRequestTime());
+		$detectedTime = wp_date(get_option('time_format'), MchGdbcHttpRequest::getServerRequestTime());
 
 		foreach($arrLoginAttempts as $clientIp => $hits)
 		{
@@ -108,7 +108,8 @@ final class GdbcNotificationsController
 			'{total-black-listed}' => $totalBlackListed,
 			'{total-web-attackers}' => $totalWebAttackers,
 			'{total-proxy-anonymizers}' => $totalProxyAnonym,
-			'{detection-date-time}'	=> $detectedDate . ' at ' . $detectedTime,
+			/* translators: 1: date, 2: time. */
+			'{detection-date-time}'	=> sprintf(__('%1$s at %2$s', 'goodbye-captcha'), $detectedDate, $detectedTime),
 		);
 
 		$arrSuggestions = array(

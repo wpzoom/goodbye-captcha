@@ -143,6 +143,8 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 		if(!MchGdbcWpUtils::isSuperAdminLoggedIn())
 			return;
 
+		self::registerLegacyProNotice();
+
 		$bruteForceModuleInstance = GdbcModulesController::getAdminModuleInstance(GdbcModulesController::MODULE_BRUTE_FORCE);
 
 		if( !GdbcIPUtils::isClientIpWhiteListed() && GdbcIPUtils::isClientIpWebAttacker(true) && $bruteForceModuleInstance)
@@ -226,6 +228,51 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 			}
 		}
 
+	}
+
+	/**
+	 * Asks the site owner to remove the original WPBruiser Pro (sold on CodeCanyon
+	 * until 2019). It bundles an old copy of this plugin and does nothing while this
+	 * one runs. WPBruiser Pro by WPZOOM shows its own notice about it, so this one is
+	 * for sites without it.
+	 */
+	private static function registerLegacyProNotice()
+	{
+		if(null !== GdbcIntegrations::getProVersion())
+			return;
+
+		if(!function_exists('get_plugins'))
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+		$legacyFile = null;
+		foreach(array_keys(get_plugins()) as $pluginFile)
+		{
+			if('__wpbruiser.php' === basename($pluginFile))
+			{
+				$legacyFile = $pluginFile;
+				break;
+			}
+		}
+
+		if(null === $legacyFile)
+			return;
+
+		$isActive    = is_plugin_active($legacyFile);
+		$pluginsUrl  = GoodByeCaptcha::isNetworkActivated() ? network_admin_url('plugins.php') : admin_url('plugins.php');
+
+		$adminNotice = new GdbcAdminNotice(GdbcAdminNotice::LEGACY_PRO_INSTALLED, GdbcAdminNotice::NOTICE_TYPE_WARNING);
+
+		$noticeMessage  = '<p><strong>' . esc_html__('The original WPBruiser Pro is no longer needed.', 'goodbye-captcha') . '</strong> ';
+		$noticeMessage .= $isActive
+			? esc_html__('It contains an old copy of WPBruiser and does nothing while this version runs. Deactivate it, then delete it. Your WPBruiser settings and logs are kept.', 'goodbye-captcha')
+			: esc_html__('It contains an old copy of WPBruiser. You can delete it; your WPBruiser settings and logs are kept.', 'goodbye-captcha');
+		$noticeMessage .= ' <a href="' . esc_url($pluginsUrl) . '">' . esc_html__('Go to Plugins', 'goodbye-captcha') . '</a>';
+		$noticeMessage .= ' | <a href="' . esc_url(GdbcIntegrations::getProUrl('legacy-pro-notice')) . '" target="_blank" rel="noopener noreferrer">' . esc_html__('About WPBruiser Pro by WPZOOM', 'goodbye-captcha') . '</a></p>';
+
+		$adminNotice->setMessage($noticeMessage);
+		$adminNotice->setIsDismissible(true);
+
+		self::$adminNoticesList[] = $adminNotice;
 	}
 
 	public function renderPluginActiveAdminPage()
@@ -519,6 +566,7 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 			wp_localize_script(self::$PLUGIN_SLUG . '-reports-script', 'GdbcReportsData', array(
 				'attemptsByCountry' => GdbcReportsAdminModule::getInstance()->getAttemptsByCountry(),
 				'accentColors'      => $arrAccentPalette,
+				'i18n'              => self::getReportsScriptStrings(),
 			));
 
 			wp_enqueue_script(self::$PLUGIN_SLUG . '-bootstrap', plugins_url('/assets/admin/scripts/bootstrap.min.js', self::$PLUGIN_MAIN_FILE), array(), self::$PLUGIN_VERSION, false);
@@ -572,6 +620,60 @@ final class GoodByeCaptchaAdmin extends MchGdbcBaseAdminPlugin
 
 	}
 
+
+	/**
+	 * Translated country names by two-letter code, for the Reports map, whose own
+	 * labels are English.
+	 *
+	 * @return string[]
+	 */
+	private static function getTranslatedCountryNamesByCode()
+	{
+		$arrNames = array();
+		foreach(GoodByeCaptchaUtils::getCountryDataSource() as $countryId => $arrCountry)
+			$arrNames[$arrCountry[1]] = GoodByeCaptchaUtils::getCountryNameById($countryId);
+
+		return $arrNames;
+	}
+
+	/**
+	 * Text the Reports screen's script shows: charts, tables, pagination and the
+	 * block menu.
+	 *
+	 * @return array
+	 */
+	private static function getReportsScriptStrings()
+	{
+		global $wp_locale;
+
+		$arrMonthNames = array();
+		for($month = 1; $month <= 12; $month++)
+			$arrMonthNames[] = $wp_locale->get_month_abbrev($wp_locale->get_month($month));
+
+		return array(
+			/* translators: %s: number of blocked attempts (more than one). */
+			'attemptsCount'  => __('%s attempts', 'goodbye-captcha'),
+			/* translators: %s: the number 1. */
+			'attemptOne'     => __('%s attempt', 'goodbye-captcha'),
+			/* translators: %s: form or plugin name, such as "WordPress". */
+			'moduleAttempts' => __('%s Attempts', 'goodbye-captcha'),
+			'noRecords'      => __('No records found', 'goodbye-captcha'),
+			'previous'       => __('Previous', 'goodbye-captcha'),
+			'next'           => __('Next', 'goodbye-captcha'),
+			'blockIp'        => __('Block IP Address', 'goodbye-captcha'),
+			'unblockIp'      => __('Unblock IP Address', 'goodbye-captcha'),
+			'cancel'         => __('Cancel', 'goodbye-captcha'),
+			// The chart library's own date tokens, from words translators can reorder.
+			'dateFormat'     => str_replace(
+				array('{month}', '{day}', '{year}'),
+				array('%b', '%d', '%Y'),
+				/* translators: Date in the Reports chart tooltip. Keep {month}, {day} and {year} as they are, in the order your language uses. */
+				_x('{month} {day}, {year}', 'chart date format', 'goodbye-captcha')
+			),
+			'monthNames'     => $arrMonthNames,
+			'countryNames'   => self::getTranslatedCountryNamesByCode(),
+		);
+	}
 
 	public static function getInstance(array $arrPluginInfo)
 	{

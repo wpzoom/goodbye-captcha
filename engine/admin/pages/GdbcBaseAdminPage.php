@@ -405,14 +405,21 @@ abstract class GdbcBaseAdminPage extends MchGdbcBaseAdminPage
 		$settingsPageUrl      = isset(self::$arrPageInstances['GdbcSettingsAdminPage']) ? self::$arrPageInstances['GdbcSettingsAdminPage']->getAdminUrl() : '';
 		$notificationsPageUrl = isset(self::$arrPageInstances['GdbcNotificationsAdminPage']) ? self::$arrPageInstances['GdbcNotificationsAdminPage']->getAdminUrl() : '';
 
-		$textInfo  = __('In order to verify if WPBruiser works as expected, just go to, ', 'goodbye-captcha');
-		$textInfo .= MchGdbcHtmlUtils::createAnchorElement(__('Settings Page', 'goodbye-captcha'), array('href' => $settingsPageUrl));
-		$textInfo .= __(' and <b>Switch the plugin to Test Mode</b>. <br/>While in test mode, the plugin just verifies if it can properly protect the enabled options and sends email notifications to the email address you set in ', 'goodbye-captcha');
-		$textInfo .= MchGdbcHtmlUtils::createAnchorElement(__('Notifications Page', 'goodbye-captcha'), array('href' => $notificationsPageUrl));
+		// Whole sentences with the links as placeholders, so translators can order them.
+		$settingsLink      = '<a href="' . esc_url($settingsPageUrl) . '">' . esc_html__('Settings', 'goodbye-captcha') . '</a>';
+		$notificationsLink = '<a href="' . esc_url($notificationsPageUrl) . '">' . esc_html__('Notifications', 'goodbye-captcha') . '</a>';
 
-		$textInfo .= __(' For example, if you want to test the login form protection, just enable protection for the WordPress Login Form, logout from your dashboard and login again. The plugin will send an email notification letting you know if you can keep the protection activated.', 'goodbye-captcha');
-
-		$textInfo .= __(' In case something goes wrong, a warning message will be shown.', 'goodbye-captcha');
+		$textInfo  = sprintf(
+			/* translators: %s: link to the Settings screen. */
+			__('To check that WPBruiser works as expected, switch on <b>Test Mode</b> on the %s screen.', 'goodbye-captcha'),
+			$settingsLink
+		) . ' ';
+		$textInfo .= sprintf(
+			/* translators: %s: link to the Notifications screen. */
+			__('In Test Mode, WPBruiser only checks whether it can protect the forms you switched on, and emails the result to the address set on the %s screen.', 'goodbye-captcha'),
+			$notificationsLink
+		) . ' ';
+		$textInfo .= __('For example, to test the login form, switch on protection for the WordPress login form, log out and log in again: you\'ll get an email saying whether you can keep the protection on. If something goes wrong, you\'ll see a warning.', 'goodbye-captcha');
 
 		echo '<p>' . wp_kses_post($textInfo) . '</p>';
 

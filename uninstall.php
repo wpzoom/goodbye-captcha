@@ -14,7 +14,9 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
 class_exists('GoodByeCaptcha') || require_once 'goodbye-captcha.php';
 
-class GoodByeCaptchaUninstaller
+// Not "GoodByeCaptchaUninstaller": the original WPBruiser Pro's uninstall.php declares
+// that class too, and both run in one request when both plugins are deleted together.
+class GdbcUninstaller
 {
 	public function __construct()
 	{
@@ -53,4 +55,4 @@ class GoodByeCaptchaUninstaller
 
 }
 
-new GoodByeCaptchaUninstaller();
+new GdbcUninstaller();

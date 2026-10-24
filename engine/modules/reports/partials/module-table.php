@@ -14,7 +14,7 @@ foreach(array_keys(GdbcModulesController::getRegisteredModules()) as $moduleName
 				<div id="wid-id-<?php echo esc_attr($moduleId) ?>" class="gdbcwidget clearfix module">
 					<header>
 						<span class="widget-icon icon-primary"><span class="glyphicon glyphicon-th-list"></span></span>
-						<h2><?php echo esc_html($moduleName); ?> Attempts</h2>
+						<h2><?php /* translators: %s: form or plugin name, such as "WordPress". */ echo esc_html(sprintf(__('%s Attempts', 'goodbye-captcha'), GdbcModulesController::getModuleDisplayName($moduleName))); ?></h2>
 					</header>
 					<div class="no-padding">
 						<div class="widget-body" class="tab-content">

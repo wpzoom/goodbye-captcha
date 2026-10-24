@@ -58,8 +58,8 @@ class GdbcEmailNotificationsPublicModule extends GdbcBasePublicModule
 		$this->EmailSubject = __('WPBruiser - Administrator Signed In', 'goodbye-captcha');
 		$this->EmailHeading = __('An administrator signed in', 'goodbye-captcha');
 
-		$detectedDate = get_date_from_gmt ( gmdate( 'Y-m-d H:i:s', MchGdbcHttpRequest::getServerRequestTime() ), 'l, F d, Y');
-		$detectedTime = get_date_from_gmt ( gmdate( 'Y-m-d H:i:s', MchGdbcHttpRequest::getServerRequestTime() ), 'H:i:s');
+		$detectedDate = wp_date(get_option('date_format'), MchGdbcHttpRequest::getServerRequestTime());
+		$detectedTime = wp_date(get_option('time_format'), MchGdbcHttpRequest::getServerRequestTime());
 
 		$adminFullName = MchGdbcWpUtils::getAdminFullName();
 		empty($adminFullName) ? $adminFullName = MchGdbcWpUtils::getAdminDisplayName() : null;
@@ -67,7 +67,8 @@ class GdbcEmailNotificationsPublicModule extends GdbcBasePublicModule
 		$arrReplaceableContent = array(
 				'{current-site-link}' => MchGdbcWpUtils::getCurrentBlogLink(),
 				'{admin-full-name}'   => $adminFullName,
-				'{date-time}'         => $detectedDate . ' at ' . $detectedTime,
+				/* translators: 1: date, 2: time. */
+				'{date-time}'         => sprintf(__('%1$s at %2$s', 'goodbye-captcha'), $detectedDate, $detectedTime),
 //				'{date}'              => $detectedDate,
 //				'{time}'              => $detectedTime,
 				'{client-ip}'         => GdbcIPUtils::getClientIpAddress(),

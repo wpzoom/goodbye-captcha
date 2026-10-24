@@ -100,7 +100,10 @@ class GdbcWordPressTweaksPublicModule extends GdbcBasePublicModule
 			header('Date: ' . gmdate('r'));
 		}
 
-		echo '<?xml version="1.0"?><methodResponse><fault><value><struct><member><name>faultCode</name><value><int>405</int></value></member><member><name>faultString</name><value><string>XML-RPC services are disabled on this site!</string></value></member></struct></value></fault></methodResponse>';
+		// Translated once WordPress has loaded translations; this can run earlier.
+		$faultMessage = did_action('init') ? __('XML-RPC services are disabled on this site.', 'goodbye-captcha') : 'XML-RPC services are disabled on this site.';
+
+		echo '<?xml version="1.0"?><methodResponse><fault><value><struct><member><name>faultCode</name><value><int>405</int></value></member><member><name>faultString</name><value><string>' . esc_xml($faultMessage) . '</string></value></member></struct></value></fault></methodResponse>';
 		exit;
 
 	}

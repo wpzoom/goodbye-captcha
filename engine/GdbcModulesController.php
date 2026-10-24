@@ -536,7 +536,7 @@ final class GdbcModulesController
 	{
 		switch ($moduleName)
 		{
-			case self::MODULE_BRUTE_FORCE              : return 'Brute Force';
+			case self::MODULE_BRUTE_FORCE              : return __('Brute Force', 'goodbye-captcha');
 			case self::MODULE_BUDDY_PRESS              : return 'BuddyPress';
 			case self::MODULE_CONTACT_FORM_7           : return 'Contact Form 7';
 			case self::MODULE_FAST_SECURE_FORM         : return !$isForLicensing ? 'Fast Secure Form' : 'Fast Secure Contact Form';
@@ -554,7 +554,7 @@ final class GdbcModulesController
 			case self::MODULE_MEMBER_PRESS             : return 'MemberPress';
 			case self::MODULE_UPME                     : return !$isForLicensing ? 'UPME' : 'User Profiles Made Easy';
 			case self::MODULE_EASY_DIGITAL_DOWNLOADS   : return 'Easy Digital Downloads';
-			case self::MODULE_COUNTRY_BLOCKING         : return 'Country Blocking';
+			case self::MODULE_COUNTRY_BLOCKING         : return __('Country Blocking', 'goodbye-captcha');
 			case self::MODULE_WPZOOM_FORMS             : return 'WPZOOM Forms';
 
 		}

@@ -269,14 +269,16 @@ class GdbcWordPressAdminModule extends GdbcBaseAdminModule
 		if(isset($attemptEntity->Notes['comment_parent']))
 		{
 			$parentCommentLink = (string)get_comment_link(absint($attemptEntity->Notes['comment_parent']));
-			$parentCommentFiledValue = __('Comment Id ', 'goodbye-captcha');
+			/* translators: %d: comment ID. */
+			$parentCommentLabel = sprintf(__('Comment ID %d', 'goodbye-captcha'), absint($attemptEntity->Notes['comment_parent']));
 
 			if(strpos($parentCommentLink, 'http') === 0) {
-				$attemptEntity->Notes['comment_parent'] = '<a target = "blank" href = '. esc_attr($parentCommentLink) .'>' . $parentCommentFiledValue . absint($attemptEntity->Notes['comment_parent']) . '</a>';
+				$attemptEntity->Notes['comment_parent'] = '<a target="_blank" rel="noopener noreferrer" href="' . esc_url($parentCommentLink) . '">' . esc_html($parentCommentLabel) . '</a>';
 			}
 			else{
-				$attemptEntity->Notes['comment_parent'] =  $parentCommentFiledValue . absint($attemptEntity->Notes['comment_parent']);
+				$attemptEntity->Notes['comment_parent'] = esc_html($parentCommentLabel);
 			}
+
 		}
 
 		if(isset($attemptEntity->Notes['comment_post_ID']))
