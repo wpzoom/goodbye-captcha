@@ -921,7 +921,7 @@ div.wp-bruiser-extensions .plugin-card .action-links
 }
 div.wp-bruiser-extensions .plugin-card li a:hover
 {
-    color:#0073aa !important;
+    color: var(--gdbc-accent, #0073aa) !important;
 }
 
 div.wp-bruiser-extensions p.authors
