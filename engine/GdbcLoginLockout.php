@@ -19,11 +19,18 @@ defined( 'ABSPATH' ) || exit;
  *
  * Failure counters live in transients; active lockouts in one option, so the Security
  * screen can list and release them.
+ *
+ * The per-address counter also remembers which account each failure was against, so
+ * a successful login forgets only that account's failures: logging in to one account
+ * cannot reset the failures run up against another one from the same address. A
+ * second counter, per account across all addresses, locks out whichever address
+ * reaches the limit against that account.
  */
 final class GdbcLoginLockout
 {
 	CONST LOCKOUTS_OPTION     = 'wpbruiser_login_lockouts';
 	CONST FAILURES_PREFIX     = 'wpbruiser_lf_';
+	CONST ACCOUNT_FAILURES_PREFIX = 'wpbruiser_lfu_';
 	CONST KNOWN_IPS_META_KEY  = 'wpbruiser_known_login_ips';
 
 	/** How long failed logins are remembered. */
@@ -136,7 +143,8 @@ final class GdbcLoginLockout
 	}
 
 	/**
-	 * `wp_login_failed`: counts the failure and locks the address out at the limit.
+	 * `wp_login_failed`: counts the failure, against the address and against the
+	 * account, and locks the address out when either count reaches the limit.
 	 *
 	 * @param string $username Submitted username.
 	 */
@@ -149,17 +157,35 @@ final class GdbcLoginLockout
 		if(empty($ipAddress) || self::isLockedOut($ipAddress))
 			return;
 
-		$transientKey = self::FAILURES_PREFIX . md5($ipAddress);
-		$failures     = (int)get_transient($transientKey) + 1;
+		$username     = is_string($username) ? trim($username) : '';
+		$existingUser = '' !== $username ? self::getUserByLogin($username) : null;
+		$accountKey   = self::getAccountKey($username, $existingUser);
 
-		if($failures >= self::getMaxFailures())
+		$transientKey = self::FAILURES_PREFIX . md5($ipAddress);
+		$arrFailures  = self::getIpFailures($transientKey);
+
+		$arrFailures['total']++;
+		$arrFailures['accounts'][$accountKey] = (isset($arrFailures['accounts'][$accountKey]) ? $arrFailures['accounts'][$accountKey] : 0) + 1;
+
+		// Failures against one account are also counted across all addresses, so an
+		// attacker spreading guesses over addresses, or resetting an address's count by
+		// logging in to another account, still runs into the limit.
+		$accountTransientKey = null !== $existingUser ? self::ACCOUNT_FAILURES_PREFIX . $existingUser->ID : null;
+		$accountFailures     = null !== $accountTransientKey ? (int)get_transient($accountTransientKey) + 1 : 0;
+
+		if($arrFailures['total'] >= self::getMaxFailures() || $accountFailures >= self::getMaxFailures())
 		{
 			delete_transient($transientKey);
-			self::lockOut($ipAddress, is_string($username) ? $username : '', GdbcRequestController::REJECT_REASON_LOGIN_LOCKED_OUT);
+			if(null !== $accountTransientKey)
+				delete_transient($accountTransientKey);
+
+			self::lockOut($ipAddress, $username, GdbcRequestController::REJECT_REASON_LOGIN_LOCKED_OUT);
 			return;
 		}
 
-		set_transient($transientKey, $failures, self::FAILURE_WINDOW);
+		set_transient($transientKey, $arrFailures, self::FAILURE_WINDOW);
+		if(null !== $accountTransientKey)
+			set_transient($accountTransientKey, $accountFailures, self::FAILURE_WINDOW);
 	}
 
 	/**
@@ -197,7 +223,12 @@ final class GdbcLoginLockout
 	}
 
 	/**
-	 * `wp_login`: forgets the address's failures and remembers it for this user.
+	 * `wp_login`: forgets the failures against this account, from this address and
+	 * from all addresses, and remembers the address for this user.
+	 *
+	 * Failures against other accounts from the same address are kept: otherwise anyone
+	 * with an account could log in to it to clear the failures run up against another
+	 * account, and never be locked out.
 	 *
 	 * @param string  $userLogin Username.
 	 * @param WP_User $user      User who logged in.
@@ -208,10 +239,64 @@ final class GdbcLoginLockout
 		if(empty($ipAddress))
 			return;
 
-		delete_transient(self::FAILURES_PREFIX . md5($ipAddress));
+		if(!($user instanceof WP_User))
+			$user = is_string($userLogin) ? self::getUserByLogin($userLogin) : null;
 
-		if($user instanceof WP_User)
-			self::rememberIpForUser($user->ID, $ipAddress);
+		if(!($user instanceof WP_User))
+			return;
+
+		$transientKey = self::FAILURES_PREFIX . md5($ipAddress);
+		$arrFailures  = self::getIpFailures($transientKey);
+		$accountKey   = self::getAccountKey($user->user_login, $user);
+
+		if(isset($arrFailures['accounts'][$accountKey]))
+		{
+			$arrFailures['total'] -= $arrFailures['accounts'][$accountKey];
+			unset($arrFailures['accounts'][$accountKey]);
+
+			if($arrFailures['total'] > 0)
+				set_transient($transientKey, $arrFailures, self::FAILURE_WINDOW);
+			else
+				delete_transient($transientKey);
+		}
+
+		delete_transient(self::ACCOUNT_FAILURES_PREFIX . $user->ID);
+
+		self::rememberIpForUser($user->ID, $ipAddress);
+	}
+
+	/**
+	 * The failures recorded against an address: the total and a breakdown per account.
+	 * Counters written by 3.6.2 and earlier are a bare number, with no breakdown.
+	 *
+	 * @param string $transientKey Transient the counter lives in.
+	 * @return array With total (int) and accounts (int[] keyed by account key).
+	 */
+	private static function getIpFailures($transientKey)
+	{
+		$arrFailures = get_transient($transientKey);
+
+		if(!is_array($arrFailures))
+			return array('total' => (int)$arrFailures, 'accounts' => array());
+
+		return array(
+			'total'    => isset($arrFailures['total']) ? (int)$arrFailures['total'] : 0,
+			'accounts' => isset($arrFailures['accounts']) && is_array($arrFailures['accounts']) ? $arrFailures['accounts'] : array(),
+		);
+	}
+
+	/**
+	 * Key a failure is filed under in the per-address counter: the user ID for an
+	 * existing account (so trying its email and its username count as one), or the
+	 * name itself for a name no account uses.
+	 *
+	 * @param string       $username Submitted username.
+	 * @param WP_User|null $user     The account it belongs to, if any.
+	 * @return string
+	 */
+	private static function getAccountKey($username, $user)
+	{
+		return $user instanceof WP_User ? 'u' . $user->ID : 'n' . md5(strtolower((string)$username));
 	}
 
 	/**

@@ -4,7 +4,7 @@ Tags: security, anti-spam, captcha, limit login attempts, brute force
 Requires at least: 6.5
 Requires PHP: 7.4
 Tested up to: 7.1
-Stable tag: 3.6.2
+Stable tag: 3.6.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -250,6 +250,10 @@ WPBruiser bundles the following third-party resources, each under its own licens
 The Integrations screen shows the icons the integrated plugins publish on WordPress.org (Gravity Forms: the icon of its official Gravity Forms CLI add-on). Plugin names and logos are trademarks of their owners and are used only to identify the integrations.
 
 == Changelog ==
+
+= 3.6.3 =
+- Security: a successful login no longer cleared every failed login recorded for that IP address, so someone with any account could log in to it between guesses at another account's password and never be locked out. Failed logins are now counted per account as well, and a login forgets only that account's failures.
+- Security: failed logins against one account are now also counted across all IP addresses, so guesses spread over several addresses still reach the lockout.
 
 = 3.6.2 =
 - Fixed: more text couldn't be translated: the Reports screen (box titles, table headers, chart labels and tooltips, the map tooltip, "No records found", Previous/Next and the block menu) and the allowed and blocked IP lists (the accepted formats and "Your IP Address is"). Chart dates now use the site language's month names.
