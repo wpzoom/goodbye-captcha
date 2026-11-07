@@ -86,7 +86,13 @@ final class GdbcDbAccessController
 		$attemptEntity->Notes = !empty($attemptEntity->Notes) ? maybe_serialize(self::sanitizeEntityNotes($attemptEntity->Notes)) : null;
 		global $wpdb;
 
-		return self::$LAST_INSERTED_ATTEMPT_ID = (false === $wpdb->insert(self::getAttemptsTableName(), array_filter((array)$attemptEntity))) ? 0 : $wpdb->insert_id;
+		$suppressedErrors = $wpdb->suppress_errors(true);
+		$insertResult     = $wpdb->insert(self::getAttemptsTableName(), array_filter((array)$attemptEntity));
+		$wpdb->suppress_errors($suppressedErrors);
+
+		self::handleQueryError();
+
+		return self::$LAST_INSERTED_ATTEMPT_ID = (false === $insertResult) ? 0 : $wpdb->insert_id;
 	}
 
 
@@ -390,7 +396,50 @@ final class GdbcDbAccessController
 	private static function executePreparedQuery($sqlQuery)
 	{
 		global $wpdb;
-		return null !== ($queryResult = $wpdb->get_results($sqlQuery)) ? $queryResult : array();
+
+		$suppressedErrors = $wpdb->suppress_errors(true);
+		$queryResult      = $wpdb->get_results($sqlQuery);
+		$wpdb->suppress_errors($suppressedErrors);
+
+		self::handleQueryError();
+
+		return null !== $queryResult ? $queryResult : array();
+	}
+
+	/**
+	 * Runs after every query against the attempts table, with wpdb's own error
+	 * output held back for that query.
+	 *
+	 * A missing table is repaired instead of logged. The table can go missing when
+	 * a site is migrated or restored without it, or when it was never created, and
+	 * the brute-force check queries it on every POST request, so each such request
+	 * used to write a "Table ... doesn't exist" line to the error log. Any other
+	 * error is reported through wpdb as before.
+	 */
+	private static function handleQueryError()
+	{
+		global $wpdb;
+
+		if(empty($wpdb->last_error))
+			return;
+
+		$isMissingTable = false !== stripos($wpdb->last_error, "doesn't exist")
+		                  && false !== stripos($wpdb->last_error, self::getAttemptsTableName());
+
+		if(!$isMissingTable)
+		{
+			$wpdb->print_error();
+			return;
+		}
+
+		// If the database user cannot create tables the repair would fail on every
+		// request, so it is tried at most once an hour.
+		$repairFlag = 'gdbc_attempts_table_repair';
+		if(false !== get_site_transient($repairFlag))
+			return;
+
+		set_site_transient($repairFlag, 1, HOUR_IN_SECONDS);
+		self::createAttemptsTable();
 	}
 
 	public static function createAttemptsTable()
