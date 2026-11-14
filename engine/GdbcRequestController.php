@@ -53,6 +53,16 @@ final class GdbcRequestController
 	CONST REJECT_REASON_LOGIN_LOCKED_OUT       = 17;
 	CONST REJECT_REASON_BANNED_USERNAME        = 18;
 	CONST REJECT_REASON_LOGIN_LOCKDOWN         = 19;
+	CONST REJECT_REASON_TOKEN_REUSED           = 20;
+
+	/**
+	 * How long an issued token stays valid, in seconds (filter: wpbruiser_token_max_age).
+	 * The client script asks for a new one well before then while the page is open.
+	 */
+	CONST TOKEN_MAX_AGE = 10800;
+
+	/** Seconds after its first use in which a token may be sent once more (double-click). */
+	CONST TOKEN_DOUBLE_SUBMIT_GRACE = 10;
 
 	private static $rejectReasonCode     = null;
 	private static $browserInfoInputName = null;
@@ -167,9 +177,10 @@ final class GdbcRequestController
 		}
 
 
-		$arrDecryptedToken = json_decode(MchCrypt::decryptToken($tokenSecretKey, $receivedToken), true);
+		$receivedTokenPayload = (string)MchCrypt::decryptToken($tokenSecretKey, $receivedToken);
+		$arrDecryptedToken    = json_decode($receivedTokenPayload, true);
 
-		if( !isset($arrDecryptedToken[0]) || false === ($tokenIndex = strpos($arrDecryptedToken[0], self::TOKEN_SEPARATOR)) )
+		if( !isset($arrDecryptedToken[0]) || !is_string($arrDecryptedToken[0]) || false === ($tokenIndex = strpos($arrDecryptedToken[0], self::TOKEN_SEPARATOR)) )
 		{
 			self::$rejectReasonCode = self::REJECT_REASON_TOKEN_INVALID;
 			return false;
@@ -209,6 +220,22 @@ final class GdbcRequestController
 		if(count(array_diff($arrDecryptedToken, $arrTokenData)) !== 0)
 		{
 			self::$rejectReasonCode = self::REJECT_REASON_TOKEN_INVALID;
+			return false;
+		}
+
+		$tokenMaxAge = self::getTokenMaxAge();
+		if($timeSinceGenerated > $tokenMaxAge)
+		{
+			self::$rejectReasonCode = self::REJECT_REASON_TOKEN_EXPIRED;
+			return false;
+		}
+
+		// Each token is good for one submission. The client script asks for a new one
+		// after every submit, so a visitor who retries after an error is not affected,
+		// while a script that replays a harvested token is.
+		if(!self::claimToken($receivedTokenPayload, $tokenMaxAge - $timeSinceGenerated))
+		{
+			self::$rejectReasonCode = self::REJECT_REASON_TOKEN_REUSED;
 			return false;
 		}
 
@@ -291,6 +318,18 @@ final class GdbcRequestController
 		$arrTokenData = self::getTokenData();
 		$browserField = MchGdbcUtils::replaceNonAlphaCharacters(MchCrypt::getRandomString(25), '-');
 
+		// A page that already holds a token asks for a new one after each submit and
+		// when the old one gets close to expiring. The new token keeps the old one's
+		// age, up to the minimum submission time, so a visitor who resubmits straight
+		// away after an error is not rejected as too fast.
+		$previousTokenTime = self::getSubmittedPreviousTokenTime();
+		if(null !== $previousTokenTime)
+		{
+			$requestTime       = (int)array_pop($arrTokenData);
+			$minSubmissionTime = (int)GdbcSettingsPublicModule::getInstance()->getOption(GdbcSettingsAdminModule::OPTION_MIN_SUBMISSION_TIME);
+			$arrTokenData[]    = min($requestTime, max($previousTokenTime, $requestTime - $minSubmissionTime));
+		}
+
 		array_unshift($arrTokenData, $browserField . self::TOKEN_SEPARATOR . MchGdbcUtils::replaceNonAlphaNumericCharacters(implode('', array_values($arrKeysToSave)), ''));
 
 		return array(
@@ -300,6 +339,113 @@ final class GdbcRequestController
 
 	}
 
+
+	/**
+	 * How long an issued token stays valid, in seconds.
+	 *
+	 * @return int
+	 */
+	public static function getTokenMaxAge()
+	{
+		/**
+		 * Filters how long a WPBruiser token stays valid.
+		 *
+		 * The client script asks for a new token once a third of this has passed while
+		 * the page is open, so lowering it mainly shortens how long a harvested token
+		 * can be used. Values under five minutes are raised to five minutes.
+		 *
+		 * @since 3.7.0
+		 * @param int $seconds Default 10800 (three hours).
+		 */
+		return max(300, (int)apply_filters('wpbruiser_token_max_age', self::TOKEN_MAX_AGE));
+	}
+
+	/**
+	 * Records a token as spent.
+	 *
+	 * @param string $tokenPayload Decrypted token. Unique per issued token, so two
+	 *                             encodings of the same token count as one.
+	 * @param int    $ttl          Seconds the token has left to live.
+	 * @return bool False when the token was already spent.
+	 */
+	private static function claimToken($tokenPayload, $ttl)
+	{
+		$key = 'wpbruiser_tk_' . md5($tokenPayload);
+		$ttl = max(60, (int)$ttl + 60);
+		$now = MchGdbcHttpRequest::getServerRequestTime();
+
+		// Stored value: time of first use, negated once the double-submit grace is used.
+		$usingObjectCache = wp_using_ext_object_cache();
+		$firstUsed        = $usingObjectCache ? wp_cache_get($key, 'wpbruiser_tokens') : get_transient($key);
+
+		if(false === $firstUsed)
+		{
+			if(!$usingObjectCache)
+			{
+				set_transient($key, $now, $ttl);
+				return true;
+			}
+
+			// A persistent object cache can claim atomically, so concurrent replays
+			// cannot all count as the first use.
+			if(wp_cache_add($key, $now, 'wpbruiser_tokens', $ttl))
+				return true;
+
+			$firstUsed = wp_cache_get($key, 'wpbruiser_tokens', true);
+			if(false === $firstUsed)
+				return false;
+		}
+
+		// A double-clicked submit button sends the same token twice within a moment,
+		// before the page could fetch a new one. Allow that once.
+		$firstUsed = (int)$firstUsed;
+		if($firstUsed > 0 && $now - $firstUsed <= self::TOKEN_DOUBLE_SUBMIT_GRACE)
+		{
+			if($usingObjectCache)
+				wp_cache_set($key, -$firstUsed, 'wpbruiser_tokens', $ttl);
+			else
+				set_transient($key, -$firstUsed, $ttl);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Issue time of the token the client sent along when asking for a new one.
+	 *
+	 * @return int|null Null when none was sent or it is not a current, valid token.
+	 */
+	private static function getSubmittedPreviousTokenTime()
+	{
+		if(!isset($_POST['previousToken']) || !is_string($_POST['previousToken']))
+			return null;
+
+		$previousToken = wp_unslash($_POST['previousToken']);
+		if(!isset($previousToken[10]) || isset($previousToken[4096]))
+			return null;
+
+		$secretKey      = GdbcSettingsPublicModule::getInstance()->getOption(GdbcSettingsAdminModule::OPTION_TOKEN_SECRET_KEY);
+		$arrTokenPieces = json_decode((string)MchCrypt::decryptToken($secretKey, $previousToken), true);
+
+		if(!is_array($arrTokenPieces) || !isset($arrTokenPieces[0]) || !is_string($arrTokenPieces[0]) || false === strpos($arrTokenPieces[0], self::TOKEN_SEPARATOR))
+			return null;
+
+		array_shift($arrTokenPieces);
+
+		$arrTokenData   = self::getTokenData();
+		$requestTime    = (int)array_pop($arrTokenData);
+		$issueTime      = (int)array_pop($arrTokenPieces);
+
+		if(count(array_diff($arrTokenPieces, $arrTokenData)) !== 0 || count(array_diff($arrTokenData, $arrTokenPieces)) !== 0)
+			return null;
+
+		if($issueTime > $requestTime || $requestTime - $issueTime > self::getTokenMaxAge())
+			return null;
+
+		return $issueTime;
+	}
 
 	private static function getTokenData()
 	{
@@ -349,6 +495,7 @@ final class GdbcRequestController
 				self::REJECT_REASON_LOGIN_LOCKED_OUT        => __('Too Many Failed Logins', 'goodbye-captcha'),
 				self::REJECT_REASON_BANNED_USERNAME         => __('Banned Username', 'goodbye-captcha'),
 				self::REJECT_REASON_LOGIN_LOCKDOWN          => __('Login Lockdown', 'goodbye-captcha'),
+				self::REJECT_REASON_TOKEN_REUSED            => __('Token Already Used', 'goodbye-captcha'),
 			);
 		}
 

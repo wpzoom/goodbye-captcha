@@ -10,6 +10,12 @@
  * rendered. Once it expires the token endpoint answers with code
  * "invalid_nonce"; the client then fetches a fresh nonce and retries once, so
  * cached pages keep working without any cache-busting tricks.
+ *
+ * Each token is good for one submission and for config.tokenMaxAge seconds. The
+ * client therefore asks for a new token shortly after every submit (so a visitor
+ * can retry after an error without reloading) and when a token gets old while the
+ * page stays open. Those requests send the current token along so the server keeps
+ * its age and the visitor is not rejected for submitting too soon.
  */
 (function (window, document) {
     'use strict';
@@ -27,6 +33,19 @@
     }
 
     var browserInfo = {};
+
+    // Ask for a new token once a third of its lifetime has passed.
+    var refreshAfterMs = Math.max(60, parseInt(config.tokenMaxAge, 10) || 10800) * 1000 / 3;
+    // Wait this long after a submit before replacing the token, so a form plugin that
+    // reads its fields a moment after the submit event still sends the token it was
+    // submitted with.
+    var SUBMIT_REFRESH_DELAY_MS = 1500;
+
+    // MailPoet forms carry the token field as data[name].
+    function findTokenField(formElement) {
+        return formElement.querySelector('input[name="' + config.inputName + '"]') ||
+            formElement.querySelector('input[name="data[' + config.inputName + ']"]');
+    }
 
     function collectBrowserInfo() {
         var w = window, d = document, e = 0, f = 0;
@@ -121,7 +140,23 @@
     }
 
     function applyTokens(formElement, tokenField, data) {
-        var tokens = {};
+        var isMailPoet = (' ' + formElement.className + ' ').indexOf(' mailpoet_form ') > -1;
+        var names = [];
+
+        // The browser field that came with the previous token is no longer needed, and
+        // left in place it would end up in the form plugin's stored entry or e-mail.
+        var stale = formElement.querySelectorAll('input[data-wpbruiser-field]');
+        for (var s = 0; s < stale.length; ++s) {
+            stale[s].parentNode.removeChild(stale[s]);
+        }
+
+        // MailPoet only sends fields named data[...].
+        if (isMailPoet && tokenField.name === config.inputName) {
+            var plain = formElement.querySelectorAll('input[name="' + config.inputName + '"]');
+            for (var k = 0; k < plain.length; ++k) {
+                plain[k].name = 'data[' + config.inputName + ']';
+            }
+        }
 
         for (var p in data) {
             if (!data.hasOwnProperty(p)) {
@@ -134,7 +169,7 @@
                 for (var c = 0; c < copies.length; ++c) {
                     copies[c].value = data[p];
                 }
-                tokens[tokenField.name] = null;
+                names.push(tokenField.name);
                 continue;
             }
 
@@ -146,20 +181,21 @@
             }
 
             var elm = document.createElement('input');
-            elm.name = p;
-            elm.value = value;
             elm.type = 'hidden';
+            elm.name = isMailPoet ? 'data[' + p + ']' : p;
+            elm.value = value;
+            elm.setAttribute('data-wpbruiser-field', '1');
             formElement.appendChild(elm);
-            tokens[elm.name] = null;
-
-            if ((' ' + formElement.className + ' ').indexOf(' mailpoet_form ') > -1) {
-                elm.name = 'data[' + p + ']';
-                tokenField.name = 'data[' + tokenField.name + ']';
-            }
+            names.push(elm.name);
         }
 
-        // Ninja Forms submits over jQuery AJAX with a payload it builds itself; merge the tokens in.
-        if (window.jQuery && formElement.querySelector('.nf-element')) {
+        formElement._wpbruiserNames = names;
+        formElement._wpbruiserFetchedAt = new Date().getTime();
+
+        // Ninja Forms submits over jQuery AJAX with a payload it builds itself; merge the
+        // current tokens in. Registered once per form; it reads the fields at send time.
+        if (window.jQuery && formElement.querySelector('.nf-element') && !formElement._wpbruiserPrefilter) {
+            formElement._wpbruiserPrefilter = true;
             window.jQuery.ajaxPrefilter(function (options, originalOptions) {
                 if (!isObject(options) || !isObject(originalOptions) || !('data' in originalOptions) || !isObject(originalOptions.data)) {
                     return;
@@ -167,27 +203,25 @@
                 if (!('action' in originalOptions.data) || originalOptions.data.action !== 'nf_ajax_submit') {
                     return;
                 }
-                for (var token in tokens) {
-                    if (!tokens.hasOwnProperty(token)) {
-                        continue;
+                var extra = {}, current = formElement._wpbruiserNames || [];
+                for (var t = 0; t < current.length; ++t) {
+                    var field = formElement.querySelector('input[name="' + current[t] + '"]');
+                    if (field) {
+                        extra[current[t]] = field.value;
                     }
-                    var field = formElement.querySelector('input[name="' + token + '"]');
-                    tokens[token] = field ? field.value : null;
                 }
-                options.data = window.jQuery.param(window.jQuery.extend(originalOptions.data || {}, tokens));
+                options.data = window.jQuery.param(window.jQuery.extend(originalOptions.data || {}, extra));
             });
         }
 
         // Tell add-ons the form now carries a token. Forms that are not submitted as
         // HTML forms (the WooCommerce Checkout block posts JSON) forward these fields.
+        // Sent again each time the token is replaced.
         var fields = {};
-        for (var name in tokens) {
-            if (!tokens.hasOwnProperty(name)) {
-                continue;
-            }
-            var input = formElement.querySelector('input[name="' + name + '"]');
+        for (var n = 0; n < names.length; ++n) {
+            var input = formElement.querySelector('input[name="' + names[n] + '"]');
             if (input) {
-                fields[name] = input.value;
+                fields[names[n]] = input.value;
             }
         }
         var tokenEvent;
@@ -215,35 +249,90 @@
     }
 
     function retrieveToken(formElement, isRetry) {
-        var tokenField = formElement.querySelector('input[name="' + config.inputName + '"]');
+        var tokenField = findTokenField(formElement);
         if (!tokenField) {
             return;
         }
+
+        // One request per form at a time; the one in flight brings a fresh token anyway.
+        if (formElement._wpbruiserPending && !isRetry) {
+            return;
+        }
+        formElement._wpbruiserPending = true;
 
         var data = {};
         data[config.inputName] = config.nonce;
         data.action = config.action;
         data.requestTime = (new Date()).getTime();
         data.browserInfo = JSON.stringify(browserInfo);
+        if (formElement._wpbruiserFetchedAt && tokenField.value) {
+            data.previousToken = tokenField.value;
+        }
 
         post(data, function (status, rs) {
-            if (status !== 200 || !rs) {
+            if (status === 200 && rs && rs.success === false && !isRetry && rs.data && rs.data.code === 'invalid_nonce') {
+                refreshNonce(function (ok) {
+                    if (ok) {
+                        retrieveToken(formElement, true);
+                    } else {
+                        formElement._wpbruiserPending = false;
+                    }
+                });
                 return;
             }
-            if (rs.success === false) {
-                if (!isRetry && rs.data && rs.data.code === 'invalid_nonce') {
-                    refreshNonce(function (ok) {
-                        if (ok) {
-                            retrieveToken(formElement, true);
-                        }
-                    });
-                }
+
+            formElement._wpbruiserPending = false;
+
+            if (status !== 200 || !rs || rs.success === false) {
                 return;
             }
-            if (rs.data && typeof rs.data === 'object') {
+            if (rs.data && typeof rs.data === 'object' && rs.data.token) {
                 applyTokens(formElement, tokenField, rs.data);
             }
         });
+    }
+
+    // Tokens that have been around for a while are replaced before they expire.
+    function refreshStaleTokens(formElement) {
+        var forms = formElement ? [formElement] : document.forms;
+        var now = new Date().getTime();
+        for (var i = 0; i < forms.length; ++i) {
+            if (forms[i]._wpbruiserFetchedAt && now - forms[i]._wpbruiserFetchedAt > refreshAfterMs) {
+                retrieveToken(forms[i], false);
+            }
+        }
+    }
+
+    function watchTokenLifetime() {
+        // A token is spent once the form is submitted. Fetch a new one so the visitor
+        // can submit again (after a validation error, a failed payment, or a second
+        // message) without reloading the page.
+        document.addEventListener('submit', function (event) {
+            var formElement = event.target;
+            if (!formElement || formElement.tagName !== 'FORM' || !findTokenField(formElement)) {
+                return;
+            }
+            window.setTimeout(function () {
+                retrieveToken(formElement, false);
+            }, SUBMIT_REFRESH_DELAY_MS);
+        }, true);
+
+        document.addEventListener('focusin', function (event) {
+            if (event.target && event.target.form) {
+                refreshStaleTokens(event.target.form);
+            }
+        }, true);
+
+        document.addEventListener('visibilitychange', function () {
+            if (!document.hidden) {
+                refreshStaleTokens(null);
+            }
+        }, false);
+
+        // Also covers a laptop waking from sleep: the overdue timer fires on wake.
+        window.setInterval(function () {
+            refreshStaleTokens(null);
+        }, 60000);
     }
 
     function requestTokens(root) {
@@ -286,6 +375,7 @@
         collectBrowserInfo();
         requestTokens(document);
         observeInjectedForms();
+        watchTokenLifetime();
     }
 
     if (document.readyState === 'loading') {
@@ -301,6 +391,9 @@
         }
     }, false);
 
+    // requestTokens() also replaces a form's spent token: add-ons call it after a
+    // submission that does not fire a submit event (Ninja Forms, the WooCommerce
+    // Checkout block, EDD's checkout login).
     window.WPBruiserClient = {
         requestTokens: function (root) { requestTokens(root || document); }
     };

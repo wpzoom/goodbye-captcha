@@ -4,7 +4,7 @@ Tags: security, anti-spam, captcha, limit login attempts, brute force
 Requires at least: 6.5
 Requires PHP: 7.4
 Tested up to: 7.1
-Stable tag: 3.6.4
+Stable tag: 3.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -250,6 +250,11 @@ WPBruiser bundles the following third-party resources, each under its own licens
 The Integrations screen shows the icons the integrated plugins publish on WordPress.org (Gravity Forms: the icon of its official Gravity Forms CLI add-on). Plugin names and logos are trademarks of their owners and are used only to identify the integrations.
 
 == Changelog ==
+
+= 3.7.0 =
+- Improved: each anti-spam token now works for one submission only, so a script can no longer copy one token and send a form over and over with it. The page fetches a new token after every submit, so visitors can still retry after an error or send a second message without reloading.
+- Improved: tokens now expire after three hours. Pages left open longer get a new token automatically. Developers can change the lifetime with the `wpbruiser_token_max_age` filter.
+- New: a "Token Already Used" reason in Reports for replayed submissions.
 
 = 3.6.4 =
 - Fixed: if the plugin's log table was missing (for example after a site migration), every form submission wrote a database error to the error log. The table is now recreated automatically.
